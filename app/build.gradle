@@ -1,5 +1,14 @@
 plugins {
     alias(libs.plugins.androidApplication)
+    id "org.sonarqube" version "4.4.1.3373"
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "se2-carcassonne-team_app"
+        property "sonar.organization", "se2-carcassonne-team"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 android {
