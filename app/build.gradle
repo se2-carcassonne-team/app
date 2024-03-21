@@ -1,13 +1,19 @@
 plugins {
     alias(libs.plugins.androidApplication)
+    id 'jacoco'
     id "org.sonarqube" version "4.4.1.3373"
 }
 
+// Sonarqube-Werte müssen von Sonarcloud unter Gradle kopiert werden. Diese sind individuell
+// --Hinweis-- Darauf achten, dass Jacoco mitkopiert wird
 sonar {
     properties {
         property "sonar.projectKey", "se2-carcassonne-team_app"
         property "sonar.organization", "se2-carcassonne-team"
         property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+
     }
 }
 
@@ -35,13 +41,40 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    // --Hinzufügen--
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+            finalizedBy jacocoTestReport
+        }
+    }
+}
+
+// --Hinzufügen-- + Überprüfen, ob xml.destination Path korrekt ist
+tasks.register('jacocoTestReport', JacocoReport) {
+    dependsOn 'testDebugUnitTest'
+
+    reports {
+        xml.required = true
+        xml.destination file("${project.projectDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${project.layout.buildDirectory.get().asFile}/intermediates/javac/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.from = files([mainSrc])
+    classDirectories.from = files([debugTree])
+    executionData.from = files("${project.layout.buildDirectory.get().asFile}/jacoco/testDebugUnitTest.exec")
 }
 
 dependencies {
-
+    implementation libs.activity
     implementation libs.appcompat
     implementation libs.material
     testImplementation libs.junit
+    testImplementation libs.junit.jupiter.api
+    testRuntimeOnly libs.junit.jupiter.engine
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 }
