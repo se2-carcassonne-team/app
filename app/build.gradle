@@ -18,11 +18,11 @@ sonar {
 }
 
 android {
-    namespace 'net.albertheijn.carcassonne'
+    namespace 'se2.carcassonne'
     compileSdk 34
 
     defaultConfig {
-        applicationId "net.albertheijn.carcassonne"
+        applicationId "se2.carcassonne"
         minSdk 24
         targetSdk 34
         versionCode 1
