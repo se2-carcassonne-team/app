@@ -3,15 +3,16 @@ package se2.carcassonne;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class StartupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_homescreen);
+        setContentView(R.layout.startup_activity);
 
         getWindow().getDecorView().getRootView().setOnApplyWindowInsetsListener(
                 new View.OnApplyWindowInsetsListener() {
@@ -23,6 +24,8 @@ public class HomeScreenActivity extends AppCompatActivity {
                     }
                 }
         );
+        final ImageView carcassonneLogoImg = findViewById(R.id.imageView1);
+        final ImageView carcassonneTitleImg = findViewById(R.id.imageView2);
     }
 
     @Override
