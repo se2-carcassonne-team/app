@@ -72,6 +72,7 @@ dependencies {
     implementation libs.activity
     implementation libs.appcompat
     implementation libs.material
+    implementation libs.constraintlayout
     testImplementation libs.junit
     testImplementation libs.junit.jupiter.api
     testRuntimeOnly libs.junit.jupiter.engine
