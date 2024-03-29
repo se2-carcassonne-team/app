@@ -3,6 +3,6 @@
     </style>
 
     <style name="Carcassonne.BackgroundImage">
-        <item name="android:windowBackground">@drawable/background</item>
+        <item name="android:windowBackground">@drawable/startup_background</item>
     </style>
 </resources>
