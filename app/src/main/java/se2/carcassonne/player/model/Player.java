@@ -13,4 +13,28 @@ public class Player {
       this.username = username;
       this.gameLobby = gameLobby;
    }
+
+   public Long getId() {
+      return id;
+   }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
+
+   public String getUsername() {
+      return username;
+   }
+
+   public void setUsername(String username) {
+      this.username = username;
+   }
+
+   public GameLobby getGameLobby() {
+      return gameLobby;
+   }
+
+   public void setGameLobby(GameLobby gameLobby) {
+      this.gameLobby = gameLobby;
+   }
 }
