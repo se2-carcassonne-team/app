@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.helper.resize;
 
 import android.app.Activity;
 import android.view.View;

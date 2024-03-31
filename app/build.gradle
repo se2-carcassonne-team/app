@@ -31,6 +31,14 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
+    viewBinding  {
+        enabled true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -78,5 +86,11 @@ dependencies {
     testRuntimeOnly libs.junit.jupiter.engine
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
-    implementation libs.okhttp
+    implementation libs.lombok
+    annotationProcessor libs.lombok
+    implementation libs.jackson.databind
+    implementation libs.arrow.core
+    implementation libs.okhttp.v4120
+    implementation libs.stompProtocolAndroid
+    implementation libs.rxjava
 }
