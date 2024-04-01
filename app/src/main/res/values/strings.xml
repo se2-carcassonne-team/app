@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Carcassonne</string>
+    <string name="new_game">New Game</string>
+    <string name="find_game">Find Game</string>
+    <string name="how_to_play">How To Play</string>
+    <string name="content_description_background">Background</string>
+    <string name="content_description_carcassonne_title">Carcassonne Title</string>
+    <string name="content_description_start_game_button">Start Game</string>
+    <string name="choose_username_welcome_text">Welcome To Carcassonne</string>
+    <string name="username">Username</string>
+    <string name="welcome_homescreen">Welcome\n%s</string>
 </resources>
