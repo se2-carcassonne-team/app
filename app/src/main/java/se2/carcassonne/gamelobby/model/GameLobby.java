@@ -2,6 +2,7 @@ package se2.carcassonne.gamelobby.model;
 
 import java.sql.Timestamp;
 
+@SuppressWarnings("all")
 public class GameLobby {
     private Long id;
 
