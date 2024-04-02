@@ -24,6 +24,7 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
     private PlayerRepository playerRepository;
     private LiveData<String> userAlreadyExistsLiveData;
     private LiveData<String> invalidUsernameLiveData;
+    private LiveData<String> messageLiveData;
 
     public ChooseUsernameDialogFragment(ChooseUsernameViewModel viewModel, PlayerRepository playerRepository){
         this.viewModel = viewModel;
@@ -42,6 +43,7 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
 
         userAlreadyExistsLiveData = viewModel.getUserAlreadyExistsErrorMessage();
         invalidUsernameLiveData = viewModel.getInvalidUsernameErrorMessage();
+        messageLiveData = viewModel.getMessageLiveData();
 
         userAlreadyExistsLiveData.observe(this, errorMessage -> {
             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
@@ -52,13 +54,14 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
         });
 
         chooseUsernameStartGameButton.setOnClickListener(view -> {
+            String username = text.getText().toString();
             playerRepository.connectToWebSocketServer();
-            viewModel.createPlayer(new Player(null, text.getText().toString(), null));
-            viewModel.getMessageLiveData().observe(this, message -> {
-                playerRepository.connectToWebSocketServer();
-                viewModel.createPlayer(new Player(null, text.getText().toString(), null));
-                dismiss();
-            });
+            viewModel.createPlayer(new Player(null, username, null));
+        });
+
+        // Observe messageLiveData for successful creation
+        messageLiveData.observe(this, message -> {
+            dismiss();
         });
 
         builder.setView(dialogView);

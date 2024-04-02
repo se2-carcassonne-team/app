@@ -25,7 +25,9 @@ public class PlayerRepository {
     }
 
     private void messageReceivedFromServer(String message) {
-        if (!userAlreadyExistsError(message)) {
+        if (userAlreadyExistsError(message)) {
+            // Do nothing here, add some logging if needed
+        } else {
             messageLiveData.postValue(message);
         }
     }
