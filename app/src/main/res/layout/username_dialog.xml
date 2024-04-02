@@ -7,7 +7,7 @@
     android:background="@drawable/startup_background">
 
     <TextView
-        android:id="@+id/imageView"
+        android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:autoSizeMaxTextSize="1000dp"

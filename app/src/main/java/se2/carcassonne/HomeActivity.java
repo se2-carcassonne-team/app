@@ -26,7 +26,7 @@ public class HomeActivity extends AppCompatActivity {
         playerRepository = new PlayerRepository();
         viewModel = new ChooseUsernameViewModel(playerRepository);
         showChooseUsernameDialog();
-        viewModel.getMessageLiveData().observe(this, message -> binding.textView.setText(String.format(getString(R.string.welcome_homescreen), viewModel.getPlayerName(message))));
+        viewModel.getMessageLiveData().observe(this, message -> binding.textView2.setText(String.format(getString(R.string.welcome_homescreen), viewModel.getPlayerName(message))));
         binding.newGameBtn.setOnClickListener(view -> {
             Intent intent = new Intent(HomeActivity.this, GameLobbyActivity.class);
             startActivity(intent);

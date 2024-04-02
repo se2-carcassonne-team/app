@@ -9,4 +9,5 @@
     <string name="choose_username_welcome_text">Welcome To Carcassonne</string>
     <string name="username">Username</string>
     <string name="welcome_homescreen">Welcome\n%s</string>
+    <string name="lobby_players_waiting">Players waiting ...</string>
 </resources>
