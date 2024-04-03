@@ -10,4 +10,7 @@
     <string name="username">Username</string>
     <string name="welcome_homescreen">Welcome\n%s</string>
     <string name="lobby_list">List of Games</string>
+    <string name="title_activity_lobby_lists">LobbyListsActivity</string>
+    <string name="show_all_lobbies">Show all lobbies</string>
+
 </resources>

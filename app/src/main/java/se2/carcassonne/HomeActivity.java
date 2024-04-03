@@ -2,6 +2,7 @@ package se2.carcassonne;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -14,6 +15,7 @@ import se2.carcassonne.player.viewmodel.ChooseUsernameViewModel;
 public class HomeActivity extends AppCompatActivity {
     HomeActivityBinding binding;
     private ChooseUsernameViewModel viewModel;
+
     PlayerRepository playerRepository;
 
 

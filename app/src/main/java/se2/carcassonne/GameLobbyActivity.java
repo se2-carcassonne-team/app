@@ -1,5 +1,6 @@
 package se2.carcassonne;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,10 @@ public class GameLobbyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = GameLobbyActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.showListOfLobbies.setOnClickListener(view -> {
+            Intent intent = new Intent(GameLobbyActivity.this, LobbyListsActivity.class);
+            startActivity(intent);
+        });
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
     }
 }
