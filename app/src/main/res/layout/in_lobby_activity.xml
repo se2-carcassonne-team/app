@@ -5,18 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/home_background"
-    tools:context=".GameLobbyActivity">
+    tools:context=".InLobbyActivity"
+    android:background="@drawable/home_background">
 
     <TextView
-        android:id="@+id/textViewStartPlaying"
+        android:id="@+id/textViewLobbyName"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:autoSizeMaxTextSize="1000dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:fontFamily="@font/almendra_sc"
-        android:text="@string/start_playing"
         android:gravity="center"
         android:scaleType="centerCrop"
         android:textColor="@color/btn_gold"
@@ -37,36 +36,7 @@
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toTopOf="@+id/guideline19"
         app:layout_constraintVertical_bias="0.1"
-        app:layout_constraintVertical_chainStyle="packed">
-
-        <Button
-            android:id="@+id/createLobbyBtn"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/create_lobby" />
-
-        <Button
-            android:id="@+id/showListOfLobbies"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/show_all_lobbies" />
-
-        <!-- Space between buttons -->
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/gameLobbyBackBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/back"
-            android:layout_marginTop="8dp" />
-
-    </LinearLayout>
+        app:layout_constraintVertical_chainStyle="packed"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline14"

@@ -40,7 +40,7 @@
             android:id="@+id/newGameBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/new_game" />
+            android:text="@string/play" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

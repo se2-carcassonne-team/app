@@ -6,12 +6,15 @@ import se2.carcassonne.gamelobby.model.GameLobby;
 public class Player {
    private Long id;
    private String username;
-   private GameLobby gameLobby;
+   private GameLobby gameLobbyDto;
 
    public Player(Long id, String username, GameLobby gameLobby) {
       this.id = id;
       this.username = username;
-      this.gameLobby = gameLobby;
+      this.gameLobbyDto = gameLobby;
+   }
+
+   public Player() {
    }
 
    public Long getId() {
@@ -30,11 +33,11 @@ public class Player {
       this.username = username;
    }
 
-   public GameLobby getGameLobby() {
-      return gameLobby;
+   public GameLobby getGameLobbyDto() {
+      return gameLobbyDto;
    }
 
-   public void setGameLobby(GameLobby gameLobby) {
-      this.gameLobby = gameLobby;
+   public void setGameLobbyDto(GameLobby gameLobbyDto) {
+      this.gameLobbyDto = gameLobbyDto;
    }
 }

@@ -6,27 +6,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/home_background"
-    tools:context=".GameLobbyActivity">
+    tools:context=".HomeActivity">
 
     <TextView
-        android:id="@+id/textViewStartPlaying"
+        android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:autoSizeMaxTextSize="1000dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:fontFamily="@font/almendra_sc"
-        android:text="@string/start_playing"
         android:gravity="center"
         android:scaleType="centerCrop"
         android:textColor="@color/btn_gold"
         app:layout_constraintBottom_toTopOf="@+id/guideline17"
         app:layout_constraintEnd_toStartOf="@+id/guideline15"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline14"
         app:layout_constraintTop_toTopOf="@+id/guideline16"
-        app:layout_constraintVertical_bias="0.0"
-        tools:targetApi="o" />
+        tools:targetApi="o"
+        tools:text="@string/lobby_list" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -39,32 +37,10 @@
         app:layout_constraintVertical_bias="0.1"
         app:layout_constraintVertical_chainStyle="packed">
 
-        <Button
-            android:id="@+id/createLobbyBtn"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_of_lobbies"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/create_lobby" />
-
-        <Button
-            android:id="@+id/showListOfLobbies"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/show_all_lobbies" />
-
-        <!-- Space between buttons -->
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/gameLobbyBackBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/back"
-            android:layout_marginTop="8dp" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
@@ -115,13 +91,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.64" />
+        app:layout_constraintGuide_percent="0.59" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline21"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.86" />
+        app:layout_constraintGuide_percent="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

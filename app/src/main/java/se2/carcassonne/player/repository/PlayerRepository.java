@@ -2,22 +2,33 @@ package se2.carcassonne.player.repository;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.player.model.Player;
 
 @RequiredArgsConstructor
 public class PlayerRepository {
+    private static PlayerRepository instance;
+    private Player currentPlayer;
     private final WebSocketClient webSocketClient;
     private final MutableLiveData<String> messageLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> userAlreadyExistsErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> invalidUsernameErrorMessage = new MutableLiveData<>();
     private final PlayerApi playerApi;
 
-    public PlayerRepository() {
+    private PlayerRepository() {
         this.webSocketClient = new WebSocketClient();
         this.playerApi = new PlayerApi(this.webSocketClient);
+    }
 
+    // Using Singleton pattern
+    public static PlayerRepository getInstance() {
+        if (instance == null) {
+            instance = new PlayerRepository();
+        }
+        return instance;
     }
 
     public void connectToWebSocketServer() {
@@ -26,18 +37,20 @@ public class PlayerRepository {
 
     private void messageReceivedFromServer(String message) {
         if (userAlreadyExistsError(message)) {
-            // Do nothing here, add some logging if needed
+            userAlreadyExistsErrorMessage.postValue("User with that name already exists! Try again.");
         } else {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                currentPlayer = mapper.readValue(message, Player.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             messageLiveData.postValue(message);
         }
     }
 
     private boolean userAlreadyExistsError(String message) {
-        if (message.startsWith("A player with the username:")) {
-            userAlreadyExistsErrorMessage.postValue("User with that name already exists! Try again.");
-            return true;
-        }
-        return false;
+        return message.startsWith("A player with the username:");
     }
 
     public void createUser(Player player) {
@@ -51,6 +64,10 @@ public class PlayerRepository {
     private boolean isValidUsername(String username) {
         String regex = "^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$";
         return username.matches(regex);
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 
     public MutableLiveData<String> getMessageLiveData() {
