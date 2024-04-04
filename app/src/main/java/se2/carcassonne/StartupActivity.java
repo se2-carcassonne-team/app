@@ -21,7 +21,7 @@ public class StartupActivity extends AppCompatActivity {
         final ImageView carcassonneLogo = findViewById(R.id.imageView2);
         carcassonneLogo.setVisibility(View.INVISIBLE);
 
-        final Button startGameBtn = findViewById(R.id.button);
+        final Button startGameBtn = findViewById(R.id.startgame);
         startGameBtn.setVisibility(View.INVISIBLE);
 
         AnimationHelper.fadeIn(castle, 2000, new Runnable(){
@@ -46,9 +46,5 @@ public class StartupActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        startGameBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(StartupActivity.this, HomeActivity.class);
-            startActivity(intent);
-        });
     }
 }
