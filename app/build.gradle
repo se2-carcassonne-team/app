@@ -119,4 +119,5 @@ dependencies {
     implementation libs.okhttp.v4120
     implementation libs.stompProtocolAndroid
     implementation libs.rxjava
+    implementation libs.material.v150
 }

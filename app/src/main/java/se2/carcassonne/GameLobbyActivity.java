@@ -30,6 +30,10 @@ public class GameLobbyActivity extends AppCompatActivity {
             startActivity(intent);
         });
         binding.createLobbyBtn.setOnClickListener(view -> showCreateLobbyDialog());
+        binding.showListOfLobbies.setOnClickListener(view -> {
+            Intent intent = new Intent(GameLobbyActivity.this, LobbyListsActivity.class);
+            startActivity(intent);
+        });
         binding.gameLobbyBackBtn.setOnClickListener(view -> finish());
     }
 

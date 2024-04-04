@@ -15,7 +15,6 @@ public class InLobbyActivity extends AppCompatActivity {
     InLobbyActivityBinding binding;
     private LobbyListViewModel lobbyViewmodel;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,5 +25,15 @@ public class InLobbyActivity extends AppCompatActivity {
         PlayerRepository.getInstance();
         lobbyViewmodel = new LobbyListViewModel(new LobbyRepository(PlayerRepository.getInstance()));
         binding.textViewLobbyName.setText(lobbyViewmodel.getLobbyName(intent.getStringExtra("LOBBY")));
+        binding.gameLobbyBackBtn.setOnClickListener(view -> {
+            //lobbyViewmodel.leaveLobby();
+            finish();
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        //lobbyViewmodel.leaveLobby();
+        super.onDestroy();
     }
 }

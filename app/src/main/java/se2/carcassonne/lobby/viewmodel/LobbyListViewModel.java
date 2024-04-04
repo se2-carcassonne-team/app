@@ -11,20 +11,19 @@ import java.util.List;
 
 import se2.carcassonne.lobby.model.Lobby;
 import se2.carcassonne.lobby.repository.LobbyRepository;
+import se2.carcassonne.player.model.Player;
 
 
 public class LobbyListViewModel extends ViewModel {
 
-    private LobbyRepository lobbyRepository;
-    private MutableLiveData<List<Lobby>> lobbyListLiveData;
+    private final LobbyRepository lobbyRepository;
 
     public LobbyListViewModel(LobbyRepository lobbyRepository) {
         this.lobbyRepository = lobbyRepository;
-        lobbyListLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<String> getLobbyListLiveData() {
-        return lobbyRepository.getMessageLiveData();
+    public MutableLiveData<String> getMessageLiveDataListLobbies() {
+        return lobbyRepository.getMessageLiveDataListLobbies();
     }
 
     public MutableLiveData<String> getLobbyAlreadyExistsErrorMessage() {
@@ -43,18 +42,12 @@ public class LobbyListViewModel extends ViewModel {
         lobbyRepository.createLobby(lobby);
     }
 
-    public void fetchLobbies() {
-        lobbyRepository.fetchLobbies(new LobbyRepository.LobbyListCallback() {
-            @Override
-            public void onSuccess(List<Lobby> lobbyList) {
-                lobbyListLiveData.postValue(lobbyList);
-            }
+    public void leaveLobby(Player player) {
+        //lobbyRepository.leaveLobby(player);
+    }
 
-            @Override
-            public void onError(String errorMessage) {
-                // Handle error
-            }
-        });
+    public void getAllLobbies() {
+        lobbyRepository.getAllLobbies();
     }
 
     public String getLobbyName(String lobbyStringAsJson) {
@@ -67,6 +60,8 @@ public class LobbyListViewModel extends ViewModel {
         }
         return lobbyName.asText();
     }
+
+
 }
 
 

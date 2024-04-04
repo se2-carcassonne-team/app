@@ -18,13 +18,13 @@
         android:fontFamily="@font/almendra_sc"
         android:gravity="center"
         android:scaleType="centerCrop"
+        android:text="@string/lobby_list"
         android:textColor="@color/btn_gold"
         app:layout_constraintBottom_toTopOf="@+id/guideline17"
         app:layout_constraintEnd_toStartOf="@+id/guideline15"
         app:layout_constraintStart_toStartOf="@+id/guideline14"
         app:layout_constraintTop_toTopOf="@+id/guideline16"
-        tools:targetApi="o"
-        tools:text="@string/lobby_list" />
+        tools:targetApi="o" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -41,8 +41,17 @@
             android:id="@+id/list_of_lobbies"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
     </LinearLayout>
+
+    <Button
+        android:id="@+id/gameLobbyBackBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/back"
+        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintStart_toStartOf="@+id/guideline20"
+        app:layout_constraintTop_toTopOf="@+id/guideline22" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline14"
@@ -99,5 +108,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.94" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

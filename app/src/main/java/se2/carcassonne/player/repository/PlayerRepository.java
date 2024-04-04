@@ -50,11 +50,13 @@ public class PlayerRepository {
     }
 
     private boolean userAlreadyExistsError(String message) {
-        return message.startsWith("A player with the username:");
+        return message.startsWith("ERROR:");
     }
 
-    public void createUser(Player player) {
+    public void createPlayer(Player player) {
         if (isValidUsername(player.getUsername())) {
+            webSocketClient.subscribeToQueue("/user/queue/player-response", this::messageReceivedFromServer);
+            webSocketClient.subscribeToQueue("/user/queue/errors", this::messageReceivedFromServer);
             playerApi.createUser(player);
         } else {
             invalidUsernameErrorMessage.postValue("Invalid Username!");

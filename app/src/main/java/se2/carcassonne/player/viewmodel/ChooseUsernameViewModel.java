@@ -13,13 +13,12 @@ import se2.carcassonne.player.repository.PlayerRepository;
 public class ChooseUsernameViewModel extends ViewModel {
     final PlayerRepository playerRepository;
 
-
     public ChooseUsernameViewModel(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
     public void createPlayer(Player player) {
-        playerRepository.createUser(player);
+        playerRepository.createPlayer(player);
     }
 
     // Getter for LiveData Observable
