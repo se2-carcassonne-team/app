@@ -37,20 +37,16 @@ public class GameboardAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(100, 100)); // Anpassen Sie die Größe nach Bedarf
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(18, 15)); // Anpassen Sie die Größe nach Bedarf
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        // Alle Felder sollen schwarz sein
-        //imageView.setBackgroundColor(context.getResources().getColor(R.color.gold));
-        //imageView.setImageResource(R.drawable.backside);
-
-        // Überprüfen, ob das aktuelle Element das mittlere Feld ist
-        boolean isMiddleField = position == (rows * cols) / 2; // Annahme: Die Matrix hat eine ungerade Anzahl von Zeilen und Spalten
-
-        // Wenn das aktuelle Element das mittlere Feld ist, setzen Sie ein anderes Bild
+        int middleRow = (rows - 1) / 2;
+        int middleCol = (cols - 1) / 2;
+        boolean isMiddleField = position / cols == middleRow && position % cols == middleCol;
+        //Startfield
         if (isMiddleField) {
             imageView.setImageResource(R.drawable.start_field);
         } else {
@@ -58,11 +54,10 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setImageResource(R.drawable.backside);
         }
 
-        // Zoom-Funktionalität hinzufügen
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Vergrößern oder Verkleinern des Bildes
+
                 if (imageView.getScaleX() == 1.0f) {
                     imageView.setScaleX(1.5f);
                     imageView.setScaleY(1.5f);
