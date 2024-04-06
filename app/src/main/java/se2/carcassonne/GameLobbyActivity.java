@@ -25,10 +25,6 @@ public class GameLobbyActivity extends AppCompatActivity {
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
         gameLobbyRepository = new LobbyRepository(PlayerRepository.getInstance());
         gameLobbyViewModel = new LobbyListViewModel(gameLobbyRepository);
-        binding.showListOfLobbies.setOnClickListener(view -> {
-            Intent intent = new Intent(GameLobbyActivity.this, LobbyListsActivity.class);
-            startActivity(intent);
-        });
         binding.createLobbyBtn.setOnClickListener(view -> showCreateLobbyDialog());
         binding.showListOfLobbies.setOnClickListener(view -> {
             Intent intent = new Intent(GameLobbyActivity.this, LobbyListsActivity.class);
@@ -38,8 +34,8 @@ public class GameLobbyActivity extends AppCompatActivity {
     }
 
     private void showCreateLobbyDialog(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        CreateLobbyDialog dialogFragment = new CreateLobbyDialog(gameLobbyViewModel, gameLobbyRepository);
-        dialogFragment.show(fragmentManager, "CreateLobbyDialog");
+        new CreateLobbyDialog().show(getSupportFragmentManager(), "createLobbyDialog");
     }
+
+
 }

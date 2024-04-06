@@ -1,6 +1,7 @@
 package se2.carcassonne;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import java.sql.Timestamp;
 import se2.carcassonne.lobby.model.Lobby;
 import se2.carcassonne.lobby.repository.LobbyRepository;
 import se2.carcassonne.lobby.viewmodel.LobbyListViewModel;
+import se2.carcassonne.player.repository.PlayerRepository;
 
 public class CreateLobbyDialog extends DialogFragment {
     LobbyListViewModel lobbyViewmodel;
@@ -27,9 +29,10 @@ public class CreateLobbyDialog extends DialogFragment {
     private LiveData<String> lobbyAlreadyExistsLiveData;
     private LiveData<String> invalidLobbyLiveData;
     private LiveData<String> createLobbyLiveData;
-    public CreateLobbyDialog(LobbyListViewModel lobbyViewmodel, LobbyRepository lobbyRepository) {
-        this.lobbyViewmodel = lobbyViewmodel;
-        this.lobbyRepository = lobbyRepository;
+
+    public CreateLobbyDialog() {
+        this.lobbyRepository = new LobbyRepository(PlayerRepository.getInstance());
+        this.lobbyViewmodel = new LobbyListViewModel(this.lobbyRepository);
     }
 
     @NonNull
@@ -40,7 +43,7 @@ public class CreateLobbyDialog extends DialogFragment {
         View dialogView = inflater.inflate(R.layout.create_lobby_dialog, null);
         EditText text = dialogView.findViewById(R.id.lobbyNameInput);
         Button createLobbyBtn = dialogView.findViewById(R.id.button);
-
+        lobbyRepository.connectToWebSocketServer();
 
         lobbyAlreadyExistsLiveData = lobbyViewmodel.getLobbyAlreadyExistsErrorMessage();
         invalidLobbyLiveData = lobbyViewmodel.getInvalidLobbyNameErrorMessage();
@@ -67,14 +70,18 @@ public class CreateLobbyDialog extends DialogFragment {
 
         createLobbyLiveData.observe(this, message -> {
             Intent intent = new Intent(requireActivity(), InLobbyActivity.class);
-            intent.putExtra("LOBBY", message); // Pass the message as an extra
+            intent.putExtra("LOBBY", message);
             startActivity(intent);
             dismiss();
         });
+        return builder.setView(dialogView).create();
+    }
 
-
-
-        builder.setView(dialogView);
-        return builder.create();
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        lobbyAlreadyExistsLiveData.removeObservers(this);
+        invalidLobbyLiveData.removeObservers(this);
+        createLobbyLiveData.removeObservers(this);
     }
 }

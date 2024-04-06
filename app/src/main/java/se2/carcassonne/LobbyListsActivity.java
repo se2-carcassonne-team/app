@@ -39,7 +39,16 @@ public class LobbyListsActivity extends AppCompatActivity {
         lobbyRepository = new LobbyRepository(PlayerRepository.getInstance());
         lobbyRepository.connectToWebSocketServer();
         viewModel = new LobbyListViewModel(lobbyRepository);
-        viewModel.getMessageLiveDataListLobbies().observe(this, lobbyList -> adapter.updateData(lobbyList));
+
+        viewModel.getMessageLiveDataListLobbies().observe(this, lobbyList -> {
+            adapter.updateData(lobbyList);
+        });
+
+        viewModel.getCreateLobbyLiveData().observe(this, lobby -> {
+            adapter.updateSingleData(lobby);
+        });
+
+
         viewModel.getAllLobbies();
         binding.gameLobbyBackBtn.setOnClickListener(view -> finish());
     }

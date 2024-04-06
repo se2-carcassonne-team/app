@@ -2,7 +2,6 @@ package se2.carcassonne.lobby.repository;
 
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.List;
 import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,9 @@ public class LobbyRepository {
     private final MutableLiveData<String> createLobbyLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> lobbyAlreadyExistsErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> invalidLobbyNameErrorMessage = new MutableLiveData<>();
-    private final MutableLiveData<String> messageLiveDataListLobbies = new MutableLiveData<>();
+    private final MutableLiveData<String> listAllLobbiesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> playerJoinsLobbyLiveData = new MutableLiveData<>();
+
     private final LobbyApi lobbyApi;
     private PlayerRepository playerRepository;
 
@@ -28,10 +29,10 @@ public class LobbyRepository {
     }
 
     public void connectToWebSocketServer() {
-        webSocketClient.connect(this::messageReceivedFromServer);
+        webSocketClient.connect(this::createLobbyLiveData);
     }
 
-    private void messageReceivedFromServer(String message) {
+    private void createLobbyLiveData(String message) {
         if(lobbyAlreadyExistsError(message)){
             lobbyAlreadyExistsErrorMessage.postValue("A lobby with that name already exists! Try again.");
         } else {
@@ -41,10 +42,14 @@ public class LobbyRepository {
 
     private void listAllLobbiesReceivedFromServer(String message){
         if (!Objects.equals(message, "null")) {
-            messageLiveDataListLobbies.postValue(message);
+            listAllLobbiesLiveData.postValue(message);
         } else {
-            messageLiveDataListLobbies.postValue("No lobbies available");
+            listAllLobbiesLiveData.postValue("No lobbies available");
         }
+    }
+
+    private void playerJoinsLobbyMessageReceived(String message) {
+        playerJoinsLobbyLiveData.postValue(message);
     }
 
     private boolean lobbyAlreadyExistsError(String message) {
@@ -53,12 +58,19 @@ public class LobbyRepository {
 
     public void createLobby(Lobby lobby){
         if (isValidLobbyName(lobby.getName())) {
-            webSocketClient.subscribeToQueue("/user/queue/lobby-response", this::messageReceivedFromServer);
+            webSocketClient.subscribeToTopic("/topic/lobby-create", this::createLobbyLiveData);
             playerRepository = PlayerRepository.getInstance();
             lobbyApi.createLobby(lobby, playerRepository.getCurrentPlayer());
         } else {
             invalidLobbyNameErrorMessage.postValue("Invalid Lobby name!");
         }
+    }
+
+    public void joinLobby(Lobby lobby){
+        webSocketClient.subscribeToTopic("/topic/player-lobby-response", this::playerJoinsLobbyMessageReceived);
+        webSocketClient.subscribeToQueue("/user/queue/errors", this::playerJoinsLobbyMessageReceived);
+        playerRepository = PlayerRepository.getInstance();
+        lobbyApi.joinLobby(lobby, playerRepository.getCurrentPlayer());
     }
 
     public void getAllLobbies() {
@@ -73,8 +85,8 @@ public class LobbyRepository {
         //lobbyApi.leaveLobby(player);
     }
 
-    public MutableLiveData<String> getMessageLiveDataListLobbies() {
-        return messageLiveDataListLobbies;
+    public MutableLiveData<String> getListAllLobbiesLiveData() {
+        return listAllLobbiesLiveData;
     }
 
     public MutableLiveData<String> getLobbyAlreadyExistsErrorMessage() {
@@ -85,7 +97,14 @@ public class LobbyRepository {
         return invalidLobbyNameErrorMessage;
     }
 
+    public MutableLiveData<String> getPlayerJoinsLobbyLiveData() {
+        webSocketClient.subscribeToTopic("/topic/player-lobby-response", this::playerJoinsLobbyMessageReceived);
+        webSocketClient.subscribeToQueue("/user/queue/errors", this::playerJoinsLobbyMessageReceived);
+        return playerJoinsLobbyLiveData;
+    }
+
     public MutableLiveData<String> getCreateLobbyLiveData() {
+        webSocketClient.subscribeToTopic("/topic/lobby-create", this::createLobbyLiveData);
         return createLobbyLiveData;
     }
 
@@ -93,10 +112,4 @@ public class LobbyRepository {
         String regex = "^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$";
         return lobbyName.matches(regex);
     }
-
-    public interface LobbyListCallback {
-        void onSuccess(List<Lobby> lobbyList);
-        void onError(String errorMessage);
-    }
-
 }

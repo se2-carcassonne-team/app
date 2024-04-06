@@ -41,3 +41,5 @@ public class Player {
       this.gameLobbyDto = gameLobbyDto;
    }
 }
+
+

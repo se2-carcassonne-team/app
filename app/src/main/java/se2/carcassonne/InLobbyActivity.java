@@ -30,10 +30,4 @@ public class InLobbyActivity extends AppCompatActivity {
             finish();
         });
     }
-
-    @Override
-    protected void onDestroy() {
-        //lobbyViewmodel.leaveLobby();
-        super.onDestroy();
-    }
 }

@@ -59,13 +59,9 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
             viewModel.createPlayer(new Player(null, username, null));
         });
 
-        // Observe messageLiveData for successful creation
-        messageLiveData.observe(this, message -> {
-            dismiss();
-        });
+        messageLiveData.observe(this, message -> dismiss());
 
-        builder.setView(dialogView);
-        return builder.create();
+        return builder.setView(dialogView).create();
     }
 
     @Override

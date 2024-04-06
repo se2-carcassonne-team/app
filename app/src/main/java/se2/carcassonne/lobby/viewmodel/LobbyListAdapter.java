@@ -20,6 +20,7 @@ import se2.carcassonne.lobby.model.Lobby;
 
 public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.LobbyViewHolder> {
     private List<Lobby> lobbyList;
+    private Lobby lobbyToAdd;
 
     public LobbyListAdapter(List<Lobby> lobbyList) {
         this.lobbyList = lobbyList;
@@ -29,7 +30,18 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             lobbyList = objectMapper.readValue(newLobbyList, new TypeReference<List<Lobby>>() {});
-            System.out.println(lobbyList);
+            notifyDataSetChanged(); // Notify RecyclerView about the changes
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            // Handle parsing exception if needed
+        }
+    }
+
+    public void updateSingleData(String singeLobby) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            lobbyToAdd = objectMapper.readValue(singeLobby, Lobby.class);
+            lobbyList.add(lobbyToAdd);
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -55,6 +67,7 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
         return lobbyList.size();
     }
 
+
     public static class LobbyViewHolder extends RecyclerView.ViewHolder {
         private final CardView cardView;
         private final TextView lobbyNameTextView;
@@ -66,7 +79,7 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
             lobbyNameTextView = itemView.findViewById(R.id.lobbyNameTextView);
             currentPlayersTextView = itemView.findViewById(R.id.currentPlayersTextView);
             cardView.setOnClickListener(view -> {
-                // TODO: Implement onClick, e.g. join the lobby
+                // TODO: Implement joining a lobby
             });
         }
 
