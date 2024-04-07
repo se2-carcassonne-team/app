@@ -11,7 +11,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private GridView gridView;
     private GameboardAdapter gameboardAdapter;
 
-    // Größe der Matrix (10x10)
+
     private static final int ROWS = 30;
     private static final int COLS = 30;
 
@@ -26,7 +26,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gameboardAdapter = new GameboardAdapter(this, ROWS, COLS);
         gridView.setAdapter(gameboardAdapter);
 
-        Zoomfunktion zoomfunktion = new Zoomfunktion(this);
+        ZoomFunction zoomfunktion = new ZoomFunction(this);
         gridView.setOnTouchListener(zoomfunktion);
 
 

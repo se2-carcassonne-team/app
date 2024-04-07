@@ -5,13 +5,13 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
-public class Zoomfunktion implements View.OnTouchListener {
+public class ZoomFunction implements View.OnTouchListener {
 
     private ScaleGestureDetector scaleGestureDetector;
     private float scaleFactor = 1.0f; // Initialer Skalierungsfaktor
     private View view;
 
-    public Zoomfunktion(Context context) {
+    public ZoomFunction(Context context) {
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
     }
 
