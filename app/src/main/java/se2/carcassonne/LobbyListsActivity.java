@@ -1,6 +1,7 @@
 package se2.carcassonne;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,8 +15,6 @@ import se2.carcassonne.lobby.repository.LobbyRepository;
 import se2.carcassonne.lobby.viewmodel.LobbyListAdapter;
 import se2.carcassonne.lobby.viewmodel.LobbyListViewModel;
 import se2.carcassonne.player.repository.PlayerRepository;
-
-import java.sql.Timestamp;
 
 public class LobbyListsActivity extends AppCompatActivity {
 
@@ -31,7 +30,7 @@ public class LobbyListsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
 
-        RecyclerView recyclerView = findViewById(R.id.list_of_lobbies);
+        RecyclerView recyclerView = findViewById(R.id.rvListOfPlayers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new LobbyListAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
@@ -50,6 +49,7 @@ public class LobbyListsActivity extends AppCompatActivity {
 
 
         viewModel.getAllLobbies();
+        Log.d("GetLobbies", "Getting all lobbies!");
         binding.gameLobbyBackBtn.setOnClickListener(view -> finish());
     }
 }

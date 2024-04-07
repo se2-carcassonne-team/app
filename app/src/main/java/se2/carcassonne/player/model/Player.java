@@ -40,6 +40,15 @@ public class Player {
    public void setGameLobbyDto(Lobby gameLobbyDto) {
       this.gameLobbyDto = gameLobbyDto;
    }
+
+   @Override
+   public String toString() {
+      return "Player{" +
+              "id=" + id +
+              ", username='" + username + '\'' +
+              ", GameLobbyDto=" + gameLobbyDto +
+              '}';
+   }
 }
 
 

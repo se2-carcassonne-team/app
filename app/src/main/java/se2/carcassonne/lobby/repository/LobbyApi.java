@@ -28,7 +28,19 @@ public class LobbyApi {
         webSocketClient.sendMessage("/app/lobby-list", "send all lobbies");
     }
 
+    public void getAllPlayers(Lobby lobby) {
+        try {
+            String message = objectMapper.writeValueAsString(lobby);
+            webSocketClient.sendMessage("/app/player-list", message);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
     // Is this right here or shall it be moved to PlayerApi?
+
     public void joinLobby(Lobby lobby, Player playerToJoin) {
         try {
             String message = objectMapper.writeValueAsString(lobby) + "|" + objectMapper.writeValueAsString(playerToJoin);
@@ -37,4 +49,5 @@ public class LobbyApi {
             throw new RuntimeException(e);
         }
     }
+
 }

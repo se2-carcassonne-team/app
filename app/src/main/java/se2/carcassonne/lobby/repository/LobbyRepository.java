@@ -12,11 +12,16 @@ import se2.carcassonne.player.repository.PlayerRepository;
 
 @RequiredArgsConstructor
 public class LobbyRepository {
+
+
+
+    Lobby currentLobby;
     private final WebSocketClient webSocketClient;
     private final MutableLiveData<String> createLobbyLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> lobbyAlreadyExistsErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> invalidLobbyNameErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> listAllLobbiesLiveData = new MutableLiveData<>();
+    private MutableLiveData<String> listAllPlayersLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerJoinsLobbyLiveData = new MutableLiveData<>();
 
     private final LobbyApi lobbyApi;
@@ -36,6 +41,7 @@ public class LobbyRepository {
         if(lobbyAlreadyExistsError(message)){
             lobbyAlreadyExistsErrorMessage.postValue("A lobby with that name already exists! Try again.");
         } else {
+            System.out.println("Create lobby in Lobby repository!!!");
             createLobbyLiveData.postValue(message);
         }
     }
@@ -58,7 +64,7 @@ public class LobbyRepository {
 
     public void createLobby(Lobby lobby){
         if (isValidLobbyName(lobby.getName())) {
-            webSocketClient.subscribeToTopic("/topic/lobby-create", this::createLobbyLiveData);
+//            webSocketClient.subscribeToTopic("/topic/lobby-create", this::createLobbyLiveData);
             webSocketClient.subscribeToTopic("/topic/game-lobby-response", this::createLobbyLiveData);
             playerRepository = PlayerRepository.getInstance();
             lobbyApi.createLobby(lobby, playerRepository.getCurrentPlayer());
@@ -68,7 +74,7 @@ public class LobbyRepository {
     }
 
     public void joinLobby(Lobby lobby){
-        webSocketClient.subscribeToTopic("/topic/player-lobby-response", this::playerJoinsLobbyMessageReceived);
+        webSocketClient.subscribeToTopic("/topic/player-lobby", this::playerJoinsLobbyMessageReceived);
         webSocketClient.subscribeToQueue("/user/queue/errors", this::playerJoinsLobbyMessageReceived);
         playerRepository = PlayerRepository.getInstance();
         lobbyApi.joinLobby(lobby, playerRepository.getCurrentPlayer());
@@ -80,6 +86,12 @@ public class LobbyRepository {
         lobbyApi.getAllLobbies();
     }
 
+    public void getAllPlayers(Lobby lobby) {
+        webSocketClient.subscribeToQueue("/user/queue/player-response", this::listAllPlayersReceivedFromServer);
+        webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllPlayersReceivedFromServer);
+        lobbyApi.getAllPlayers(lobby);
+    }
+
     public void leaveLobby(Player player) {
         //webSocketClient.subscribeToQueue("/user/queue/lobby-response", this::listAllLobbiesReceivedFromServer);
         //webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllLobbiesReceivedFromServer);
@@ -88,6 +100,9 @@ public class LobbyRepository {
 
     public MutableLiveData<String> getListAllLobbiesLiveData() {
         return listAllLobbiesLiveData;
+    }
+    public MutableLiveData<String> getListAllPlayersLiveData() {
+        return listAllPlayersLiveData;
     }
 
     public MutableLiveData<String> getLobbyAlreadyExistsErrorMessage() {
@@ -105,12 +120,24 @@ public class LobbyRepository {
     }
 
     public MutableLiveData<String> getCreateLobbyLiveData() {
-        webSocketClient.subscribeToTopic("/topic/lobby-create", this::createLobbyLiveData);
+        webSocketClient.subscribeToTopic("/topic/game-lobby-response", this::createLobbyLiveData);
         return createLobbyLiveData;
     }
 
     private boolean isValidLobbyName(String lobbyName) {
         String regex = "^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$";
         return lobbyName.matches(regex);
+    }
+
+    private void listAllPlayersReceivedFromServer(String message) {
+        if (!Objects.equals(message, "null")) {
+            listAllPlayersLiveData.postValue(message);
+        } else {
+            listAllPlayersLiveData.postValue("No lobbies available");
+        }
+    }
+
+    public Lobby getCurrentLobby() {
+        return currentLobby;
     }
 }
