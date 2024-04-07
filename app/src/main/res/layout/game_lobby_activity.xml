@@ -5,90 +5,27 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/startup_background"
-    tools:context=".HomeActivity">
-
-    <ImageView
-        android:id="@+id/logo_animation"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/content_description_background"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="0:1"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/home_activity_logo" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.25" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.75" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.6" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.95" />
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:background="@drawable/home_background"
+    tools:context=".GameLobbyActivity">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewStartPlaying"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:autoSizeMaxTextSize="1000dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:fontFamily="@font/almendra_sc"
+        android:text="@string/start_playing"
         android:gravity="center"
         android:scaleType="centerCrop"
         android:textColor="@color/btn_gold"
         app:layout_constraintBottom_toTopOf="@+id/guideline17"
         app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline14"
         app:layout_constraintTop_toTopOf="@+id/guideline16"
+        app:layout_constraintVertical_bias="0.0"
         tools:targetApi="o" />
 
     <LinearLayout
@@ -103,10 +40,32 @@
         app:layout_constraintVertical_chainStyle="packed">
 
         <Button
-            android:id="@+id/newGameBtn"
+            android:id="@+id/createLobbyBtn"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/create_lobby" />
+
+        <Button
+            android:id="@+id/showListOfLobbies"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/show_all_lobbies" />
+
+        <!-- Space between buttons -->
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/gameLobbyLeaveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/play" />
+            android:text="@string/back"
+            android:layout_marginTop="8dp" />
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -166,4 +125,3 @@
         app:layout_constraintGuide_percent="0.86" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

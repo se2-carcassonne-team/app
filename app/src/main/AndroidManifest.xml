@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,11 +13,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Carcassonne"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <activity
             android:name=".GameBoardActivity"
             android:exported="false"/>
+        <activity
+            android:name=".InLobbyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LobbyListsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_lobby_lists"
+            android:theme="@style/Carcassonne" />
+        <activity
+            android:name=".GameLobbyActivity"
+            android:exported="false" />
         <activity
             android:name=".HomeActivity"
             android:exported="false" />

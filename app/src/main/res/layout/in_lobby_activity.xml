@@ -5,77 +5,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/startup_background"
-    tools:context=".HomeActivity">
-
-    <ImageView
-        android:id="@+id/logo_animation"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/content_description_background"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="0:1"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/home_activity_logo" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.25" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.75" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.6" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.95" />
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".InLobbyActivity"
+    android:background="@drawable/home_background">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewLobbyName"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:autoSizeMaxTextSize="1000dp"
@@ -87,8 +21,10 @@
         android:textColor="@color/btn_gold"
         app:layout_constraintBottom_toTopOf="@+id/guideline17"
         app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline14"
         app:layout_constraintTop_toTopOf="@+id/guideline16"
+        app:layout_constraintVertical_bias="0.0"
         tools:targetApi="o" />
 
     <LinearLayout
@@ -102,12 +38,20 @@
         app:layout_constraintVertical_bias="0.1"
         app:layout_constraintVertical_chainStyle="packed">
 
-        <Button
-            android:id="@+id/newGameBtn"
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/play" />
+            android:layout_height="match_parent" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/gameLobbyLeaveBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/leave_lobby"
+        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        app:layout_constraintEnd_toStartOf="@+id/guideline21"
+        app:layout_constraintStart_toStartOf="@+id/guideline20"
+        app:layout_constraintTop_toTopOf="@+id/guideline22" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline14"
@@ -165,5 +109,18 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.86" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.94" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

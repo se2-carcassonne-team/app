@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gold">#FFD700</color>
     <color name="btn_gold">#F6D87F</color>
+    <color name="dark_grey">#3F3F3F</color>
 </resources>

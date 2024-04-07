@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     id 'jacoco'
     id "org.sonarqube" version "4.4.1.3373"
+    alias(libs.plugins.jetbrainsKotlinAndroid)
 }
 
 // Sonarqube-Werte müssen von Sonarcloud unter Gradle kopiert werden. Diese sind individuell
@@ -13,7 +14,6 @@ sonar {
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.java.coveragePlugin", "jacoco"
         property "sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
-
     }
 }
 
@@ -29,6 +29,18 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+        compose true
+    }
+
+    viewBinding  {
+        enabled true
     }
 
     buildTypes {
@@ -46,6 +58,17 @@ android {
         unitTests.all {
             useJUnitPlatform()
             finalizedBy jacocoTestReport
+        }
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.5.1'
+    }
+    packaging {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
 }
@@ -73,10 +96,28 @@ dependencies {
     implementation libs.appcompat
     implementation libs.material
     implementation libs.constraintlayout
+    implementation libs.lifecycle.runtime.ktx
+    implementation libs.activity.compose
+    implementation platform(libs.compose.bom)
+    implementation libs.ui
+    implementation libs.ui.graphics
+    implementation libs.ui.tooling.preview
+    implementation libs.material3
     testImplementation libs.junit
     testImplementation libs.junit.jupiter.api
+    androidTestImplementation platform(libs.compose.bom)
+    androidTestImplementation libs.ui.test.junit4
+    debugImplementation libs.ui.tooling
+    debugImplementation libs.ui.test.manifest
     testRuntimeOnly libs.junit.jupiter.engine
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
-    implementation libs.okhttp
+    implementation libs.lombok
+    annotationProcessor libs.lombok
+    implementation libs.jackson.databind
+    implementation libs.arrow.core
+    implementation libs.okhttp.v4120
+    implementation libs.stompProtocolAndroid
+    implementation libs.rxjava
+    implementation libs.material.v150
 }
