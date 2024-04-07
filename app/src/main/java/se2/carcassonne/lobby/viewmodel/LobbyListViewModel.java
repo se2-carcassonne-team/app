@@ -9,8 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se2.carcassonne.lobby.model.Lobby;
 import se2.carcassonne.lobby.repository.LobbyRepository;
-import se2.carcassonne.player.model.Player;
-import se2.carcassonne.player.repository.PlayerRepository;
+
 
 
 public class LobbyListViewModel extends ViewModel {
@@ -22,6 +21,9 @@ public class LobbyListViewModel extends ViewModel {
 
     public MutableLiveData<String> getMessageLiveDataListLobbies() {
         return lobbyRepository.getListAllLobbiesLiveData();
+    }
+    public MutableLiveData<String> getMessageLiveDataListPlayers() {
+        return lobbyRepository.getListAllPlayersLiveData();
     }
 
     public MutableLiveData<String> getLobbyAlreadyExistsErrorMessage() {
@@ -49,6 +51,9 @@ public class LobbyListViewModel extends ViewModel {
 
     public void getAllLobbies() {
         lobbyRepository.getAllLobbies();
+    }
+    public void getAllPlayers(Lobby lobby) {
+        lobbyRepository.getAllPlayers(lobby);
     }
 
     public void joinLobby(Lobby lobby) {
@@ -88,6 +93,16 @@ public class LobbyListViewModel extends ViewModel {
             lobbyNode = mapper.readTree(playerStringAsJson).get("gameLobbyDto");
             return mapper.treeToValue(lobbyNode, Lobby.class);
         } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
+    public Lobby getLobbyFromJsonString(String lobbyStringAsJson) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(lobbyStringAsJson, Lobby.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace(); // Handle or log the exception
             return null;
         }
     }

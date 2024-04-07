@@ -17,11 +17,15 @@ import se2.carcassonne.player.repository.PlayerRepository;
 
 @RequiredArgsConstructor
 public class LobbyRepository {
+
+
+
     private final WebSocketClient webSocketClient;
     private final MutableLiveData<String> createLobbyLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> lobbyAlreadyExistsErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> invalidLobbyNameErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> listAllLobbiesLiveData = new MutableLiveData<>();
+    private MutableLiveData<String> listAllPlayersLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerJoinsLobbyLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerLeavesLobbyLiveData = new MutableLiveData<>();
     private static final Pattern lobbyNamePattern = Pattern.compile("^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$");
@@ -100,10 +104,17 @@ public class LobbyRepository {
         }
     }
 
+
     public void getAllLobbies() {
         webSocketClient.subscribeToQueue("/user/queue/lobby-response", this::listAllLobbiesReceivedFromServer);
         webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllLobbiesReceivedFromServer);
         lobbyApi.getAllLobbies();
+    }
+
+    public void getAllPlayers(Lobby lobby) {
+        webSocketClient.subscribeToQueue("/user/queue/player-response", this::listAllPlayersReceivedFromServer);
+        webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllPlayersReceivedFromServer);
+        lobbyApi.getAllPlayers(lobby);
     }
 
     public void leaveLobby() {
@@ -119,6 +130,9 @@ public class LobbyRepository {
 
     public MutableLiveData<String> getListAllLobbiesLiveData() {
         return listAllLobbiesLiveData;
+    }
+    public MutableLiveData<String> getListAllPlayersLiveData() {
+        return listAllPlayersLiveData;
     }
 
     public MutableLiveData<String> getLobbyAlreadyExistsErrorMessage() {
@@ -160,5 +174,14 @@ public class LobbyRepository {
             return null;
         }
     }
+
+    private void listAllPlayersReceivedFromServer(String message) {
+        if (!Objects.equals(message, "null")) {
+            listAllPlayersLiveData.postValue(message);
+        } else {
+            listAllPlayersLiveData.postValue("No lobbies available");
+        }
+    }
+
 
 }

@@ -20,4 +20,5 @@
     <string name="back">Back</string>
     <string name="door_icon">Door Icon</string>
     <string name="leave_lobby">Leave</string>
+    <string name="playGame">Play</string>
 </resources>

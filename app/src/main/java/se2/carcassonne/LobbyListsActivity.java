@@ -15,6 +15,8 @@ import se2.carcassonne.lobby.viewmodel.LobbyListAdapter;
 import se2.carcassonne.lobby.viewmodel.LobbyListViewModel;
 import se2.carcassonne.player.repository.PlayerRepository;
 
+import java.sql.Timestamp;
+
 public class LobbyListsActivity extends AppCompatActivity {
 
     private LobbyListActivityBinding binding;

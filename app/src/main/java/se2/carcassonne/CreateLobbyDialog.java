@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +43,7 @@ public class CreateLobbyDialog extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.create_lobby_dialog, null);
         EditText text = dialogView.findViewById(R.id.lobbyNameInput);
-        Button createLobbyBtn = dialogView.findViewById(R.id.button);
+        Button createLobbyBtn = dialogView.findViewById(R.id.btnCreateLobby);
         lobbyRepository.connectToWebSocketServer();
 
         lobbyAlreadyExistsLiveData = lobbyViewmodel.getLobbyAlreadyExistsErrorMessage();
@@ -51,7 +52,7 @@ public class CreateLobbyDialog extends DialogFragment {
 
         createLobbyBtn.setOnClickListener(view -> {
             String lobbyName = text.getText().toString();
-            lobbyRepository.connectToWebSocketServer();
+//            lobbyRepository.connectToWebSocketServer();
             lobbyViewmodel.createLobby(
                     new Lobby(null, lobbyName,
                             new Timestamp(System.currentTimeMillis()),
@@ -59,7 +60,9 @@ public class CreateLobbyDialog extends DialogFragment {
                             null,
                             PlayerRepository.getInstance().getCurrentPlayer().getId()
                     ));
+            Log.d("CLF", "Lobby created!");
         });
+
 
         lobbyAlreadyExistsLiveData.observe(this, errorMessage -> {
             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
@@ -73,8 +76,11 @@ public class CreateLobbyDialog extends DialogFragment {
             Intent intent = new Intent(requireActivity(), InLobbyActivity.class);
             intent.putExtra("LOBBY", message);
             startActivity(intent);
+            Log.d("CLF", "Activity start");
             dismiss();
+            Log.d("CLF", "Fragment dismissed");
         });
+
         return builder.setView(dialogView).create();
     }
 
