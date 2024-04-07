@@ -59,6 +59,7 @@ public class LobbyRepository {
     public void createLobby(Lobby lobby){
         if (isValidLobbyName(lobby.getName())) {
             webSocketClient.subscribeToTopic("/topic/lobby-create", this::createLobbyLiveData);
+            webSocketClient.subscribeToTopic("/topic/game-lobby-response", this::createLobbyLiveData);
             playerRepository = PlayerRepository.getInstance();
             lobbyApi.createLobby(lobby, playerRepository.getCurrentPlayer());
         } else {
