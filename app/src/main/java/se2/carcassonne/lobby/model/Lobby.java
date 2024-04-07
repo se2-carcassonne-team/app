@@ -80,4 +80,14 @@ public class Lobby {
                 ", numPlayers=" + numPlayers +
                 '}';
     }
+
+    public String toJsonString() {
+        return "{" +
+                "\"id\":" + id +
+                ", \"name\":\"" + name + '\"' +
+                ", \"gameStartTimestamp\":\"" + gameStartTimestamp + '\"' +
+                ", \"gameState\":\"" + gameState + '\"' +
+                ", \"numPlayers\":" + numPlayers +
+                '}';
+    }
 }

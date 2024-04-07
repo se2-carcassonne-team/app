@@ -44,7 +44,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/gameLobbyBackBtn"
+        android:id="@+id/gameLobbyLeaveBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/back"

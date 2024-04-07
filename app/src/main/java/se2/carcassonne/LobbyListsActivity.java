@@ -15,8 +15,6 @@ import se2.carcassonne.lobby.viewmodel.LobbyListAdapter;
 import se2.carcassonne.lobby.viewmodel.LobbyListViewModel;
 import se2.carcassonne.player.repository.PlayerRepository;
 
-import java.sql.Timestamp;
-
 public class LobbyListsActivity extends AppCompatActivity {
 
     private LobbyListActivityBinding binding;
@@ -48,8 +46,15 @@ public class LobbyListsActivity extends AppCompatActivity {
             adapter.updateSingleData(lobby);
         });
 
+        viewModel.getPlayerLeavesLobbyLiveData().observe(this, player -> {
+            viewModel.getAllLobbies();
+        });
+
+        viewModel.getPlayerJoinsLobbyLiveData().observe(this, player -> {
+            viewModel.getAllLobbies();
+        });
 
         viewModel.getAllLobbies();
-        binding.gameLobbyBackBtn.setOnClickListener(view -> finish());
+        binding.gameLobbyLeaveBtn.setOnClickListener(view -> finish());
     }
 }

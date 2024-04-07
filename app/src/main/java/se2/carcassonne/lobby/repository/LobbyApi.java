@@ -37,4 +37,13 @@ public class LobbyApi {
             throw new RuntimeException(e);
         }
     }
+
+    public void leaveLobby(Player player) {
+        try {
+            String message = objectMapper.writeValueAsString(player);
+            webSocketClient.sendMessage("/app/player-leave-lobby", message);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

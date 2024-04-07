@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import se2.carcassonne.helper.network.WebSocketClient;
+import se2.carcassonne.lobby.model.Lobby;
 import se2.carcassonne.player.model.Player;
 
 @RequiredArgsConstructor
@@ -71,6 +72,9 @@ public class PlayerRepository {
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
+    public void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
+    }
 
     public MutableLiveData<String> getMessageLiveData() {
         return messageLiveData;
@@ -82,5 +86,9 @@ public class PlayerRepository {
 
     public MutableLiveData<String> getInvalidUsernameErrorMessage() {
         return invalidUsernameErrorMessage;
+    }
+
+    public void updateCurrentPlayerLobby(Lobby lobby){
+        currentPlayer.setGameLobbyDto(lobby);
     }
 }
