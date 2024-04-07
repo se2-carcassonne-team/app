@@ -56,6 +56,16 @@ public class LobbyRepository {
         }
     }
 
+    public Lobby getLobbyFromPlayerJsonString(String playerStringAsJson) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode lobbyNode = mapper.readTree(playerStringAsJson).get("gameLobbyDto");
+            return mapper.treeToValue(lobbyNode, Lobby.class);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
     private void listAllLobbiesReceivedFromServer(String message){
         if (!Objects.equals(message, "null")) {
             listAllLobbiesLiveData.postValue(message);
@@ -66,7 +76,6 @@ public class LobbyRepository {
 
     private void playerLeavesLobbyMessageReceived(String message) {
         playerLeavesLobbyLiveData.postValue(message);
-        PlayerRepository.getInstance().updateCurrentPlayerLobby(null);
     }
 
     private void playerJoinsLobbyMessageReceived(String message) {
@@ -95,13 +104,12 @@ public class LobbyRepository {
         lobbyApi.getAllLobbies();
     }
 
-    public void leaveLobby(Player player) {
+    public void leaveLobby() {
         webSocketClient.subscribeToTopic("/topic/player-leave-response", this::playerLeavesLobbyMessageReceived);
-        lobbyApi.leaveLobby(player);
+        lobbyApi.leaveLobby(PlayerRepository.getInstance().getCurrentPlayer());
     }
 
     public void joinLobby(Lobby lobby){
-        // TODO : TELL DOMINIK TO CHANGE TOPICS
         webSocketClient.subscribeToTopic("/topic/player-join-response", this::playerJoinsLobbyMessageReceived);
         lobbyApi.joinLobby(lobby, PlayerRepository.getInstance().getCurrentPlayer());
     }
@@ -131,7 +139,6 @@ public class LobbyRepository {
     }
 
     public MutableLiveData<String> getPlayerLeavesLobbyLiveData() {
-        //TODO : TELL DOMINIK TO CHANGE TOPICS
         webSocketClient.subscribeToTopic("/topic/player-leave-response", this::playerLeavesLobbyMessageReceived);
         return playerLeavesLobbyLiveData;
     }

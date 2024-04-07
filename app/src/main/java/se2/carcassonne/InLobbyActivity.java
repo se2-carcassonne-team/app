@@ -22,22 +22,26 @@ public class InLobbyActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         Intent intent = getIntent();
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
-        PlayerRepository.getInstance();
         LobbyRepository lobbyRepository = new LobbyRepository(PlayerRepository.getInstance());
         lobbyViewmodel = new LobbyListViewModel(lobbyRepository);
         lobbyRepository.connectToWebSocketServer();
         binding.textViewLobbyName.setText(lobbyViewmodel.getLobbyName(intent.getStringExtra("LOBBY")));
-        binding.gameLobbyLeaveBtn.setOnClickListener(view -> {
-            System.out.println(PlayerRepository.getInstance().getCurrentPlayer());
-            lobbyViewmodel.leaveLobby(PlayerRepository.getInstance().getCurrentPlayer());
-            finish();
-        });
-        System.out.println("Now In Lobby" + PlayerRepository.getInstance().getCurrentPlayer());
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        lobbyViewmodel.leaveLobby(PlayerRepository.getInstance().getCurrentPlayer());
+        binding.gameLobbyLeaveBtn.setOnClickListener(view -> {
+            lobbyViewmodel.leaveLobby();
+        });
+
+        lobbyViewmodel.getPlayerJoinsLobbyLiveData().observe(this, playerWhoJoined -> {
+            PlayerRepository.getInstance().updateCurrentPlayerLobby(lobbyViewmodel.getLobbyFromPlayer(playerWhoJoined));
+        });
+
+        lobbyViewmodel.getPlayerLeavesLobbyLiveData().observe(this, playerWhoLeft -> {
+            if (lobbyViewmodel.getPlayerId(playerWhoLeft) == (PlayerRepository.getInstance().getCurrentPlayer().getId())){
+                PlayerRepository.getInstance().updateCurrentPlayerLobby(null);
+                finish();
+            } else {
+                PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyDto().setNumPlayers(PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyDto().getNumPlayers() - 1);
+            }
+        });
     }
 }

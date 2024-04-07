@@ -2,7 +2,6 @@ package se2.carcassonne.lobby.model;
 
 import java.sql.Timestamp;
 
-import lombok.Data;
 
 public class Lobby {
 
@@ -18,13 +17,15 @@ public class Lobby {
     // counter for the number of players
     private Integer numPlayers;
 
+    private Long lobbyCreatorId;
 
-    public Lobby(Long id, String name, Timestamp gameStartTimestamp, String gameState, Integer numPlayers) {
+    public Lobby(Long id, String name, Timestamp gameStartTimestamp, String gameState, Integer numPlayers, Long lobbyCreatorId) {
         this.id = id;
         this.name = name;
         this.gameStartTimestamp = gameStartTimestamp;
         this.gameState = gameState;
         this.numPlayers = numPlayers;
+        this.lobbyCreatorId = lobbyCreatorId;
     }
 
     public Lobby() {
@@ -68,6 +69,14 @@ public class Lobby {
 
     public void setNumPlayers(Integer numPlayers) {
         this.numPlayers = numPlayers;
+    }
+
+    public Long getLobbyCreatorId() {
+        return lobbyCreatorId;
+    }
+
+    public void setLobbyCreatorId(Long lobbyCreatorId) {
+        this.lobbyCreatorId = lobbyCreatorId;
     }
 
     @Override

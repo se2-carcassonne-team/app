@@ -56,7 +56,8 @@ public class CreateLobbyDialog extends DialogFragment {
                     new Lobby(null, lobbyName,
                             new Timestamp(System.currentTimeMillis()),
                             "LOBBY",
-                            null
+                            null,
+                            PlayerRepository.getInstance().getCurrentPlayer().getId()
                     ));
         });
 
