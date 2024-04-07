@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.regex.Pattern;
+
 import lombok.RequiredArgsConstructor;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.lobby.model.Lobby;
@@ -18,6 +20,9 @@ public class PlayerRepository {
     private final MutableLiveData<String> userAlreadyExistsErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> invalidUsernameErrorMessage = new MutableLiveData<>();
     private final PlayerApi playerApi;
+
+    private static final Pattern playerNamePattern = Pattern.compile("^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$");
+
 
     private PlayerRepository() {
         this.webSocketClient = new WebSocketClient();
@@ -65,8 +70,7 @@ public class PlayerRepository {
     }
 
     private boolean isValidUsername(String username) {
-        String regex = "^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$";
-        return username.matches(regex);
+        return playerNamePattern.matcher(username).matches();
     }
 
     public Player getCurrentPlayer() {

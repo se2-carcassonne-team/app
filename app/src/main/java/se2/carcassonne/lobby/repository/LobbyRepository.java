@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import lombok.RequiredArgsConstructor;
 import se2.carcassonne.helper.network.WebSocketClient;
@@ -23,6 +24,7 @@ public class LobbyRepository {
     private final MutableLiveData<String> listAllLobbiesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerJoinsLobbyLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerLeavesLobbyLiveData = new MutableLiveData<>();
+    private static final Pattern lobbyNamePattern = Pattern.compile("^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$");
 
 
     private final LobbyApi lobbyApi;
@@ -144,8 +146,7 @@ public class LobbyRepository {
     }
 
     private boolean isValidLobbyName(String lobbyName) {
-        String regex = "^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$";
-        return lobbyName.matches(regex);
+        return lobbyNamePattern.matcher(lobbyName).matches();
     }
 
     public Lobby getLobbyFromPlayer(String playerStringAsJson) {
