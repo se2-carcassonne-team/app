@@ -1,14 +1,14 @@
-package se2.carcassonne.gamelobby.model;
+package se2.carcassonne.lobby.model;
 
 import java.sql.Timestamp;
 
-public class GameLobby {
+
+public class Lobby {
+
     private Long id;
 
     private String name;
 
-    // time stamp of game start
-    //@Temporal(TemporalType.TIMESTAMP)
     private java.sql.Timestamp gameStartTimestamp;
 
     // game states: lobby, game, gameFinished
@@ -16,12 +16,19 @@ public class GameLobby {
 
     // counter for the number of players
     private Integer numPlayers;
-    public GameLobby(Long id, String name, Timestamp gameStartTimestamp, String gameState, Integer numPlayers) {
+
+    private Long lobbyCreatorId;
+
+    public Lobby(Long id, String name, Timestamp gameStartTimestamp, String gameState, Integer numPlayers, Long lobbyCreatorId) {
         this.id = id;
         this.name = name;
         this.gameStartTimestamp = gameStartTimestamp;
         this.gameState = gameState;
         this.numPlayers = numPlayers;
+        this.lobbyCreatorId = lobbyCreatorId;
+    }
+
+    public Lobby() {
     }
 
     public Long getId() {
@@ -62,5 +69,34 @@ public class GameLobby {
 
     public void setNumPlayers(Integer numPlayers) {
         this.numPlayers = numPlayers;
+    }
+
+    public Long getLobbyCreatorId() {
+        return lobbyCreatorId;
+    }
+
+    public void setLobbyCreatorId(Long lobbyCreatorId) {
+        this.lobbyCreatorId = lobbyCreatorId;
+    }
+
+    @Override
+    public String toString() {
+        return "Lobby{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", gameStartTimestamp=" + gameStartTimestamp +
+                ", gameState='" + gameState + '\'' +
+                ", numPlayers=" + numPlayers +
+                '}';
+    }
+
+    public String toJsonString() {
+        return "{" +
+                "\"id\":" + id +
+                ", \"name\":\"" + name + '\"' +
+                ", \"gameStartTimestamp\":\"" + gameStartTimestamp + '\"' +
+                ", \"gameState\":\"" + gameState + '\"' +
+                ", \"numPlayers\":" + numPlayers +
+                '}';
     }
 }

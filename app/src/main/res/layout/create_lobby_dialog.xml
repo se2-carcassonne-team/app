@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/startup_background">
 
     <TextView
@@ -13,13 +13,13 @@
         android:autoSizeMaxTextSize="1000dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
-        android:contentDescription="@string/choose_username_welcome_text"
+        android:contentDescription="@string/create_lobby"
         android:fontFamily="@font/almendra_sc"
         android:scaleType="centerCrop"
-        android:text="@string/choose_username_welcome_text"
+        android:text="@string/create_lobby"
         android:textColor="@color/btn_gold"
         app:layout_constraintBottom_toBottomOf="@id/guideline11"
-        app:layout_constraintDimensionRatio="10:2"
+        app:layout_constraintDimensionRatio="10:3"
         app:layout_constraintEnd_toEndOf="@id/guideline10"
         app:layout_constraintStart_toStartOf="@id/guideline8"
         app:layout_constraintTop_toTopOf="@id/guideline9"
@@ -27,12 +27,12 @@
         tools:targetApi="o" />
 
     <EditText
-        android:id="@+id/usernameInput"
+        android:id="@+id/lobbyNameInput"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:autofillHints="username"
         android:background="@drawable/custom_input"
-        android:hint="@string/username"
+        android:hint="@string/create_lobby"
         android:inputType="textPersonName"
         android:maxLength="20"
         android:gravity="center"
@@ -53,7 +53,7 @@
         android:background="#00FFD700"
         android:backgroundTintMode="add"
         android:fontFamily="@font/almendra_sc"
-        android:text="@string/content_description_start_game_button"
+        android:text="@string/create"
         android:textColor="@color/btn_gold"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
         app:layout_constraintDimensionRatio="8:1"

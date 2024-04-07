@@ -9,4 +9,15 @@
     <string name="choose_username_welcome_text">Welcome To Carcassonne</string>
     <string name="username">Username</string>
     <string name="welcome_homescreen">Welcome\n%s</string>
+    <string name="lobby_players_waiting">Players waiting ...</string>
+    <string name="create_lobby">Create Lobby</string>
+    <string name="create">Create</string>
+    <string name="lobby_list">List of Lobbies</string>
+    <string name="title_activity_lobby_lists">LobbyListsActivity</string>
+    <string name="show_all_lobbies">Show all lobbies</string>
+    <string name="play">Play</string>
+    <string name="start_playing">Start Playing</string>
+    <string name="back">Back</string>
+    <string name="door_icon">Door Icon</string>
+    <string name="leave_lobby">Leave</string>
 </resources>

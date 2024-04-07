@@ -24,7 +24,7 @@ public class WebSocketClient {
                     System.out.println("Connection error: "+event.getException().getMessage());
                     break;
                 case CLOSED:
-                    System.out.println("Connection closedA");
+                    System.out.println("Connection closed");
                     break;
             }
         }));
@@ -42,6 +42,28 @@ public class WebSocketClient {
         disposable.add(client.send(destination, message).subscribe(() -> System.out.println("Sending Message ... "+message), error -> System.out.println("ERROR while sending Message: "+error)));
     }
 
+    public void subscribeToTopic(String topic, WebSocketMessageHandler<String> messageHandler){
+        Disposable subscription = client.topic(topic).subscribe(
+                response -> {
+                    System.out.println("Response from "+topic+": " + response.getPayload());
+                    messageHandler.onMessageReceived(response.getPayload());
+                },
+                error -> System.out.println("Error subscribing to list-lobbies topic: " + error)
+        );
+        disposable.add(subscription);
+    }
+
+    public void subscribeToQueue(String queue, WebSocketMessageHandler<String> messageHandler){
+        Disposable subscription = client.topic(queue).subscribe(
+                response -> {
+                    System.out.println("Response from "+queue+": " + response.getPayload());
+                    messageHandler.onMessageReceived(response.getPayload());
+                },
+                error -> System.out.println("Error subscribing to list-lobbies topic: " + error)
+        );
+        disposable.add(subscription);
+    }
+
     public void cancelAllSubscriptions() {
         if (disposable != null) {
             disposable.dispose();
@@ -55,4 +77,5 @@ public class WebSocketClient {
             client.disconnect();
         }
     }
+
 }

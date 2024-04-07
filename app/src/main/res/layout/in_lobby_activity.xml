@@ -5,18 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/home_background"
-    tools:context=".GameLobbyActivity">
+    tools:context=".InLobbyActivity"
+    android:background="@drawable/home_background">
 
     <TextView
-        android:id="@+id/textViewStartPlaying"
+        android:id="@+id/textViewLobbyName"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:autoSizeMaxTextSize="1000dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:fontFamily="@font/almendra_sc"
-        android:text="@string/start_playing"
         android:gravity="center"
         android:scaleType="centerCrop"
         android:textColor="@color/btn_gold"
@@ -39,34 +38,20 @@
         app:layout_constraintVertical_bias="0.1"
         app:layout_constraintVertical_chainStyle="packed">
 
-        <Button
-            android:id="@+id/createLobbyBtn"
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/create_lobby" />
-
-        <Button
-            android:id="@+id/showListOfLobbies"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/show_all_lobbies" />
-
-        <!-- Space between buttons -->
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/gameLobbyLeaveBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/back"
-            android:layout_marginTop="8dp" />
-
+            android:layout_height="match_parent" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/gameLobbyLeaveBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/leave_lobby"
+        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        app:layout_constraintEnd_toStartOf="@+id/guideline21"
+        app:layout_constraintStart_toStartOf="@+id/guideline20"
+        app:layout_constraintTop_toTopOf="@+id/guideline22" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline14"
@@ -123,5 +108,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.86" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.94" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

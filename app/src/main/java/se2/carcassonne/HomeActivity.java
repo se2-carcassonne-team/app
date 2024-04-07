@@ -8,12 +8,13 @@ import androidx.fragment.app.FragmentManager;
 
 import se2.carcassonne.databinding.HomeActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
+
 import se2.carcassonne.player.repository.PlayerRepository;
 import se2.carcassonne.player.viewmodel.ChooseUsernameViewModel;
 
 public class HomeActivity extends AppCompatActivity {
     HomeActivityBinding binding;
-    private ChooseUsernameViewModel viewModel;
+    private ChooseUsernameViewModel chooseUsernameViewModel;
     PlayerRepository playerRepository;
 
 
@@ -23,10 +24,12 @@ public class HomeActivity extends AppCompatActivity {
         binding = HomeActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
-        playerRepository = new PlayerRepository();
-        viewModel = new ChooseUsernameViewModel(playerRepository);
+        playerRepository = PlayerRepository.getInstance();
+        chooseUsernameViewModel = new ChooseUsernameViewModel(playerRepository);
         showChooseUsernameDialog();
-        viewModel.getMessageLiveData().observe(this, message -> binding.textView.setText(String.format(getString(R.string.welcome_homescreen), viewModel.getPlayerName(message))));
+        chooseUsernameViewModel.getMessageLiveData().observe(this, message -> {
+            binding.textView2.setText(String.format(getString(R.string.welcome_homescreen), chooseUsernameViewModel.getPlayerName(message)));
+        });
         binding.newGameBtn.setOnClickListener(view -> {
             Intent intent = new Intent(HomeActivity.this, GameLobbyActivity.class);
             startActivity(intent);
@@ -35,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void showChooseUsernameDialog() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        ChooseUsernameDialogFragment dialogFragment = new ChooseUsernameDialogFragment(viewModel, playerRepository);
+        ChooseUsernameDialogFragment dialogFragment = new ChooseUsernameDialogFragment(chooseUsernameViewModel, playerRepository);
         dialogFragment.show(fragmentManager, "ChooseUsernameDialogFragment");
     }
 }
