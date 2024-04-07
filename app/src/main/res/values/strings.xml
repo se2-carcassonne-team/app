@@ -19,5 +19,6 @@
     <string name="start_playing">Start Playing</string>
     <string name="back">Back</string>
     <string name="door_icon">Door Icon</string>
+    <string name="playGame">Play</string>
 
 </resources>

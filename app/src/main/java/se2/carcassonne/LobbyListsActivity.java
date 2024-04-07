@@ -30,7 +30,7 @@ public class LobbyListsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
 
-        RecyclerView recyclerView = findViewById(R.id.rvListOfPlayers);
+        RecyclerView recyclerView = findViewById(R.id.list_of_lobbies);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new LobbyListAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
