@@ -34,6 +34,7 @@ public class InLobbyActivity extends AppCompatActivity {
         Intent intent = getIntent();
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
 
+
         RecyclerView recyclerView = findViewById(R.id.rvListOfPlayers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new PlayersInLobbyListAdapter(new ArrayList<>());
@@ -56,9 +57,27 @@ public class InLobbyActivity extends AppCompatActivity {
 
 
         lobbyViewmodel.getAllPlayers(lobbyViewmodel.getLobbyFromJsonString(intent.getStringExtra("LOBBY")));
-        binding.gameLobbyBackBtn.setOnClickListener(view -> {
-            //lobbyViewmodel.leaveLobby();
-            finish();
+        
+        LobbyRepository lobbyRepository = new LobbyRepository(PlayerRepository.getInstance());
+        lobbyViewmodel = new LobbyListViewModel(lobbyRepository);
+        lobbyRepository.connectToWebSocketServer();
+        binding.textViewLobbyName.setText(lobbyViewmodel.getLobbyName(intent.getStringExtra("LOBBY")));
+
+        binding.gameLobbyLeaveBtn.setOnClickListener(view -> {
+            lobbyViewmodel.leaveLobby();
+        });
+
+        lobbyViewmodel.getPlayerJoinsLobbyLiveData().observe(this, playerWhoJoined -> {
+            PlayerRepository.getInstance().updateCurrentPlayerLobby(lobbyViewmodel.getLobbyFromPlayer(playerWhoJoined));
+        });
+
+        lobbyViewmodel.getPlayerLeavesLobbyLiveData().observe(this, playerWhoLeft -> {
+            if (lobbyViewmodel.getPlayerId(playerWhoLeft) == (PlayerRepository.getInstance().getCurrentPlayer().getId())){
+                PlayerRepository.getInstance().updateCurrentPlayerLobby(null);
+                finish();
+            } else {
+                PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyDto().setNumPlayers(PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyDto().getNumPlayers() - 1);
+            }
         });
     }
 }

@@ -46,7 +46,15 @@ public class Player {
       return "Player{" +
               "id=" + id +
               ", username='" + username + '\'' +
-              ", GameLobbyDto=" + gameLobbyDto +
+              ", gameLobbyDto=" + gameLobbyDto +
+              '}';
+   }
+
+   public String toJsonstring() {
+      return "{" +
+              "\"id\":" + id +
+              ", \"username\":\"" + username + '\"' +
+              ", \"gameLobbyDto\":" + gameLobbyDto +
               '}';
    }
 }

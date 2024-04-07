@@ -29,7 +29,7 @@ public class GameLobbyActivity extends AppCompatActivity {
             Intent intent = new Intent(GameLobbyActivity.this, LobbyListsActivity.class);
             startActivity(intent);
         });
-        binding.gameLobbyBackBtn.setOnClickListener(view -> finish());
+        binding.gameLobbyLeaveBtn.setOnClickListener(view -> finish());
     }
 
     private void showCreateLobbyDialog(){

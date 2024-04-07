@@ -47,9 +47,15 @@ public class LobbyListsActivity extends AppCompatActivity {
             adapter.updateSingleData(lobby);
         });
 
+        viewModel.getPlayerLeavesLobbyLiveData().observe(this, player -> {
+            viewModel.getAllLobbies();
+        });
+
+        viewModel.getPlayerJoinsLobbyLiveData().observe(this, player -> {
+            viewModel.getAllLobbies();
+        });
 
         viewModel.getAllLobbies();
-        Log.d("GetLobbies", "Getting all lobbies!");
-        binding.gameLobbyBackBtn.setOnClickListener(view -> finish());
+        binding.gameLobbyLeaveBtn.setOnClickListener(view -> finish());
     }
 }

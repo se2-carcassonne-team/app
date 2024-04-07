@@ -9,7 +9,6 @@ import se2.carcassonne.player.model.Player;
 
 public class PlayerApi {
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private PlayerRepository playerRepository;
     private final WebSocketClient webSocketClient;
 
     public PlayerApi(WebSocketClient client){
@@ -17,7 +16,6 @@ public class PlayerApi {
     }
 
     public void createUser(Player player) {
-        playerRepository = PlayerRepository.getInstance();
         try {
             webSocketClient.sendMessage("/app/player-create", objectMapper.writeValueAsString(player));
         } catch (JsonProcessingException e) {
