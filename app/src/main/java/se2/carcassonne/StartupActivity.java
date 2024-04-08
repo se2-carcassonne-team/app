@@ -49,7 +49,7 @@ public class StartupActivity extends AppCompatActivity {
 
         startGameBtn.setOnClickListener(v -> {
 
-        binding.button.setOnClickListener(v -> {
+        //binding.button.setOnClickListener(v -> {
             Intent intent = new Intent(StartupActivity.this, HomeActivity.class);
             startActivity(intent);
         });
