@@ -15,6 +15,10 @@
         android:theme="@style/Carcassonne"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <activity
+            android:name=".GameBoardActivity"
+            android:exported="false"/>
         <activity
             android:name=".InLobbyActivity"
             android:exported="false" />

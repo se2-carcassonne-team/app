@@ -54,6 +54,12 @@ public class InLobbyActivity extends AppCompatActivity {
             adapter.updateData(playerList);
         });
 
+        binding.gameLobbyStartGameBtn.setOnClickListener(view -> {
+            Intent startGameIntent = new Intent(InLobbyActivity.this, GameBoardActivity.class);
+            startActivity(startGameIntent);
+        });
+
+
         lobbyViewmodel.getPlayerJoinsLobbyLiveData().observe(this, playerWhoJoined -> {
             PlayerRepository.getInstance().updateCurrentPlayerLobby(lobbyViewmodel.getLobbyFromPlayer(playerWhoJoined));
             Log.d("PlayerListUpdate", "PlayerWhoJoined: " + playerWhoJoined);
