@@ -64,18 +64,6 @@
         app:layout_constraintStart_toStartOf="@+id/guideline24"
         app:layout_constraintTop_toTopOf="@+id/guideline22" />
 
-    <Button
-        android:id="@+id/btnPlayGame"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/gold"
-        android:textColor="@color/dark_grey"
-        android:text="@string/playGame"
-        app:layout_constraintBottom_toTopOf="@+id/guideline23"
-        app:layout_constraintEnd_toStartOf="@+id/guideline15"
-        app:layout_constraintStart_toStartOf="@+id/guideline24"
-        app:layout_constraintTop_toTopOf="@+id/guideline22" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline14"
         android:layout_width="wrap_content"
