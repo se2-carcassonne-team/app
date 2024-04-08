@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.StartupActivityBinding;
+import se2.carcassonne.helper.animation.AnimationHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 
 public class StartupActivity extends AppCompatActivity {

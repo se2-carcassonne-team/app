@@ -31,6 +31,12 @@ public class InLobbyActivity extends AppCompatActivity {
             lobbyViewmodel.leaveLobby();
         });
 
+        binding.gameLobbyStartGameBtn.setOnClickListener(view -> {
+            Intent startGameIntent = new Intent(InLobbyActivity.this, GameBoardActivity.class);
+            startActivity(startGameIntent);
+        });
+
+
         lobbyViewmodel.getPlayerJoinsLobbyLiveData().observe(this, playerWhoJoined -> {
             PlayerRepository.getInstance().updateCurrentPlayerLobby(lobbyViewmodel.getLobbyFromPlayer(playerWhoJoined));
         });

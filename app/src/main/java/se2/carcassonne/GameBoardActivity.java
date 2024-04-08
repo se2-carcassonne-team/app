@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.GridView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import se2.carcassonne.helper.resize.FullscreenHelper;
+
 
 public class GameBoardActivity extends AppCompatActivity {
 
@@ -20,7 +22,7 @@ public class GameBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gameboard_activity);
 
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        FullscreenHelper.setFullscreenAndImmersiveMode(this);
 
         gridView = findViewById(R.id.gridview);
         gameboardAdapter = new GameboardAdapter(this, ROWS, COLS);
@@ -28,8 +30,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
         ZoomFunction zoomfunktion = new ZoomFunction(this);
         gridView.setOnTouchListener(zoomfunktion);
-
-
     }
 }
 
