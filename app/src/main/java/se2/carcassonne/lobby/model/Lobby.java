@@ -97,6 +97,7 @@ public class Lobby {
                 ", \"gameStartTimestamp\":\"" + gameStartTimestamp + '\"' +
                 ", \"gameState\":\"" + gameState + '\"' +
                 ", \"numPlayers\":" + numPlayers +
+                ", \"lobbyCreatorId\":" + lobbyCreatorId +
                 '}';
     }
 }
