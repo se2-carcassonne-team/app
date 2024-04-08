@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Iterator;
 import java.util.List;
 
 import se2.carcassonne.R;
@@ -24,7 +25,7 @@ public class PlayersInLobbyListAdapter extends RecyclerView.Adapter<PlayersInLob
     private Lobby lobbyToAdd;
 
     private List<Player> playerList;
-    private Player playerToAdd;
+    private Player playerToEdit;
 
     public PlayersInLobbyListAdapter(List<Player> playerList) {
         this.playerList = playerList;
@@ -35,18 +36,37 @@ public class PlayersInLobbyListAdapter extends RecyclerView.Adapter<PlayersInLob
         System.out.println("NewPlayerList: " + newPlayerList);
         try {
             playerList = objectMapper.readValue(newPlayerList, new TypeReference<List<Player>>() {});
-            notifyDataSetChanged(); // Notify RecyclerView about the changes
+            notifyDataSetChanged();// Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             // Handle parsing exception if needed
         }
     }
 
-    public void updateSingleData(String singlePlayer) {
+    public void updateSingleDataAdd(String singlePlayer) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            playerToAdd = objectMapper.readValue(singlePlayer, Player.class);
-            playerList.add(playerToAdd);
+            playerToEdit = objectMapper.readValue(singlePlayer, Player.class);
+            playerList.add(playerToEdit);
+            notifyDataSetChanged(); // Notify RecyclerView about the changes
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            // Handle parsing exception if needed
+        }
+    }
+    public void updateSingleDataDelete(String singlePlayer) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            playerToEdit = objectMapper.readValue(singlePlayer, Player.class);
+            // Find and delete the player with the specified ID
+            Iterator<Player> iterator = playerList.iterator();
+            while (iterator.hasNext()) {
+                Player player = iterator.next();
+                if (player.getId().equals(playerToEdit.getId())) {
+                    iterator.remove(); // Remove the player from the list
+                    break; // Assuming there's only one player with the given ID, so we can exit the loop
+                }
+            }
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
             e.printStackTrace();

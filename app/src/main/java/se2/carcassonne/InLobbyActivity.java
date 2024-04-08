@@ -57,18 +57,18 @@ public class InLobbyActivity extends AppCompatActivity {
         lobbyViewmodel.getPlayerJoinsLobbyLiveData().observe(this, playerWhoJoined -> {
             PlayerRepository.getInstance().updateCurrentPlayerLobby(lobbyViewmodel.getLobbyFromPlayer(playerWhoJoined));
             Log.d("PlayerListUpdate", "PlayerWhoJoined: " + playerWhoJoined);
-            adapter.updateSingleData(playerWhoJoined);
+            adapter.updateSingleDataAdd(playerWhoJoined);
         });
 
         lobbyViewmodel.getPlayerLeavesLobbyLiveData().observe(this, playerWhoLeft -> {
             if (lobbyViewmodel.getPlayerId(playerWhoLeft) == (PlayerRepository.getInstance().getCurrentPlayer().getId())){
+                adapter.updateSingleDataDelete(playerWhoLeft);
                 PlayerRepository.getInstance().updateCurrentPlayerLobby(null);
-                adapter.updateSingleData(playerWhoLeft);
                 Log.d("PlayerListUpdate", "CurrentPlayerWhoLeft: " + playerWhoLeft);
                 finish();
             } else {
                 PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyDto().setNumPlayers(PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyDto().getNumPlayers() - 1);
-                adapter.updateSingleData(playerWhoLeft);
+                adapter.updateSingleDataDelete(playerWhoLeft);
                 Log.d("PlayerListUpdate", "PlayerWhoLeft: " + playerWhoLeft);
             }
         });
