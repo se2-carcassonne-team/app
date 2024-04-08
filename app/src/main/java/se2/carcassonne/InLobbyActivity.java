@@ -73,8 +73,9 @@ public class InLobbyActivity extends AppCompatActivity {
             }
         });
 
+        Log.d("PlayerListUpdate", "Intent EXTRA before: " + intent.getStringExtra("LOBBY"));
         lobbyViewmodel.getAllPlayers(lobbyViewmodel.getLobbyFromJsonString(intent.getStringExtra("LOBBY")));
-        Log.d("PlayerListUpdate", "Intent EXTRA: " + intent.getStringExtra("LOBBY"));
+        Log.d("PlayerListUpdate", "Intent EXTRA after: " + intent.getStringExtra("LOBBY"));
 
     }
 }

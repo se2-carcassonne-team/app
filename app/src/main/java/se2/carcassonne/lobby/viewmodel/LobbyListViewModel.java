@@ -99,6 +99,22 @@ public class LobbyListViewModel extends ViewModel {
 
     public Lobby getLobbyFromJsonString(String lobbyStringAsJson) {
         ObjectMapper mapper = new ObjectMapper();
+
+        // Find the start and end indices of the timestamp value
+        int startIndex = lobbyStringAsJson.indexOf("\"gameStartTimestamp\":\"") + "\"gameStartTimestamp\":\"".length();
+        int endIndex = lobbyStringAsJson.indexOf("\"", startIndex);
+
+        if (startIndex != -1 && endIndex != -1) { // If start and end indices are found
+            // Extract the timestamp substring
+            String timestampSubstring = lobbyStringAsJson.substring(startIndex, endIndex);
+
+            // Replace space with 'T' to match the expected format
+            timestampSubstring = timestampSubstring.replace(" ", "T");
+
+            // Construct the modified JSON string with the replaced timestamp substring
+            lobbyStringAsJson = lobbyStringAsJson.substring(0, startIndex) + timestampSubstring + lobbyStringAsJson.substring(endIndex);
+        }
+
         try {
             return mapper.readValue(lobbyStringAsJson, Lobby.class);
         } catch (JsonProcessingException e) {
