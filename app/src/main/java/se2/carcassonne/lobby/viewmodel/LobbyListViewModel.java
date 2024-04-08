@@ -9,8 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se2.carcassonne.lobby.model.Lobby;
 import se2.carcassonne.lobby.repository.LobbyRepository;
-import se2.carcassonne.player.model.Player;
-import se2.carcassonne.player.repository.PlayerRepository;
+
 
 
 public class LobbyListViewModel extends ViewModel {
@@ -22,6 +21,9 @@ public class LobbyListViewModel extends ViewModel {
 
     public MutableLiveData<String> getMessageLiveDataListLobbies() {
         return lobbyRepository.getListAllLobbiesLiveData();
+    }
+    public MutableLiveData<String> getMessageLiveDataListPlayers() {
+        return lobbyRepository.getListAllPlayersLiveData();
     }
 
     public MutableLiveData<String> getLobbyAlreadyExistsErrorMessage() {
@@ -49,6 +51,9 @@ public class LobbyListViewModel extends ViewModel {
 
     public void getAllLobbies() {
         lobbyRepository.getAllLobbies();
+    }
+    public void getAllPlayers(Lobby lobby) {
+        lobbyRepository.getAllPlayers(lobby);
     }
 
     public void joinLobby(Lobby lobby) {
@@ -91,6 +96,30 @@ public class LobbyListViewModel extends ViewModel {
             return null;
         }
     }
+
+    public Lobby getLobbyFromJsonString(String lobbyStringAsJson) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        // Find the start and end indices of the timestamp value
+        int startIndex = lobbyStringAsJson.indexOf("\"gameStartTimestamp\":\"") + "\"gameStartTimestamp\":\"".length();
+        int endIndex = lobbyStringAsJson.indexOf("\"", startIndex);
+
+        if (startIndex != -1 && endIndex != -1) { // If start and end indices are found
+            // Extract the timestamp substring
+            String timestampSubstring = lobbyStringAsJson.substring(startIndex, endIndex);
+
+            // Replace space with 'T' to match the expected format
+            timestampSubstring = timestampSubstring.replace(" ", "T");
+
+            // Construct the modified JSON string with the replaced timestamp substring
+            lobbyStringAsJson = lobbyStringAsJson.substring(0, startIndex) + timestampSubstring + lobbyStringAsJson.substring(endIndex);
+        }
+
+        try {
+            return mapper.readValue(lobbyStringAsJson, Lobby.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace(); // Handle or log the exception
+            return null;
+        }
+    }
 }
-
-

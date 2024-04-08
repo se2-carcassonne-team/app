@@ -39,6 +39,7 @@
         app:layout_constraintVertical_chainStyle="packed">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvListOfPlayers"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
@@ -117,7 +118,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.86" />
+        app:layout_constraintGuide_percent="0.95" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline22"
@@ -139,5 +140,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.74" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

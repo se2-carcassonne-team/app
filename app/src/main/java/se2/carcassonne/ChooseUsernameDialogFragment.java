@@ -3,6 +3,7 @@ package se2.carcassonne;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -39,7 +40,7 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
         View dialogView = inflater.inflate(R.layout.username_dialog, null);
         EditText text = dialogView.findViewById(R.id.usernameInput);
         setCancelable(false);
-        Button chooseUsernameStartGameButton = dialogView.findViewById(R.id.button);
+        Button chooseUsernameStartGameButton = dialogView.findViewById(R.id.btnConfirmUsername);
 
         userAlreadyExistsLiveData = viewModel.getUserAlreadyExistsErrorMessage();
         invalidUsernameLiveData = viewModel.getInvalidUsernameErrorMessage();
@@ -57,9 +58,14 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
             String username = text.getText().toString();
             playerRepository.connectToWebSocketServer();
             viewModel.createPlayer(new Player(null, username, null));
+            Log.d("CLU", "Username created!");
+
         });
 
-        messageLiveData.observe(this, message -> dismiss());
+        messageLiveData.observe(this, message -> {
+            dismiss();
+            Log.d("CLU", "User Fragment dismissed!");
+        });
 
         return builder.setView(dialogView).create();
     }
