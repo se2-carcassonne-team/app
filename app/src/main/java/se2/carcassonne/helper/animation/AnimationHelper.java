@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.helper.animation;
 
 import android.view.View;
 import android.view.animation.AlphaAnimation;

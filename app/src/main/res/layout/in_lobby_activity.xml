@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InLobbyActivity"
-    android:background="@drawable/home_background">
+    android:background="@drawable/home_background"
+    tools:context=".InLobbyActivity">
 
     <TextView
         android:id="@+id/textViewLobbyName"
@@ -49,8 +49,18 @@
         android:layout_height="wrap_content"
         android:text="@string/leave_lobby"
         app:layout_constraintBottom_toTopOf="@+id/guideline23"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintStart_toStartOf="@+id/guideline20"
+        app:layout_constraintEnd_toStartOf="@+id/guideline24"
+        app:layout_constraintStart_toStartOf="@+id/guideline14"
+        app:layout_constraintTop_toTopOf="@+id/guideline22" />
+
+    <Button
+        android:id="@+id/gameLobbyStartGameBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/goToGameboard"
+        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintStart_toStartOf="@+id/guideline24"
         app:layout_constraintTop_toTopOf="@+id/guideline22" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -122,5 +132,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.94" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.74" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
