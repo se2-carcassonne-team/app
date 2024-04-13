@@ -29,6 +29,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gameboardAdapter = new GameboardAdapter(this, ROWS, COLS);
         gridView.setAdapter(gameboardAdapter);
         Button rotateRightButton = findViewById(R.id.button4);
+        Button rotateLeftButton = findViewById(R.id.button5);
 
         ZoomFunction zoomfunktion = new ZoomFunction(this);
         gridView.setOnTouchListener(zoomfunktion);
@@ -52,6 +53,17 @@ public class GameBoardActivity extends AppCompatActivity {
                 imageRotator.rotateRight();
             }
         }));
+
+        rotateLeftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageView playingCard = findViewById(R.id.imageView3);
+                ImageRotator imageRotator = new ImageRotator(playingCard);
+                imageRotator.rotateLeft();
+            }
+        });
+
+
 
 
 
