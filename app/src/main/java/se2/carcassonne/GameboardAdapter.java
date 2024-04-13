@@ -37,14 +37,14 @@ public class GameboardAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(18, 15)); // Anpassen Sie die Größe nach Bedarf
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(85, 80)); // Anpassen Sie die Größe nach Bedarf
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        int middleRow = (rows - 1) / 2;
-        int middleCol = (cols - 1) / 2;
+        int middleRow = 13/2;
+        int middleCol = 25 / 2;
         boolean isMiddleField = position / cols == middleRow && position % cols == middleCol;
         //Startfield
         if (isMiddleField) {
