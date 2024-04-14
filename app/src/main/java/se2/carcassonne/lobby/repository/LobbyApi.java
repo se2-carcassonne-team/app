@@ -28,18 +28,18 @@ public class LobbyApi {
         webSocketClient.sendMessage("/app/lobby-list", "send all lobbies");
     }
 
-    public void getAllPlayers(Lobby lobby) {
+    public void getAllPlayers(Long lobbyId) {
         try {
-            String message = objectMapper.writeValueAsString(lobby);
+            String message = objectMapper.writeValueAsString(lobbyId);
             webSocketClient.sendMessage("/app/player-list", message);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void joinLobby(Lobby lobby, Player playerToJoin) {
+    public void joinLobby(Long lobbyId, Player playerToJoin) {
         try {
-            String message = objectMapper.writeValueAsString(lobby) + "|" + objectMapper.writeValueAsString(playerToJoin);
+            String message = objectMapper.writeValueAsString(lobbyId) + "|" + objectMapper.writeValueAsString(playerToJoin);
             webSocketClient.sendMessage("/app/player-join-lobby", message);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

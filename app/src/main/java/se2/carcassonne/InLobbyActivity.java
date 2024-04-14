@@ -44,15 +44,9 @@ public class InLobbyActivity extends AppCompatActivity {
         lobbyRepository.connectToWebSocketServer();
         binding.textViewLobbyName.setText(lobbyViewmodel.getLobbyName(intent.getStringExtra("LOBBY")));
 
-        binding.gameLobbyLeaveBtn.setOnClickListener(view -> {
-            lobbyViewmodel.leaveLobby();
-        });
+        binding.gameLobbyLeaveBtn.setOnClickListener(view -> lobbyViewmodel.leaveLobby());
 
-        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> {
-            Log.d("PlayerListUpdate", "Player list: "+ playerList);
-            System.out.println("blablabla" + playerList);
-            adapter.updateData(playerList);
-        });
+        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> adapter.updateData(playerList));
 
         binding.gameLobbyStartGameBtn.setOnClickListener(view -> {
             Intent startGameIntent = new Intent(InLobbyActivity.this, GameBoardActivity.class);
@@ -61,27 +55,20 @@ public class InLobbyActivity extends AppCompatActivity {
 
 
         lobbyViewmodel.getPlayerJoinsLobbyLiveData().observe(this, playerWhoJoined -> {
-            PlayerRepository.getInstance().updateCurrentPlayerLobby(lobbyViewmodel.getLobbyFromPlayer(playerWhoJoined));
-            Log.d("PlayerListUpdate", "PlayerWhoJoined: " + playerWhoJoined);
+            // PlayerRepository.getInstance().updateCurrentPlayerLobby(lobbyViewmodel.getLobbyFromPlayer(playerWhoJoined));
             adapter.updateSingleDataAdd(playerWhoJoined);
         });
 
         lobbyViewmodel.getPlayerLeavesLobbyLiveData().observe(this, playerWhoLeft -> {
             if (lobbyViewmodel.getPlayerId(playerWhoLeft) == (PlayerRepository.getInstance().getCurrentPlayer().getId())){
                 adapter.updateSingleDataDelete(playerWhoLeft);
-                PlayerRepository.getInstance().updateCurrentPlayerLobby(null);
-                Log.d("PlayerListUpdate", "CurrentPlayerWhoLeft: " + playerWhoLeft);
+                PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(null);
                 finish();
             } else {
-                PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyDto().setNumPlayers(PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyDto().getNumPlayers() - 1);
+                // PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId().setNumPlayers(PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId().getNumPlayers() - 1);
                 adapter.updateSingleDataDelete(playerWhoLeft);
-                Log.d("PlayerListUpdate", "PlayerWhoLeft: " + playerWhoLeft);
             }
         });
-
-        Log.d("PlayerListUpdate", "Intent EXTRA before: " + intent.getStringExtra("LOBBY"));
         lobbyViewmodel.getAllPlayers(lobbyViewmodel.getLobbyFromJsonString(intent.getStringExtra("LOBBY")));
-        Log.d("PlayerListUpdate", "Intent EXTRA after: " + intent.getStringExtra("LOBBY"));
-
     }
 }

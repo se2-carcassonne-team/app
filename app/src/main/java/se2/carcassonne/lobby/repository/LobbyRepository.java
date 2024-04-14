@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import lombok.RequiredArgsConstructor;
+import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.lobby.model.Lobby;
 import se2.carcassonne.player.model.Player;
@@ -25,11 +26,11 @@ public class LobbyRepository {
     private final MutableLiveData<String> lobbyAlreadyExistsErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> invalidLobbyNameErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> listAllLobbiesLiveData = new MutableLiveData<>();
-    private MutableLiveData<String> listAllPlayersLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> listAllPlayersLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerJoinsLobbyLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerLeavesLobbyLiveData = new MutableLiveData<>();
     private static final Pattern lobbyNamePattern = Pattern.compile("^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$");
-
+    private final MapperHelper mapperHelper = new MapperHelper();
 
     private final LobbyApi lobbyApi;
     private PlayerRepository playerRepository;
@@ -44,55 +45,6 @@ public class LobbyRepository {
         webSocketClient.connect(this::createLobbyLiveData);
     }
 
-    private void createLobbyLiveData(String message) {
-        if(lobbyAlreadyExistsError(message)){
-            lobbyAlreadyExistsErrorMessage.postValue("A lobby with that name already exists! Try again.");
-        } else {
-            createLobbyLiveData.postValue(message);
-            PlayerRepository.getInstance().updateCurrentPlayerLobby(getLobbyFromJsonString(message));
-        }
-    }
-
-    private Lobby getLobbyFromJsonString(String lobbyStringAsJson) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(lobbyStringAsJson, Lobby.class);
-        } catch (JsonProcessingException e) {
-            return null;
-        }
-    }
-
-    public Lobby getLobbyFromPlayerJsonString(String playerStringAsJson) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonNode lobbyNode = mapper.readTree(playerStringAsJson).get("gameLobbyDto");
-            return mapper.treeToValue(lobbyNode, Lobby.class);
-        } catch (JsonProcessingException e) {
-            return null;
-        }
-    }
-
-    private void listAllLobbiesReceivedFromServer(String message){
-        if (!Objects.equals(message, "null")) {
-            listAllLobbiesLiveData.postValue(message);
-        } else {
-            listAllLobbiesLiveData.postValue("No lobbies available");
-        }
-    }
-
-    private void playerLeavesLobbyMessageReceived(String message) {
-        playerLeavesLobbyLiveData.postValue(message);
-    }
-
-    private void playerJoinsLobbyMessageReceived(String message) {
-        playerJoinsLobbyLiveData.postValue(message);
-        PlayerRepository.getInstance().updateCurrentPlayerLobby(getLobbyFromPlayer(message));
-    }
-
-    private boolean lobbyAlreadyExistsError(String message) {
-        return message.startsWith("ERROR: gameLobby with name");
-    }
-
     public void createLobby(Lobby lobby){
         if (isValidLobbyName(lobby.getName())) {
             webSocketClient.subscribeToTopic("/topic/game-lobby-response", this::createLobbyLiveData);
@@ -104,9 +56,8 @@ public class LobbyRepository {
         }
     }
 
-
     public void getAllLobbies() {
-        webSocketClient.subscribeToQueue("/user/queue/lobby-response", this::listAllLobbiesReceivedFromServer);
+        webSocketClient.subscribeToTopic("/topic/lobby-response", this::listAllLobbiesReceivedFromServer);
         webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllLobbiesReceivedFromServer);
         lobbyApi.getAllLobbies();
     }
@@ -114,19 +65,61 @@ public class LobbyRepository {
     public void getAllPlayers(Lobby lobby) {
         webSocketClient.subscribeToQueue("/user/queue/player-response", this::listAllPlayersReceivedFromServer);
         webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllPlayersReceivedFromServer);
-        lobbyApi.getAllPlayers(lobby);
+        lobbyApi.getAllPlayers(lobby.getId());
     }
 
     public void leaveLobby() {
-        webSocketClient.subscribeToTopic("/topic/player-leave-response", this::playerLeavesLobbyMessageReceived);
+        webSocketClient.subscribeToTopic(
+                "/topic/player-leave-lobby-"+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId(),
+                this::playerLeavesLobbyMessageReceived);
         lobbyApi.leaveLobby(PlayerRepository.getInstance().getCurrentPlayer());
     }
 
     public void joinLobby(Lobby lobby){
-        webSocketClient.subscribeToTopic("/topic/player-join-response", this::playerJoinsLobbyMessageReceived);
-        lobbyApi.joinLobby(lobby, PlayerRepository.getInstance().getCurrentPlayer());
+        webSocketClient.subscribeToTopic("/topic/player-join-lobby-"+lobby.getId(), this::playerJoinsLobbyMessageReceived);
+        lobbyApi.joinLobby(lobby.getId(), PlayerRepository.getInstance().getCurrentPlayer());
     }
 
+    private void createLobbyLiveData(String message) {
+        if(lobbyAlreadyExistsError(message)){
+            lobbyAlreadyExistsErrorMessage.postValue("A lobby with that name already exists! Try again.");
+        } else {
+            createLobbyLiveData.postValue(message);
+            PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getIdFromLobbyStringAsLong(message));
+        }
+    }
+
+    private void listAllLobbiesReceivedFromServer(String message){
+        if (!Objects.equals(message, "null")) {
+            System.out.println("RECEIVED LOBBIES: " + message);
+            listAllLobbiesLiveData.postValue(message);
+        } else {
+            listAllLobbiesLiveData.postValue("No lobbies available");
+        }
+    }
+
+    private void listAllPlayersReceivedFromServer(String message) {
+        if (!Objects.equals(message, "null")) {
+            listAllPlayersLiveData.postValue(message);
+        } else {
+            listAllPlayersLiveData.postValue("No lobbies available");
+        }
+    }
+
+    private void playerLeavesLobbyMessageReceived(String message) {
+        playerLeavesLobbyLiveData.postValue(message);
+        lobbyApi.getAllLobbies();
+    }
+
+    private void playerJoinsLobbyMessageReceived(String message) {
+        playerJoinsLobbyLiveData.postValue(message);
+        PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getLobbyIdFromPlayer(message));
+        lobbyApi.getAllLobbies();
+    }
+
+    private boolean lobbyAlreadyExistsError(String message) {
+        return message.startsWith("ERROR: gameLobby with name");
+    }
 
     public MutableLiveData<String> getListAllLobbiesLiveData() {
         return listAllLobbiesLiveData;
@@ -144,7 +137,7 @@ public class LobbyRepository {
     }
 
     public MutableLiveData<String> getPlayerJoinsLobbyLiveData() {
-        webSocketClient.subscribeToTopic("/topic/player-join-response", this::playerJoinsLobbyMessageReceived);
+        webSocketClient.subscribeToTopic("/topic/player-join-lobby-"+playerRepository.getCurrentPlayer().getGameLobbyId(), this::playerJoinsLobbyMessageReceived);
         webSocketClient.subscribeToQueue("/user/queue/errors", this::playerJoinsLobbyMessageReceived);
         return playerJoinsLobbyLiveData;
     }
@@ -155,33 +148,11 @@ public class LobbyRepository {
     }
 
     public MutableLiveData<String> getPlayerLeavesLobbyLiveData() {
-        webSocketClient.subscribeToTopic("/topic/player-leave-response", this::playerLeavesLobbyMessageReceived);
+        webSocketClient.subscribeToTopic("/topic/player-leave-lobby-"+playerRepository.getCurrentPlayer().getGameLobbyId(), this::playerLeavesLobbyMessageReceived);
         return playerLeavesLobbyLiveData;
     }
 
     private boolean isValidLobbyName(String lobbyName) {
         return lobbyNamePattern.matcher(lobbyName).matches();
     }
-
-    public Lobby getLobbyFromPlayer(String playerStringAsJson) {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode lobbyNode = null;
-        try {
-            lobbyNode = mapper.readTree(playerStringAsJson).get("gameLobbyDto");
-            return mapper.treeToValue(lobbyNode, Lobby.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private void listAllPlayersReceivedFromServer(String message) {
-        if (!Objects.equals(message, "null")) {
-            listAllPlayersLiveData.postValue(message);
-        } else {
-            listAllPlayersLiveData.postValue("No lobbies available");
-        }
-    }
-
-
 }

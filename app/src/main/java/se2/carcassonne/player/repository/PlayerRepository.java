@@ -91,8 +91,4 @@ public class PlayerRepository {
     public MutableLiveData<String> getInvalidUsernameErrorMessage() {
         return invalidUsernameErrorMessage;
     }
-
-    public void updateCurrentPlayerLobby(Lobby lobby){
-        currentPlayer.setGameLobbyDto(lobby);
-    }
 }

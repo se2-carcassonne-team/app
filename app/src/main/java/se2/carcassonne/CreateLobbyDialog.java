@@ -75,11 +75,8 @@ public class CreateLobbyDialog extends DialogFragment {
         createLobbyLiveData.observe(this, message -> {
             Intent intent = new Intent(requireActivity(), InLobbyActivity.class);
             intent.putExtra("LOBBY", message);
-            Log.d("PlayerListUpdate", "CreateLobbyDialogMessageFromServer: " + message);
             startActivity(intent);
-            Log.d("CLF", "Activity start");
             dismiss();
-            Log.d("CLF", "Fragment dismissed");
         });
 
         return builder.setView(dialogView).create();
