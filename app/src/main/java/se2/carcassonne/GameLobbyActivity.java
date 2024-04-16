@@ -7,14 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.GameLobbyActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
-import se2.carcassonne.lobby.repository.LobbyRepository;
-import se2.carcassonne.lobby.viewmodel.LobbyListViewModel;
-import se2.carcassonne.player.repository.PlayerRepository;
+import se2.carcassonne.lobby.viewmodel.LobbyViewModel;
 
 public class GameLobbyActivity extends AppCompatActivity {
     GameLobbyActivityBinding binding;
-    private LobbyListViewModel gameLobbyViewModel;
-    LobbyRepository gameLobbyRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +18,6 @@ public class GameLobbyActivity extends AppCompatActivity {
         binding = GameLobbyActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
-        gameLobbyRepository = new LobbyRepository(PlayerRepository.getInstance());
-        gameLobbyViewModel = new LobbyListViewModel(gameLobbyRepository);
         binding.createLobbyBtn.setOnClickListener(view -> showCreateLobbyDialog());
         binding.showListOfLobbies.setOnClickListener(view -> {
             Intent intent = new Intent(GameLobbyActivity.this, LobbyListsActivity.class);

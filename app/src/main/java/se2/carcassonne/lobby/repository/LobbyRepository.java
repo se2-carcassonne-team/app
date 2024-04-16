@@ -2,10 +2,6 @@ package se2.carcassonne.lobby.repository;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -13,108 +9,133 @@ import lombok.RequiredArgsConstructor;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.player.model.Player;
 import se2.carcassonne.player.repository.PlayerRepository;
 
 @RequiredArgsConstructor
 public class LobbyRepository {
-
-
-
-    private final WebSocketClient webSocketClient;
+    private static LobbyRepository instance;
+    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
     private final MutableLiveData<String> createLobbyLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> lobbyAlreadyExistsErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> invalidLobbyNameErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> listAllLobbiesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> listAllPlayersLiveData = new MutableLiveData<>();
-    private final MutableLiveData<String> playerJoinsLobbyLiveData = new MutableLiveData<>();
-    private final MutableLiveData<String> playerLeavesLobbyLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> playerJoinsOrLeavesLobbyLiveData = new MutableLiveData<>();
     private static final Pattern lobbyNamePattern = Pattern.compile("^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$");
     private final MapperHelper mapperHelper = new MapperHelper();
-
     private final LobbyApi lobbyApi;
-    private PlayerRepository playerRepository;
+    private final PlayerRepository playerRepository = PlayerRepository.getInstance();
 
-    public LobbyRepository(PlayerRepository playerRepository) {
-        this.webSocketClient = new WebSocketClient();
-        this.playerRepository = playerRepository;
-        this.lobbyApi = new LobbyApi(this.webSocketClient);
+    private LobbyRepository() {
+        this.lobbyApi = new LobbyApi();
     }
 
-    public void connectToWebSocketServer() {
-        webSocketClient.connect(this::createLobbyLiveData);
+    public static LobbyRepository getInstance() {
+        if (instance == null) {
+            instance = new LobbyRepository();
+        }
+        return instance;
     }
 
     public void createLobby(Lobby lobby){
+        // TODO : ERROR HANDLING BASED ON CODES
         if (isValidLobbyName(lobby.getName())) {
-            webSocketClient.subscribeToTopic("/topic/game-lobby-response", this::createLobbyLiveData);
+            webSocketClient.subscribeToQueue("/user/queue/response", this::createLobbyLiveData);
             webSocketClient.subscribeToQueue("/user/queue/errors", this::createLobbyLiveData);
-            playerRepository = PlayerRepository.getInstance();
+            // TODO : CHECK HERE
             lobbyApi.createLobby(lobby, playerRepository.getCurrentPlayer());
         } else {
             invalidLobbyNameErrorMessage.postValue("Invalid Lobby name!");
         }
     }
 
-    public void getAllLobbies() {
-        webSocketClient.subscribeToTopic("/topic/lobby-response", this::listAllLobbiesReceivedFromServer);
-        webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllLobbiesReceivedFromServer);
-        lobbyApi.getAllLobbies();
-    }
-
-    public void getAllPlayers(Lobby lobby) {
-        webSocketClient.subscribeToQueue("/user/queue/player-response", this::listAllPlayersReceivedFromServer);
-        webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllPlayersReceivedFromServer);
-        lobbyApi.getAllPlayers(lobby.getId());
-    }
-
-    public void leaveLobby() {
-        webSocketClient.subscribeToTopic(
-                "/topic/player-leave-lobby-"+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId(),
-                this::playerLeavesLobbyMessageReceived);
-        lobbyApi.leaveLobby(PlayerRepository.getInstance().getCurrentPlayer());
-    }
-
-    public void joinLobby(Lobby lobby){
-        webSocketClient.subscribeToTopic("/topic/player-join-lobby-"+lobby.getId(), this::playerJoinsLobbyMessageReceived);
-        lobbyApi.joinLobby(lobby.getId(), PlayerRepository.getInstance().getCurrentPlayer());
-    }
-
     private void createLobbyLiveData(String message) {
+        // TODO : ERROR HANDLING BASED ON CODES
+        webSocketClient.unsubscribeFromQueue("/user/queue/response");
+        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
         if(lobbyAlreadyExistsError(message)){
             lobbyAlreadyExistsErrorMessage.postValue("A lobby with that name already exists! Try again.");
         } else {
             createLobbyLiveData.postValue(message);
             PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getIdFromLobbyStringAsLong(message));
+            webSocketClient.subscribeToTopic("/topic/lobby-"+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId(), this::playerInLobbyReceivesJoinOrLeaveMessage);
         }
     }
 
-    private void listAllLobbiesReceivedFromServer(String message){
+    private void playerInLobbyReceivesJoinOrLeaveMessage(String message) {
+        // TODO : DOES THIS MAKE SENSE?
+        // If player already in lobby and notices a join, we just need to update the list of players
+        // and not set the ID of the lobby again
+        // STAY SUBSCRIBED FOR FUTURE UPDATES
+        getPlayerJoinsOrLeavesLobbyLiveData().postValue(message);
+    }
+
+    public void getAllLobbies() {
+        // TODO : ERROR HANDLING BASED ON CODES
+        webSocketClient.subscribeToTopic("/topic/lobby-list", this::getAllLobbiesLiveData);
+        webSocketClient.subscribeToQueue("user/queue/lobby-list-response", this::getAllLobbiesLiveData);
+        webSocketClient.subscribeToQueue("/user/queue/errors", this::getAllLobbiesLiveData);
+        lobbyApi.getAllLobbies();
+    }
+
+    private void getAllLobbiesLiveData(String message){
+        // TODO : ERROR HANDLING BASED ON CODES
+        // STAY SUBSCRIBED FOR FUTURE UPDATES
+        webSocketClient.unsubscribeFromQueue("user/queue/lobby-list-response");
+        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
         if (!Objects.equals(message, "null")) {
-            System.out.println("RECEIVED LOBBIES: " + message);
             listAllLobbiesLiveData.postValue(message);
         } else {
             listAllLobbiesLiveData.postValue("No lobbies available");
         }
     }
 
+    public void joinLobby(Lobby lobby){
+        // TODO : ERROR HANDLING BASED ON CODES
+        webSocketClient.subscribeToQueue("/user/queue/response", this::playerJoinsLobbyMessageReceived);
+        webSocketClient.subscribeToQueue("/user/queue/errors", this::playerJoinsLobbyMessageReceived);
+        webSocketClient.subscribeToTopic("/topic/lobby-"+lobby.getId(), this::playerInLobbyReceivesJoinOrLeaveMessage);
+        lobbyApi.joinLobby(lobby.getId(), PlayerRepository.getInstance().getCurrentPlayer());
+    }
+
+    private void playerJoinsLobbyMessageReceived(String message) {
+        // TODO : ERROR HANDLING BASED ON CODES
+        webSocketClient.unsubscribeFromQueue("/user/queue/response");
+        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
+        PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getLobbyIdFromPlayer(message));
+    }
+
+    public void leaveLobby() {
+        // TODO : ERROR HANDLING BASED ON CODES
+        webSocketClient.subscribeToQueue("/user/queue/response", this::playerLeavesLobbyMessageReceived);
+        webSocketClient.subscribeToQueue("/user/queue/errors", this::playerLeavesLobbyMessageReceived);
+        lobbyApi.leaveLobby(PlayerRepository.getInstance().getCurrentPlayer());
+    }
+
+    private void playerLeavesLobbyMessageReceived(String message) {
+        // TODO : ERROR HANDLING BASED ON CODES
+        webSocketClient.unsubscribeFromQueue("/user/queue/response");
+        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
+        webSocketClient.unsubscribeFromTopic("/topic/lobby-"+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId());
+        PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(null);
+    }
+
+    public void getAllPlayers(Lobby lobby) {
+        // TODO : ERROR HANDLING BASED ON CODES
+        webSocketClient.subscribeToQueue("/user/queue/response", this::listAllPlayersReceivedFromServer);
+        webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllPlayersReceivedFromServer);
+        lobbyApi.getAllPlayers(lobby.getId());
+    }
+
     private void listAllPlayersReceivedFromServer(String message) {
+        // TODO : ERROR HANDLING BASED ON CODES
+        webSocketClient.unsubscribeFromQueue("/user/queue/response");
+        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
         if (!Objects.equals(message, "null")) {
             listAllPlayersLiveData.postValue(message);
         } else {
             listAllPlayersLiveData.postValue("No lobbies available");
         }
-    }
-
-    private void playerLeavesLobbyMessageReceived(String message) {
-        playerLeavesLobbyLiveData.postValue(message);
-        lobbyApi.getAllLobbies();
-    }
-
-    private void playerJoinsLobbyMessageReceived(String message) {
-        playerJoinsLobbyLiveData.postValue(message);
-        PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getLobbyIdFromPlayer(message));
-        lobbyApi.getAllLobbies();
     }
 
     private boolean lobbyAlreadyExistsError(String message) {
@@ -124,6 +145,7 @@ public class LobbyRepository {
     public MutableLiveData<String> getListAllLobbiesLiveData() {
         return listAllLobbiesLiveData;
     }
+
     public MutableLiveData<String> getListAllPlayersLiveData() {
         return listAllPlayersLiveData;
     }
@@ -136,20 +158,12 @@ public class LobbyRepository {
         return invalidLobbyNameErrorMessage;
     }
 
-    public MutableLiveData<String> getPlayerJoinsLobbyLiveData() {
-        webSocketClient.subscribeToTopic("/topic/player-join-lobby-"+playerRepository.getCurrentPlayer().getGameLobbyId(), this::playerJoinsLobbyMessageReceived);
-        webSocketClient.subscribeToQueue("/user/queue/errors", this::playerJoinsLobbyMessageReceived);
-        return playerJoinsLobbyLiveData;
-    }
-
     public MutableLiveData<String> getCreateLobbyLiveData() {
-        webSocketClient.subscribeToTopic("/topic/game-lobby-response", this::createLobbyLiveData);
         return createLobbyLiveData;
     }
 
-    public MutableLiveData<String> getPlayerLeavesLobbyLiveData() {
-        webSocketClient.subscribeToTopic("/topic/player-leave-lobby-"+playerRepository.getCurrentPlayer().getGameLobbyId(), this::playerLeavesLobbyMessageReceived);
-        return playerLeavesLobbyLiveData;
+    public MutableLiveData<String> getPlayerJoinsOrLeavesLobbyLiveData() {
+        return playerJoinsOrLeavesLobbyLiveData;
     }
 
     private boolean isValidLobbyName(String lobbyName) {

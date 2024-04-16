@@ -11,13 +11,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.StartupActivityBinding;
 import se2.carcassonne.helper.animation.AnimationHelper;
+import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 
 public class StartupActivity extends AppCompatActivity {
     StartupActivityBinding binding;
+    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        webSocketClient.connect();
         binding = StartupActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);

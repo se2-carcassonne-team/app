@@ -7,11 +7,21 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
 public class WebSocketClient {
-
+    private static WebSocketClient instance;
     private CompositeDisposable disposable = new CompositeDisposable();
     private StompClient client;
 
-    public void connect(WebSocketMessageHandler<String> messageHandler) {
+    private WebSocketClient() {
+    }
+
+    public static synchronized WebSocketClient getInstance() {
+        if (instance == null) {
+            instance = new WebSocketClient();
+        }
+        return instance;
+    }
+
+    public void connect() {
         cancelAllSubscriptions();
         if (client != null && client.isConnected()) client.disconnect();
         client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://10.0.2.2:8080/websocket-broker");
@@ -28,12 +38,6 @@ public class WebSocketClient {
                     break;
             }
         }));
-        Disposable serverTopic = client.topic("/topic/websocket-broker-response").subscribe(response -> {
-                    System.out.println("Response From Server: "+response.getPayload());
-                    messageHandler.onMessageReceived(response.getPayload());
-                }, error -> System.out.println("Response ERROR: "+error)
-        );
-        disposable.add(serverTopic);
         client.connect();
     }
 
@@ -62,6 +66,18 @@ public class WebSocketClient {
                 error -> System.out.println("Error subscribing to list-lobbies topic: " + error)
         );
         disposable.add(subscription);
+    }
+
+    public void unsubscribeFromTopic(String topic) {
+        Disposable subscription = client.topic(topic).subscribe();
+        disposable.remove(subscription);
+        subscription.dispose();
+    }
+
+    public void unsubscribeFromQueue(String queue) {
+        Disposable subscription = client.topic(queue).subscribe();
+        disposable.remove(subscription);
+        subscription.dispose();
     }
 
     public void cancelAllSubscriptions() {

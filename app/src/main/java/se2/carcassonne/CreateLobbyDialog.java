@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -20,20 +19,17 @@ import androidx.lifecycle.LiveData;
 import java.sql.Timestamp;
 
 import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.lobby.repository.LobbyRepository;
-import se2.carcassonne.lobby.viewmodel.LobbyListViewModel;
+import se2.carcassonne.lobby.viewmodel.LobbyViewModel;
 import se2.carcassonne.player.repository.PlayerRepository;
 
 public class CreateLobbyDialog extends DialogFragment {
-    LobbyListViewModel lobbyViewmodel;
-    LobbyRepository lobbyRepository;
+    private final LobbyViewModel lobbyViewmodel;
     private LiveData<String> lobbyAlreadyExistsLiveData;
     private LiveData<String> invalidLobbyLiveData;
     private LiveData<String> createLobbyLiveData;
 
     public CreateLobbyDialog() {
-        this.lobbyRepository = new LobbyRepository(PlayerRepository.getInstance());
-        this.lobbyViewmodel = new LobbyListViewModel(this.lobbyRepository);
+        this.lobbyViewmodel = new LobbyViewModel();
     }
 
     @NonNull
@@ -44,7 +40,6 @@ public class CreateLobbyDialog extends DialogFragment {
         View dialogView = inflater.inflate(R.layout.create_lobby_dialog, null);
         EditText text = dialogView.findViewById(R.id.lobbyNameInput);
         Button createLobbyBtn = dialogView.findViewById(R.id.btnCreateLobby);
-        lobbyRepository.connectToWebSocketServer();
 
         lobbyAlreadyExistsLiveData = lobbyViewmodel.getLobbyAlreadyExistsErrorMessage();
         invalidLobbyLiveData = lobbyViewmodel.getInvalidLobbyNameErrorMessage();
@@ -52,7 +47,6 @@ public class CreateLobbyDialog extends DialogFragment {
 
         createLobbyBtn.setOnClickListener(view -> {
             String lobbyName = text.getText().toString();
-//            lobbyRepository.connectToWebSocketServer();
             lobbyViewmodel.createLobby(
                     new Lobby(null, lobbyName,
                             new Timestamp(System.currentTimeMillis()),
@@ -60,25 +54,16 @@ public class CreateLobbyDialog extends DialogFragment {
                             null,
                             PlayerRepository.getInstance().getCurrentPlayer().getId()
                     ));
-            Log.d("CLF", "Lobby created!");
         });
 
-
-        lobbyAlreadyExistsLiveData.observe(this, errorMessage -> {
-            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
-        });
-
-        invalidLobbyLiveData.observe(this, errorMessage -> {
-            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
-        });
-
+        lobbyAlreadyExistsLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
+        invalidLobbyLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
         createLobbyLiveData.observe(this, message -> {
             Intent intent = new Intent(requireActivity(), InLobbyActivity.class);
             intent.putExtra("LOBBY", message);
             startActivity(intent);
             dismiss();
         });
-
         return builder.setView(dialogView).create();
     }
 
