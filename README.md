@@ -43,3 +43,9 @@ android:usesCleartextTraffic="true"
 - Leaving/Joining lobbies
 - Show players that are currently inside the lobby
 - Deleting lobbies after __x__ minutes, when no player is in the lobby
+
+
+## User-App interaction (UML state diagram) while playing
+[Game States_User Interaction Diagram final.pdf](https://github.com/se2-carcassonne-team/app/files/15000882/Game.States_User.Interaction.Diagram.final.pdf)
+
+
