@@ -1,5 +1,9 @@
 package se2.carcassonne.helper.network;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -9,6 +13,7 @@ import ua.naiksoftware.stomp.StompClient;
 public class WebSocketClient {
     private static WebSocketClient instance;
     private CompositeDisposable disposable = new CompositeDisposable();
+    private final List<Disposable> disposablesList = new ArrayList<>();
     private StompClient client;
 
     private WebSocketClient() {
@@ -54,6 +59,7 @@ public class WebSocketClient {
                 },
                 error -> System.out.println("Error subscribing to list-lobbies topic: " + error)
         );
+        disposablesList.add(subscription);
         disposable.add(subscription);
     }
 
@@ -65,19 +71,47 @@ public class WebSocketClient {
                 },
                 error -> System.out.println("Error subscribing to list-lobbies topic: " + error)
         );
+        disposablesList.add(subscription);
         disposable.add(subscription);
     }
 
+
     public void unsubscribeFromTopic(String topic) {
-        Disposable subscription = client.topic(topic).subscribe();
-        disposable.remove(subscription);
-        subscription.dispose();
+        Disposable subscription = findSubscriptionForTopic(topic);
+        if (subscription != null) {
+            sendMessage("/unsubscribe", topic);
+            disposable.remove(subscription);
+            disposablesList.remove(subscription); // Remove from separate list
+            subscription.dispose();
+        }
     }
 
     public void unsubscribeFromQueue(String queue) {
-        Disposable subscription = client.topic(queue).subscribe();
-        disposable.remove(subscription);
-        subscription.dispose();
+        Disposable subscription = findSubscriptionForTopic(queue);
+        if (subscription != null) {
+            sendMessage("/unsubscribe", queue);
+            disposable.remove(subscription);
+            disposablesList.remove(subscription); // Remove from separate list
+            subscription.dispose();
+        }
+    }
+
+    private Disposable findSubscriptionForTopic(String topic) {
+        for (Disposable subscription : disposablesList) {
+            if (subscription.toString().contains(topic)) {
+                return subscription;
+            }
+        }
+        return null;
+    }
+
+    private Disposable findSubscriptionForQueue(String queue) {
+        for (Disposable subscription : disposablesList) {
+            if (subscription.toString().contains(queue)) {
+                return subscription;
+            }
+        }
+        return null;
     }
 
     public void cancelAllSubscriptions() {

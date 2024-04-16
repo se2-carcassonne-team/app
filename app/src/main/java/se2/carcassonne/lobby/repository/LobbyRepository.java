@@ -56,9 +56,9 @@ public class LobbyRepository {
         if(lobbyAlreadyExistsError(message)){
             lobbyAlreadyExistsErrorMessage.postValue("A lobby with that name already exists! Try again.");
         } else {
-            createLobbyLiveData.postValue(message);
             PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getIdFromLobbyStringAsLong(message));
-            webSocketClient.subscribeToTopic("/topic/lobby-"+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId(), this::playerInLobbyReceivesJoinOrLeaveMessage);
+            webSocketClient.subscribeToTopic("/topic/lobby-"+(mapperHelper.getIdFromLobbyString(message)), this::playerInLobbyReceivesJoinOrLeaveMessage);
+            createLobbyLiveData.postValue(message);
         }
     }
 
@@ -122,14 +122,14 @@ public class LobbyRepository {
 
     public void getAllPlayers(Lobby lobby) {
         // TODO : ERROR HANDLING BASED ON CODES
-        webSocketClient.subscribeToQueue("/user/queue/response", this::listAllPlayersReceivedFromServer);
+        webSocketClient.subscribeToQueue("/user/queue/player-list-response", this::listAllPlayersReceivedFromServer);
         webSocketClient.subscribeToQueue("/user/queue/errors", this::listAllPlayersReceivedFromServer);
         lobbyApi.getAllPlayers(lobby.getId());
     }
 
     private void listAllPlayersReceivedFromServer(String message) {
         // TODO : ERROR HANDLING BASED ON CODES
-        webSocketClient.unsubscribeFromQueue("/user/queue/response");
+        webSocketClient.unsubscribeFromQueue("/user/queue/player-list-response");
         webSocketClient.unsubscribeFromQueue("/user/queue/errors");
         if (!Objects.equals(message, "null")) {
             listAllPlayersLiveData.postValue(message);
