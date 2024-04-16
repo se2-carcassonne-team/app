@@ -36,6 +36,50 @@
         app:layout_constraintStart_toEndOf="@+id/button5"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="55dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="163dp"
+        android:text="L"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button4"
+        app:layout_constraintStart_toEndOf="@+id/gridview"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        app:srcCompat="@drawable/start_field"
+        app:layout_constraintBottom_toBottomOf="@id/guideline4"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@id/guideline3"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
+
+        />
+
+    <TextView
+        android:id="@+id/textViewRoutineId"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autoSizeMaxTextSize="20dp"
+        android:text="Routine ID: "
+        android:autoSizeMinTextSize="1dp"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="@font/almendra_sc"
+        android:scaleType="centerCrop"
+        android:textColor="@color/btn_gold"
+
+
+        app:layout_constraintBottom_toTopOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:targetApi="o" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
@@ -85,32 +129,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.95" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="135dp"
-        android:layout_height="135dp"
-        app:srcCompat="@drawable/start_field"
-        tools:layout_editor_absoluteX="569dp"
-        tools:layout_editor_absoluteY="33dp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline4"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@id/guideline3"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
 
-        />
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="55dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginBottom="163dp"
-        android:text="L"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button4"
-        app:layout_constraintStart_toEndOf="@+id/gridview"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

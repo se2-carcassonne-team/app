@@ -43,8 +43,8 @@ public class GameboardAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        int middleRow = 13/2;
-        int middleCol = 25 / 2;
+        int middleRow = 5;
+        int middleCol = 12;
         boolean isMiddleField = position / cols == middleRow && position % cols == middleCol;
         //Startfield
         if (isMiddleField) {

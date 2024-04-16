@@ -17,6 +17,7 @@ public class GameLobbyActivity extends AppCompatActivity {
     private LobbyListViewModel gameLobbyViewModel;
     LobbyRepository gameLobbyRepository;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
