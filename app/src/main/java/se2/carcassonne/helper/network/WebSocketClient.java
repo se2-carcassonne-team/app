@@ -1,5 +1,7 @@
 package se2.carcassonne.helper.network;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -77,6 +79,8 @@ public class WebSocketClient {
 
 
     public void unsubscribeFromTopic(String topic) {
+//        client.unsubscribe(topic);
+        Log.d("UNSUBSCRIBE", "Client unsubscribe from topic: " + topic);
         Disposable subscription = findSubscriptionForTopic(topic);
         if (subscription != null) {
             sendMessage("/unsubscribe", topic);

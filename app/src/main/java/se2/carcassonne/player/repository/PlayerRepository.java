@@ -44,8 +44,8 @@ public class PlayerRepository {
     }
 
     private void createPlayerMessageReceived(String message) {
-        webSocketClient.unsubscribeFromQueue("/user/queue/response");
-        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
+//        webSocketClient.unsubscribeFromQueue("/user/queue/response");
+//        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
         if (userAlreadyExistsError(message)) {
             userAlreadyExistsErrorMessage.postValue("User with that name already exists! Try again.");
         } else {

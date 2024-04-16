@@ -73,6 +73,9 @@ public class LobbyRepository {
     public void getAllLobbies() {
         // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.subscribeToTopic("/topic/lobby-list", this::getAllLobbiesLiveData);
+//        TESTING UNSUBSCRIBE
+//        webSocketClient.unsubscribeFromTopic("/topic/lobby-list");
+
         webSocketClient.subscribeToQueue("user/queue/lobby-list-response", this::getAllLobbiesLiveData);
         webSocketClient.subscribeToQueue("/user/queue/errors", this::getAllLobbiesLiveData);
         lobbyApi.getAllLobbies();
