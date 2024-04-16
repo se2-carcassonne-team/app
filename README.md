@@ -46,6 +46,6 @@ android:usesCleartextTraffic="true"
 
 
 ## User-App interaction (UML state diagram) while playing
-[Game States_User Interaction Diagram final.pdf](https://github.com/se2-carcassonne-team/app/files/15000882/Game.States_User.Interaction.Diagram.final.pdf)
+![Game States_User Interaction Diagram final](https://github.com/se2-carcassonne-team/app/assets/72282853/cbbeb8e6-1adf-4917-bf1e-0c680fc7b588)
 
 
