@@ -7,7 +7,7 @@ import android.view.View;
 
 public class ZoomFunction implements View.OnTouchListener {
 
-    private ScaleGestureDetector scaleGestureDetector;
+    private final ScaleGestureDetector scaleGestureDetector;
     private float scaleFactor = 1.0f; // Initialer Skalierungsfaktor
     private View view;
 

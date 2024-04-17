@@ -76,7 +76,7 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
         private final TextView lobbyNameTextView;
         private final TextView currentPlayersTextView;
         private Lobby currentLobby;
-        private WebSocketClient webSocketClient = WebSocketClient.getInstance();
+        private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
 
         public LobbyViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
