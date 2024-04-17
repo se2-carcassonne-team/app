@@ -17,29 +17,23 @@ import java.util.Iterator;
 import java.util.List;
 
 import se2.carcassonne.R;
-import se2.carcassonne.lobby.model.Lobby;
 import se2.carcassonne.player.model.Player;
 
-public class PlayersInLobbyListAdapter extends RecyclerView.Adapter<PlayersInLobbyListAdapter.PlayerViewHolder> {
-    private List<Lobby> lobbyList;
-    private Lobby lobbyToAdd;
-
+public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolder> {
     private List<Player> playerList;
     private Player playerToEdit;
 
-    public PlayersInLobbyListAdapter(List<Player> playerList) {
+    public PlayerListAdapter(List<Player> playerList) {
         this.playerList = playerList;
     }
 
     public void updateData(String newPlayerList) {
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println("NewPlayerList: " + newPlayerList);
         try {
             playerList = objectMapper.readValue(newPlayerList, new TypeReference<List<Player>>() {});
             notifyDataSetChanged();// Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            // Handle parsing exception if needed
         }
     }
 
@@ -58,7 +52,6 @@ public class PlayersInLobbyListAdapter extends RecyclerView.Adapter<PlayersInLob
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             playerToEdit = objectMapper.readValue(singlePlayer, Player.class);
-            // Find and delete the player with the specified ID
             Iterator<Player> iterator = playerList.iterator();
             while (iterator.hasNext()) {
                 Player player = iterator.next();
@@ -70,7 +63,6 @@ public class PlayersInLobbyListAdapter extends RecyclerView.Adapter<PlayersInLob
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            // Handle parsing exception if needed
         }
     }
 
@@ -94,25 +86,17 @@ public class PlayersInLobbyListAdapter extends RecyclerView.Adapter<PlayersInLob
 
 
     public static class PlayerViewHolder extends RecyclerView.ViewHolder {
-//        private final CardView cardView;
         private final TextView playerNameTextView;
-
         private final ConstraintLayout layout;
-
 
         public PlayerViewHolder(@NonNull View itemView) {
             super(itemView);
-//            cardView = itemView.findViewById(R.id.cardView);
             layout = itemView.findViewById(R.id.cvPlayerList);
             playerNameTextView = itemView.findViewById(R.id.tvPlayerName);
-//            cardView.setOnClickListener(view -> {
-//                // TODO: Implement joining a lobby
-//            });
         }
 
         public void bind(Player player) {
             playerNameTextView.setText(player.getUsername());
-            System.out.println("Player username: " + player.getUsername());
         }
     }
 }

@@ -92,6 +92,7 @@ tasks.register('jacocoTestReport', JacocoReport) {
 }
 
 dependencies {
+    // Add the dependency on the imported module
     implementation libs.activity
     implementation libs.appcompat
     implementation libs.material

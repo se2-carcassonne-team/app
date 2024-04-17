@@ -9,20 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import se2.carcassonne.databinding.LobbyListActivityBinding;
+import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
-import se2.carcassonne.lobby.repository.LobbyRepository;
 import se2.carcassonne.lobby.viewmodel.LobbyListAdapter;
-import se2.carcassonne.lobby.viewmodel.LobbyListViewModel;
-import se2.carcassonne.player.repository.PlayerRepository;
-
-import java.sql.Timestamp;
+import se2.carcassonne.lobby.viewmodel.LobbyViewModel;
 
 public class LobbyListsActivity extends AppCompatActivity {
-
-    private LobbyListActivityBinding binding;
-    private LobbyRepository lobbyRepository;
+    LobbyListActivityBinding binding;
     private LobbyListAdapter adapter;
-    private LobbyListViewModel viewModel;
+    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    private LobbyViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,27 +32,22 @@ public class LobbyListsActivity extends AppCompatActivity {
         adapter = new LobbyListAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        lobbyRepository = new LobbyRepository(PlayerRepository.getInstance());
-        lobbyRepository.connectToWebSocketServer();
-        viewModel = new LobbyListViewModel(lobbyRepository);
+        viewModel = new LobbyViewModel();
 
-        viewModel.getMessageLiveDataListLobbies().observe(this, lobbyList -> {
-            adapter.updateData(lobbyList);
-        });
-
-        viewModel.getCreateLobbyLiveData().observe(this, lobby -> {
-            adapter.updateSingleData(lobby);
-        });
-
-        viewModel.getPlayerLeavesLobbyLiveData().observe(this, player -> {
-            viewModel.getAllLobbies();
-        });
-
-        viewModel.getPlayerJoinsLobbyLiveData().observe(this, player -> {
-            viewModel.getAllLobbies();
-        });
+        viewModel.getListOfAllLobbiesLiveData().observe(this, lobbyList -> adapter.updateData(lobbyList));
 
         viewModel.getAllLobbies();
-        binding.gameLobbyLeaveBtn.setOnClickListener(view -> finish());
+
+        binding.gameLobbyLeaveBtn.setOnClickListener(view -> {
+            webSocketClient.unsubscribe("/topic/lobby-list");
+            finish();
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewModel = new LobbyViewModel();
+        viewModel.getAllLobbies();
     }
 }

@@ -20,13 +20,11 @@ import java.util.List;
 
 import se2.carcassonne.InLobbyActivity;
 import se2.carcassonne.R;
+import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.lobby.repository.LobbyRepository;
-import se2.carcassonne.player.repository.PlayerRepository;
 
 public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.LobbyViewHolder> {
     private List<Lobby> lobbyList;
-
     public LobbyListAdapter(List<Lobby> lobbyList) {
         this.lobbyList = lobbyList;
     }
@@ -50,7 +48,6 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            // Handle parsing exception if needed
         }
     }
 
@@ -75,11 +72,11 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
 
 
     public static class LobbyViewHolder extends RecyclerView.ViewHolder {
-
         private final CardView cardView;
         private final TextView lobbyNameTextView;
         private final TextView currentPlayersTextView;
         private Lobby currentLobby;
+        private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
 
         public LobbyViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
@@ -87,14 +84,11 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
             lobbyNameTextView = itemView.findViewById(R.id.lobbyNameTextView);
             currentPlayersTextView = itemView.findViewById(R.id.currentPlayersTextView);
             cardView.setOnClickListener(view -> {
-                LobbyRepository lobbyRepository = new LobbyRepository(PlayerRepository.getInstance());
-                lobbyRepository.connectToWebSocketServer();
-                LobbyListViewModel viewModel = new LobbyListViewModel(lobbyRepository);
+                LobbyViewModel viewModel = new LobbyViewModel();
                 viewModel.joinLobby(currentLobby);
                 Intent intent = new Intent(context, InLobbyActivity.class);
-                Log.d("PlayerListUpdate", "CurrentLobby: " + currentLobby);
                 intent.putExtra("LOBBY", currentLobby.toJsonString());
-                Log.d("PlayerListUpdate", "CurrentLobbyJSON: " + currentLobby.toJsonString());
+                webSocketClient.unsubscribe("/topic/lobby-list");
                 context.startActivity(intent);
             });
         }

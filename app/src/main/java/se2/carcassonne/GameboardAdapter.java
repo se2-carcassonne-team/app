@@ -8,8 +8,9 @@ import android.widget.ImageView;
 
 public class GameboardAdapter extends BaseAdapter {
 
-    private Context context;
-    private int rows, cols;
+    private final Context context;
+    private final int rows;
+    private final int cols;
 
     public GameboardAdapter(Context context, int rows, int cols) {
         this.context = context;

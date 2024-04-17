@@ -1,17 +1,14 @@
 package se2.carcassonne.player.model;
 
-
-import se2.carcassonne.lobby.model.Lobby;
-
 public class Player {
    private Long id;
    private String username;
-   private Lobby gameLobbyDto;
+   private Long gameLobbyId;
 
-   public Player(Long id, String username, Lobby gameLobby) {
+   public Player(Long id, String username, Long gameLobbyId) {
       this.id = id;
       this.username = username;
-      this.gameLobbyDto = gameLobby;
+      this.gameLobbyId = gameLobbyId;
    }
 
    public Player() {
@@ -33,12 +30,12 @@ public class Player {
       this.username = username;
    }
 
-   public Lobby getGameLobbyDto() {
-      return gameLobbyDto;
+   public Long getGameLobbyId() {
+      return gameLobbyId;
    }
 
-   public void setGameLobbyDto(Lobby gameLobbyDto) {
-      this.gameLobbyDto = gameLobbyDto;
+   public void setGameLobbyId(Long gameLobbyId) {
+      this.gameLobbyId = gameLobbyId;
    }
 
    @Override
@@ -46,7 +43,7 @@ public class Player {
       return "Player{" +
               "id=" + id +
               ", username='" + username + '\'' +
-              ", gameLobbyDto=" + gameLobbyDto +
+              ", gameLobbyDto=" + gameLobbyId +
               '}';
    }
 
@@ -54,7 +51,7 @@ public class Player {
       return "{" +
               "\"id\":" + id +
               ", \"username\":\"" + username + '\"' +
-              ", \"gameLobbyDto\":" + gameLobbyDto +
+              ", \"gameLobbyDto\":" + gameLobbyId +
               '}';
    }
 }
