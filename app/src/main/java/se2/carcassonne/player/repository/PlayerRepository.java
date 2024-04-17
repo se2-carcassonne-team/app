@@ -21,7 +21,6 @@ public class PlayerRepository {
     private final PlayerApi playerApi;
     private static final Pattern playerNamePattern = Pattern.compile("^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$");
 
-
     private PlayerRepository() {
         this.playerApi = new PlayerApi();
     }
@@ -44,8 +43,8 @@ public class PlayerRepository {
     }
 
     private void createPlayerMessageReceived(String message) {
-//        webSocketClient.unsubscribeFromQueue("/user/queue/response");
-//        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
+        webSocketClient.unsubscribe("/user/queue/response");
+        webSocketClient.unsubscribe("/user/queue/errors");
         if (userAlreadyExistsError(message)) {
             userAlreadyExistsErrorMessage.postValue("User with that name already exists! Try again.");
         } else {

@@ -44,8 +44,9 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
 
         userAlreadyExistsLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
         invalidUsernameLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
-        chooseUsernameStartGameButton.setOnClickListener(view -> playerViewModel.createPlayer(new Player(null, text.getText().toString(), null)));
         messageLiveData.observe(this, message -> dismiss());
+
+        chooseUsernameStartGameButton.setOnClickListener(view -> playerViewModel.createPlayer(new Player(null, text.getText().toString(), null)));
 
         return builder.setView(dialogView).create();
     }

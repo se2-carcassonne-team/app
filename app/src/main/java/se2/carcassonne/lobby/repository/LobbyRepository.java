@@ -21,6 +21,7 @@ public class LobbyRepository {
     private final MutableLiveData<String> listAllLobbiesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> listAllPlayersLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerJoinsOrLeavesLobbyLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> playerLeavesLobbyLiveData = new MutableLiveData<>();
     private static final Pattern lobbyNamePattern = Pattern.compile("^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$");
     private final MapperHelper mapperHelper = new MapperHelper();
     private final LobbyApi lobbyApi;
@@ -51,8 +52,8 @@ public class LobbyRepository {
 
     private void createLobbyLiveData(String message) {
         // TODO : ERROR HANDLING BASED ON CODES
-        webSocketClient.unsubscribeFromQueue("/user/queue/response");
-        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
+        webSocketClient.unsubscribe("/user/queue/response");
+        webSocketClient.unsubscribe("/user/queue/errors");
         if(lobbyAlreadyExistsError(message)){
             lobbyAlreadyExistsErrorMessage.postValue("A lobby with that name already exists! Try again.");
         } else {
@@ -73,10 +74,7 @@ public class LobbyRepository {
     public void getAllLobbies() {
         // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.subscribeToTopic("/topic/lobby-list", this::getAllLobbiesLiveData);
-//        TESTING UNSUBSCRIBE
-//        webSocketClient.unsubscribeFromTopic("/topic/lobby-list");
-
-        webSocketClient.subscribeToQueue("user/queue/lobby-list-response", this::getAllLobbiesLiveData);
+        webSocketClient.subscribeToQueue("/user/queue/lobby-list-response", this::getAllLobbiesLiveData);
         webSocketClient.subscribeToQueue("/user/queue/errors", this::getAllLobbiesLiveData);
         lobbyApi.getAllLobbies();
     }
@@ -84,8 +82,8 @@ public class LobbyRepository {
     private void getAllLobbiesLiveData(String message){
         // TODO : ERROR HANDLING BASED ON CODES
         // STAY SUBSCRIBED FOR FUTURE UPDATES
-        webSocketClient.unsubscribeFromQueue("user/queue/lobby-list-response");
-        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
+        webSocketClient.unsubscribe("user/queue/lobby-list-response");
+        webSocketClient.unsubscribe("/user/queue/errors");
         if (!Objects.equals(message, "null")) {
             listAllLobbiesLiveData.postValue(message);
         } else {
@@ -103,8 +101,8 @@ public class LobbyRepository {
 
     private void playerJoinsLobbyMessageReceived(String message) {
         // TODO : ERROR HANDLING BASED ON CODES
-        webSocketClient.unsubscribeFromQueue("/user/queue/response");
-        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
+        webSocketClient.unsubscribe("/user/queue/response");
+        webSocketClient.unsubscribe("/user/queue/errors");
         PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getLobbyIdFromPlayer(message));
     }
 
@@ -117,10 +115,11 @@ public class LobbyRepository {
 
     private void playerLeavesLobbyMessageReceived(String message) {
         // TODO : ERROR HANDLING BASED ON CODES
-        webSocketClient.unsubscribeFromQueue("/user/queue/response");
-        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
-        webSocketClient.unsubscribeFromTopic("/topic/lobby-"+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId());
+        webSocketClient.unsubscribe("/user/queue/response");
+        webSocketClient.unsubscribe("/user/queue/errors");
+        webSocketClient.unsubscribe("/topic/lobby-"+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId());
         PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(null);
+        playerLeavesLobbyLiveData.postValue(message);
     }
 
     public void getAllPlayers(Lobby lobby) {
@@ -132,8 +131,8 @@ public class LobbyRepository {
 
     private void listAllPlayersReceivedFromServer(String message) {
         // TODO : ERROR HANDLING BASED ON CODES
-        webSocketClient.unsubscribeFromQueue("/user/queue/player-list-response");
-        webSocketClient.unsubscribeFromQueue("/user/queue/errors");
+        webSocketClient.unsubscribe("/user/queue/player-list-response");
+        webSocketClient.unsubscribe("/user/queue/errors");
         if (!Objects.equals(message, "null")) {
             listAllPlayersLiveData.postValue(message);
         } else {
@@ -167,6 +166,10 @@ public class LobbyRepository {
 
     public MutableLiveData<String> getPlayerJoinsOrLeavesLobbyLiveData() {
         return playerJoinsOrLeavesLobbyLiveData;
+    }
+
+    public MutableLiveData<String> getPlayerLeavesLobbyLiveData() {
+        return playerLeavesLobbyLiveData;
     }
 
     private boolean isValidLobbyName(String lobbyName) {

@@ -13,11 +13,8 @@ import java.util.Objects;
 import se2.carcassonne.databinding.InLobbyActivityBinding;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
-import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.lobby.repository.LobbyRepository;
 import se2.carcassonne.lobby.viewmodel.LobbyViewModel;
 import se2.carcassonne.lobby.viewmodel.PlayerListAdapter;
-import se2.carcassonne.player.repository.PlayerRepository;
 
 public class InLobbyActivity extends AppCompatActivity {
     InLobbyActivityBinding binding;
@@ -41,6 +38,7 @@ public class InLobbyActivity extends AppCompatActivity {
         lobbyViewmodel = new LobbyViewModel();
         binding.textViewLobbyName.setText(mapperHelper.getLobbyName(intent.getStringExtra("LOBBY")));
 
+        lobbyViewmodel.getPlayerLeavesLobbyLiveData().observe(this, playerList -> finish());
         lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> adapter.updateData(playerList));
         lobbyViewmodel.getPlayerJoinsOrLeavesLobbyLiveData().observe(this, playerList -> adapter.updateData(playerList));
 
@@ -56,6 +54,5 @@ public class InLobbyActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        lobbyViewmodel.leaveLobby();
     }
 }

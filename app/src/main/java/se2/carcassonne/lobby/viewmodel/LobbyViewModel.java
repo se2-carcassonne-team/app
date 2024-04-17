@@ -36,6 +36,10 @@ public class LobbyViewModel extends ViewModel {
         return lobbyRepository.getPlayerJoinsOrLeavesLobbyLiveData();
     }
 
+    public MutableLiveData<String> getPlayerLeavesLobbyLiveData() {
+        return lobbyRepository.getPlayerLeavesLobbyLiveData();
+    }
+
     public void createLobby(Lobby lobby) {
         lobbyRepository.createLobby(lobby);
     }

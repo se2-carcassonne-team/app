@@ -38,7 +38,7 @@ public class LobbyListsActivity extends AppCompatActivity {
         viewModel.getAllLobbies();
 
         binding.gameLobbyLeaveBtn.setOnClickListener(view -> {
-            webSocketClient.unsubscribeFromTopic("/topic/lobby-list");
+            webSocketClient.unsubscribe("/topic/lobby-list");
             finish();
         });
     }

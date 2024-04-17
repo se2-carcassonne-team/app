@@ -22,7 +22,6 @@ import se2.carcassonne.InLobbyActivity;
 import se2.carcassonne.R;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.lobby.repository.LobbyRepository;
 
 public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.LobbyViewHolder> {
     private List<Lobby> lobbyList;
@@ -89,7 +88,7 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
                 viewModel.joinLobby(currentLobby);
                 Intent intent = new Intent(context, InLobbyActivity.class);
                 intent.putExtra("LOBBY", currentLobby.toJsonString());
-                webSocketClient.unsubscribeFromTopic("/topic/lobby-list");
+                webSocketClient.unsubscribe("/topic/lobby-list");
                 context.startActivity(intent);
             });
         }
