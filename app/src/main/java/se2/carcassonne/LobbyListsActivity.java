@@ -18,6 +18,7 @@ public class LobbyListsActivity extends AppCompatActivity {
     LobbyListActivityBinding binding;
     private LobbyListAdapter adapter;
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    private LobbyViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class LobbyListsActivity extends AppCompatActivity {
         adapter = new LobbyListAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        LobbyViewModel viewModel = new LobbyViewModel();
+        viewModel = new LobbyViewModel();
 
         viewModel.getListOfAllLobbiesLiveData().observe(this, lobbyList -> adapter.updateData(lobbyList));
 
@@ -41,5 +42,12 @@ public class LobbyListsActivity extends AppCompatActivity {
             webSocketClient.unsubscribe("/topic/lobby-list");
             finish();
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewModel = new LobbyViewModel();
+        viewModel.getAllLobbies();
     }
 }

@@ -59,17 +59,21 @@ public class CreateLobbyDialog extends DialogFragment {
         lobbyAlreadyExistsLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
         invalidLobbyLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
         createLobbyLiveData.observe(this, message -> {
-            Intent intent = new Intent(requireActivity(), InLobbyActivity.class);
-            intent.putExtra("LOBBY", message);
-            startActivity(intent);
-            dismiss();
+            if (message != null) {
+                Intent intent = new Intent(requireActivity(), InLobbyActivity.class);
+                intent.putExtra("LOBBY", message);
+                startActivity(intent);
+                dismiss();
+            }
         });
+
         return builder.setView(dialogView).create();
     }
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
+        lobbyViewmodel.getCreateLobbyLiveData().setValue(null);
         lobbyAlreadyExistsLiveData.removeObservers(this);
         invalidLobbyLiveData.removeObservers(this);
         createLobbyLiveData.removeObservers(this);

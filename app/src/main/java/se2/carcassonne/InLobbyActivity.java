@@ -38,7 +38,11 @@ public class InLobbyActivity extends AppCompatActivity {
         lobbyViewmodel = new LobbyViewModel();
         binding.textViewLobbyName.setText(mapperHelper.getLobbyName(intent.getStringExtra("LOBBY")));
 
-        lobbyViewmodel.getPlayerLeavesLobbyLiveData().observe(this, playerList -> finish());
+        lobbyViewmodel.getPlayerLeavesLobbyLiveData().observe(this, playerWhoLeft -> {
+            if (playerWhoLeft != null){
+                finish();
+            }
+        });
         lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> adapter.updateData(playerList));
         lobbyViewmodel.getPlayerJoinsOrLeavesLobbyLiveData().observe(this, playerList -> adapter.updateData(playerList));
 
@@ -53,6 +57,7 @@ public class InLobbyActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        lobbyViewmodel.getPlayerLeavesLobbyLiveData().setValue(null);
         super.onDestroy();
     }
 }

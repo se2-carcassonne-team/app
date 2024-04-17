@@ -38,6 +38,13 @@ public class LobbyRepository {
         return instance;
     }
 
+    /**
+     * Subscribe to:
+     * <p>- /user/queue/response -> Return Value = Created Lobby with updated ID</p>
+     * <p>- /user/queue/errors -> Return Value = ErrorMessage</p>
+     *
+     * @param lobby Lobby to create
+     */
     public void createLobby(Lobby lobby){
         // TODO : ERROR HANDLING BASED ON CODES
         if (isValidLobbyName(lobby.getName())) {
@@ -50,6 +57,14 @@ public class LobbyRepository {
         }
     }
 
+    /**
+     * Unsubscribe from:
+     * <p>- /topic/lobby-<b>lobbyIdValue</b></p>
+     * <p>- /user/queue/response</p>
+     *
+     * Su
+     * @param message Received Response from Server when creating Lobby
+     */
     private void createLobbyLiveData(String message) {
         // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.unsubscribe("/user/queue/response");
@@ -63,11 +78,9 @@ public class LobbyRepository {
         }
     }
 
+
     private void playerInLobbyReceivesJoinOrLeaveMessage(String message) {
         // TODO : DOES THIS MAKE SENSE?
-        // If player already in lobby and notices a join, we just need to update the list of players
-        // and not set the ID of the lobby again
-        // STAY SUBSCRIBED FOR FUTURE UPDATES
         getPlayerJoinsOrLeavesLobbyLiveData().postValue(message);
     }
 

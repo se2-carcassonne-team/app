@@ -89,6 +89,7 @@ public class WebSocketClient {
             disposable.dispose();
         }
         disposable = new CompositeDisposable();
+        disposablesMap.clear();
     }
 
     public void disconnect(){
