@@ -32,6 +32,8 @@
         android:layout_marginEnd="27dp"
         android:layout_marginBottom="163dp"
         android:text="R"
+        android:fontFamily="@font/almendra_sc"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/left_button"
@@ -45,6 +47,8 @@
         android:layout_marginTop="14dp"
         android:layout_marginBottom="163dp"
         android:text="L"
+        android:fontFamily="@font/almendra_sc"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/right_button"
         app:layout_constraintStart_toEndOf="@+id/gridview"
@@ -54,12 +58,13 @@
         android:id="@+id/check_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/almendra_sc"
         android:text="Check"
-        app:layout_constraintTop_toBottomOf="@+id/right_button"
-        app:layout_constraintStart_toEndOf="@+id/gridview"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-         />
+        app:layout_constraintStart_toEndOf="@+id/gridview"
+        app:layout_constraintTop_toBottomOf="@+id/right_button" />
 
     <ImageView
         android:id="@+id/background_right_side"
@@ -69,13 +74,13 @@
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/background_right" />
+        app:srcCompat="@drawable/background_right_2" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="135dp"
         android:layout_height="135dp"
-        app:srcCompat="@drawable/start_field"
+        app:srcCompat="@drawable/roadcurve"
         app:layout_constraintBottom_toBottomOf="@id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@id/guideline3"
@@ -83,24 +88,49 @@
         />
 
     <ImageView
-        android:id="@+id/imageView9"
+        android:id="@+id/background_bar"
         android:layout_width="1000dp"
         android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="@+id/guideline10"
-        app:srcCompat="@drawable/background_down_under" />
+        app:srcCompat="@drawable/background_down_under_2" />
 
 
     <ImageView
-        android:id="@+id/imageView10"
+        android:id="@+id/blue_meeple"
         android:layout_width="68dp"
         android:layout_height="55dp"
         app:layout_constraintBottom_toBottomOf="@id/guideline7"
         app:layout_constraintStart_toStartOf="@+id/guideline10"
         app:srcCompat="@drawable/meeple_blue" />
 
+    <TextView
+        android:id="@+id/points_player_blue"
+        android:layout_width="51dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="2dp"
+        android:autoSizeMaxTextSize="20dp"
+        android:autoSizeMinTextSize="2dp"
+        android:fontFamily="@font/almendra_sc"
+        android:text="Points"
+        android:textColor="@color/gold"
+        app:layout_constraintBottom_toBottomOf="@id/guideline7"
+        app:layout_constraintStart_toEndOf="@+id/blue_meeple" />
+
+    <TextView
+        android:id="@+id/name_player_blue"
+        android:layout_width="60dp"
+        android:layout_height="21dp"
+        android:layout_marginBottom="8dp"
+        android:autoSizeMaxTextSize="20dp"
+        android:autoSizeMinTextSize="2dp"
+        android:fontFamily="@font/almendra_sc"
+        android:text="Name"
+        android:textColor="@color/gold"
+        app:layout_constraintBottom_toTopOf="@+id/points_player_blue"
+        app:layout_constraintStart_toEndOf="@+id/blue_meeple" />
 
     <TextView
         android:id="@+id/textViewRoutineId"
