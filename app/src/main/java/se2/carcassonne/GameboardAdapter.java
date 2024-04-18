@@ -52,6 +52,7 @@ public class GameboardAdapter extends BaseAdapter {
         } else {
             // Andernfalls verwenden Sie das Standardbild
             imageView.setImageResource(R.drawable.backside);
+            imageView.setAlpha(0.4f);
         }
 
         imageView.setOnClickListener(new View.OnClickListener() {

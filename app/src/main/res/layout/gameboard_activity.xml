@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/startup_background">
+    android:background="@drawable/startup_background"
+    >
 
     <GridView
         android:id="@+id/gridview"
@@ -23,7 +24,7 @@
 
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/right_button"
         android:layout_width="52dp"
         android:layout_height="53dp"
         android:layout_marginStart="28dp"
@@ -33,11 +34,11 @@
         android:text="R"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button5"
+        app:layout_constraintStart_toEndOf="@+id/left_button"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/left_button"
         android:layout_width="55dp"
         android:layout_height="53dp"
         android:layout_marginStart="20dp"
@@ -45,9 +46,30 @@
         android:layout_marginBottom="163dp"
         android:text="L"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button4"
+        app:layout_constraintEnd_toStartOf="@+id/right_button"
         app:layout_constraintStart_toEndOf="@+id/gridview"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <Button
+        android:id="@+id/check_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="Check"
+        app:layout_constraintTop_toBottomOf="@+id/right_button"
+        app:layout_constraintStart_toEndOf="@+id/gridview"
+        app:layout_constraintEnd_toEndOf="parent"
+         />
+
+    <ImageView
+        android:id="@+id/background_right_side"
+        android:layout_width="307dp"
+        android:layout_height="517dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/background_right" />
 
     <ImageView
         android:id="@+id/imageView3"
@@ -58,8 +80,8 @@
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@id/guideline3"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
-
         />
+
 
     <TextView
         android:id="@+id/textViewRoutineId"
@@ -72,8 +94,6 @@
         android:fontFamily="@font/almendra_sc"
         android:scaleType="centerCrop"
         android:textColor="@color/btn_gold"
-
-
         app:layout_constraintBottom_toTopOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
@@ -128,6 +148,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1" />
 
 
 

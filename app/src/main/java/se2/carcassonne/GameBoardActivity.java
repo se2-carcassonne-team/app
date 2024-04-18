@@ -39,6 +39,9 @@ public class GameBoardActivity extends AppCompatActivity {
         setupRotationButtons();
         tile = new Tile(0);
         updateRotationIdTextView();
+
+        ZoomFunction zoomfunktion = new ZoomFunction(this);
+        gridView.setOnTouchListener(zoomfunktion);
     }
 
 
@@ -54,7 +57,7 @@ public class GameBoardActivity extends AppCompatActivity {
         ImageView playingCard = findViewById(R.id.imageView3);
         final ImageRotator imageRotator = new ImageRotator(playingCard);
 
-        findViewById(R.id.button4).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.right_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 imageRotator.rotateRight();
@@ -63,7 +66,7 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.button5).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.left_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 imageRotator.rotateLeft();
