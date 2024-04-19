@@ -59,6 +59,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/goToGameboard"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/guideline23"
         app:layout_constraintEnd_toStartOf="@+id/guideline15"
         app:layout_constraintStart_toStartOf="@+id/guideline24"

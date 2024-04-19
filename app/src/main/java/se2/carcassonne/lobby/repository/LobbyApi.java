@@ -53,4 +53,8 @@ public class LobbyApi {
             throw new RuntimeException(e);
         }
     }
+
+    public void startGame(Long gameLobbyId) {
+        webSocketClient.sendMessage("/app/start-game", gameLobbyId.toString());
+    }
 }

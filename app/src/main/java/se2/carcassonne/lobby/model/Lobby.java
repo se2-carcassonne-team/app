@@ -9,15 +9,15 @@ public class Lobby {
     private java.sql.Timestamp gameStartTimestamp;
     private String gameState;
     private Integer numPlayers;
-    private Long lobbyCreatorId;
+    private Long lobbyAdminId;
 
-    public Lobby(Long id, String name, Timestamp gameStartTimestamp, String gameState, Integer numPlayers, Long lobbyCreatorId) {
+    public Lobby(Long id, String name, Timestamp gameStartTimestamp, String gameState, Integer numPlayers, Long lobbyAdminId) {
         this.id = id;
         this.name = name;
         this.gameStartTimestamp = gameStartTimestamp;
         this.gameState = gameState;
         this.numPlayers = numPlayers;
-        this.lobbyCreatorId = lobbyCreatorId;
+        this.lobbyAdminId = lobbyAdminId;
     }
 
     public Lobby() {
@@ -63,12 +63,12 @@ public class Lobby {
         this.numPlayers = numPlayers;
     }
 
-    public Long getLobbyCreatorId() {
-        return lobbyCreatorId;
+    public Long getLobbyAdminId() {
+        return lobbyAdminId;
     }
 
-    public void setLobbyCreatorId(Long lobbyCreatorId) {
-        this.lobbyCreatorId = lobbyCreatorId;
+    public void setLobbyAdminId(Long lobbyAdminId) {
+        this.lobbyAdminId = lobbyAdminId;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class Lobby {
                 ", \"gameStartTimestamp\":\"" + gameStartTimestamp + '\"' +
                 ", \"gameState\":\"" + gameState + '\"' +
                 ", \"numPlayers\":" + numPlayers +
-                ", \"lobbyCreatorId\":" + lobbyCreatorId +
+                ", \"lobbyAdminId\":" + lobbyAdminId +
                 '}';
     }
 }

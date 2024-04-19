@@ -17,10 +17,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Objects;
 
 import se2.carcassonne.InLobbyActivity;
 import se2.carcassonne.R;
 import se2.carcassonne.helper.network.WebSocketClient;
+import se2.carcassonne.lobby.model.GameState;
 import se2.carcassonne.lobby.model.Lobby;
 
 public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.LobbyViewHolder> {
@@ -62,7 +64,9 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
     @Override
     public void onBindViewHolder(@NonNull LobbyViewHolder holder, int position) {
         Lobby lobby = lobbyList.get(position);
-        holder.bind(lobby);
+        if (Objects.equals(lobby.getGameState(), GameState.LOBBY.getDisplayName())){
+            holder.bind(lobby);
+        }
     }
 
     @Override
@@ -83,6 +87,11 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
             cardView = itemView.findViewById(R.id.cardView);
             lobbyNameTextView = itemView.findViewById(R.id.lobbyNameTextView);
             currentPlayersTextView = itemView.findViewById(R.id.currentPlayersTextView);
+
+            if (currentLobby != null && currentLobby.getNumPlayers() == 5){
+                cardView.setClickable(false);
+            }
+
             cardView.setOnClickListener(view -> {
                 LobbyViewModel viewModel = new LobbyViewModel();
                 viewModel.joinLobby(currentLobby);

@@ -2,6 +2,7 @@ package se2.carcassonne;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,8 +14,11 @@ import java.util.Objects;
 import se2.carcassonne.databinding.InLobbyActivityBinding;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
+import se2.carcassonne.lobby.model.GameState;
+import se2.carcassonne.lobby.model.Lobby;
 import se2.carcassonne.lobby.viewmodel.LobbyViewModel;
 import se2.carcassonne.lobby.viewmodel.PlayerListAdapter;
+import se2.carcassonne.player.repository.PlayerRepository;
 
 public class InLobbyActivity extends AppCompatActivity {
     InLobbyActivityBinding binding;
@@ -29,6 +33,11 @@ public class InLobbyActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         Intent intent = getIntent();
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
+
+        Lobby currentLobby = mapperHelper.getLobbyFromJsonString(Objects.requireNonNull(intent.getStringExtra(GameState.LOBBY.getDisplayName())));
+        if (!Objects.equals(currentLobby.getLobbyAdminId(), PlayerRepository.getInstance().getCurrentPlayer().getId())){
+            binding.gameLobbyStartGameBtn.setVisibility(View.GONE);
+        }
 
         RecyclerView recyclerView = findViewById(R.id.rvListOfPlayers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -45,18 +54,26 @@ public class InLobbyActivity extends AppCompatActivity {
         });
         lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> adapter.updateData(playerList));
         lobbyViewmodel.getPlayerJoinsOrLeavesLobbyLiveData().observe(this, playerList -> adapter.updateData(playerList));
-
-        binding.gameLobbyStartGameBtn.setOnClickListener(view -> {
-            Intent startGameIntent = new Intent(InLobbyActivity.this, GameBoardActivity.class);
+        lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().observe(this, newGameLobby -> {
+            if (newGameLobby != null && !newGameLobby.equals("RESET")){
+                binding.gameLobbyStartGameBtn.setVisibility(View.VISIBLE);
+            } else if (newGameLobby != null) {
+                binding.gameLobbyStartGameBtn.setVisibility(View.GONE);
+            }
+        });
+        lobbyViewmodel.getGameToBeStartedLiveData().observe(this, gameSessionId -> {
+            Intent startGameIntent = new Intent(this, GameBoardActivity.class);
             startActivity(startGameIntent);
         });
+        binding.gameLobbyStartGameBtn.setOnClickListener(view -> lobbyViewmodel.startGame(currentLobby.getLobbyAdminId()));
         binding.gameLobbyLeaveBtn.setOnClickListener(view -> lobbyViewmodel.leaveLobby());
 
-        lobbyViewmodel.getAllPlayers(mapperHelper.getLobbyFromJsonString(Objects.requireNonNull(intent.getStringExtra("LOBBY"))));
+        lobbyViewmodel.getAllPlayers(currentLobby);
     }
 
     @Override
     protected void onDestroy() {
+        lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().setValue(null);
         lobbyViewmodel.getPlayerLeavesLobbyLiveData().setValue(null);
         super.onDestroy();
     }

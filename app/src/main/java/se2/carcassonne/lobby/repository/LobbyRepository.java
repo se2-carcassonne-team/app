@@ -22,6 +22,9 @@ public class LobbyRepository {
     private final MutableLiveData<String> listAllPlayersLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerJoinsOrLeavesLobbyLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> playerLeavesLobbyLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> playerInLobbyReceivesUpdatedLobbyLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> gameToBeStartedLiveData = new MutableLiveData<>();
+
     private static final Pattern lobbyNamePattern = Pattern.compile("^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$");
     private final MapperHelper mapperHelper = new MapperHelper();
     private final LobbyApi lobbyApi;
@@ -74,14 +77,25 @@ public class LobbyRepository {
         } else {
             PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getIdFromLobbyStringAsLong(message));
             webSocketClient.subscribeToTopic("/topic/lobby-"+(mapperHelper.getIdFromLobbyString(message)), this::playerInLobbyReceivesJoinOrLeaveMessage);
+            webSocketClient.subscribeToTopic("/topic/lobby-"+(mapperHelper.getIdFromLobbyString(message))+"/update", this::playerInLobbyReceivesUpdatedLobbyMessage);
+            webSocketClient.subscribeToTopic("/topic/lobby-"+(mapperHelper.getIdFromLobbyString(message))+"/game-start", this::playerReceivesGameStartMessage);
             createLobbyLiveData.postValue(message);
         }
     }
 
-    /**
-     *
-     * @param message
-     */
+    private void playerReceivesGameStartMessage(String message) {
+        gameToBeStartedLiveData.postValue(message);
+    }
+
+    private void playerInLobbyReceivesUpdatedLobbyMessage(String message) {
+        if (Objects.equals(mapperHelper.getLobbyAdminIdFromLobbyString(message), PlayerRepository.getInstance().getCurrentPlayer().getId())
+        && mapperHelper.getNumOfPlayersFromLobby(message) >= 2) {
+            getPlayerInLobbyReceivesUpdatedLobbyLiveData().postValue(message);
+        } else {
+            getPlayerInLobbyReceivesUpdatedLobbyLiveData().postValue("RESET");
+        }
+    }
+
     private void playerInLobbyReceivesJoinOrLeaveMessage(String message) {
         // TODO : DOES THIS MAKE SENSE?
         getPlayerJoinsOrLeavesLobbyLiveData().postValue(message);
@@ -112,6 +126,7 @@ public class LobbyRepository {
         webSocketClient.subscribeToQueue("/user/queue/response", this::playerJoinsLobbyMessageReceived);
         webSocketClient.subscribeToQueue("/user/queue/errors", this::playerJoinsLobbyMessageReceived);
         webSocketClient.subscribeToTopic("/topic/lobby-"+lobby.getId(), this::playerInLobbyReceivesJoinOrLeaveMessage);
+        webSocketClient.subscribeToTopic("/topic/lobby-"+lobby.getId()+"/update", this::playerInLobbyReceivesUpdatedLobbyMessage);
         lobbyApi.joinLobby(lobby.getId(), PlayerRepository.getInstance().getCurrentPlayer());
     }
 
@@ -134,6 +149,7 @@ public class LobbyRepository {
         webSocketClient.unsubscribe("/user/queue/response");
         webSocketClient.unsubscribe("/user/queue/errors");
         webSocketClient.unsubscribe("/topic/lobby-"+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId());
+        webSocketClient.unsubscribe("/topic/lobby-"+(mapperHelper.getIdFromLobbyString(message))+"/update");
         PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(null);
         playerLeavesLobbyLiveData.postValue(message);
     }
@@ -154,6 +170,10 @@ public class LobbyRepository {
         } else {
             listAllPlayersLiveData.postValue("No lobbies available");
         }
+    }
+
+    public void startGame(Long gameLobbyId) {
+        lobbyApi.startGame(gameLobbyId);
     }
 
     private boolean lobbyAlreadyExistsError(String message) {
@@ -186,6 +206,14 @@ public class LobbyRepository {
 
     public MutableLiveData<String> getPlayerLeavesLobbyLiveData() {
         return playerLeavesLobbyLiveData;
+    }
+
+    public MutableLiveData<String> getPlayerInLobbyReceivesUpdatedLobbyLiveData() {
+        return playerInLobbyReceivesUpdatedLobbyLiveData;
+    }
+
+    public MutableLiveData<String> getGameToBeStartedLiveData() {
+        return gameToBeStartedLiveData;
     }
 
     private boolean isValidLobbyName(String lobbyName) {

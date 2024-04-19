@@ -5,6 +5,7 @@ public class Player {
    private String username;
    private Long gameLobbyId;
 
+
    public Player(Long id, String username, Long gameLobbyId) {
       this.id = id;
       this.username = username;
