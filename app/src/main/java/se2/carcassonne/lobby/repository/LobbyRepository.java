@@ -78,7 +78,10 @@ public class LobbyRepository {
         }
     }
 
-
+    /**
+     *
+     * @param message
+     */
     private void playerInLobbyReceivesJoinOrLeaveMessage(String message) {
         // TODO : DOES THIS MAKE SENSE?
         getPlayerJoinsOrLeavesLobbyLiveData().postValue(message);
@@ -154,7 +157,7 @@ public class LobbyRepository {
     }
 
     private boolean lobbyAlreadyExistsError(String message) {
-        return message.startsWith("ERROR: gameLobby with name");
+        return message.startsWith("ERROR: 1002");
     }
 
     public MutableLiveData<String> getListAllLobbiesLiveData() {
