@@ -46,7 +46,8 @@ public class GameboardAdapter extends BaseAdapter {
         int middleRow = 5;
         int middleCol = 12;
         boolean isMiddleField = position / cols == middleRow && position % cols == middleCol;
-        //Startfield
+
+        // Startfeld-Bedingung
         if (isMiddleField) {
             imageView.setImageResource(R.drawable.start_field);
         } else {
@@ -55,13 +56,14 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setAlpha(0.4f);
         }
 
+        // OnClickListener hinzufügen
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (imageView.getScaleX() == 1.0f) {
+                if (imageView.getScaleX() != 1.0f && isMiddleField) {
                     imageView.setScaleX(1.5f);
                     imageView.setScaleY(1.5f);
+                    imageView.setImageResource(R.id.gameplay_card);
                 } else {
                     imageView.setScaleX(1.0f);
                     imageView.setScaleY(1.0f);
@@ -69,9 +71,8 @@ public class GameboardAdapter extends BaseAdapter {
             }
         });
 
-
-
         return imageView;
     }
 }
+
 

@@ -32,6 +32,8 @@ public class GameBoardActivity extends AppCompatActivity {
         setupFullscreen();
 
         gridView = findViewById(R.id.gridview);
+        gridView.setScaleX(3.5f);
+        gridView.setScaleY(3.5f);
         gameboardAdapter = new GameboardAdapter(this, ROWS, COLS);
         gridView.setAdapter(gameboardAdapter);
         textViewRoutineId = findViewById(R.id.textViewRoutineId);
@@ -40,8 +42,11 @@ public class GameBoardActivity extends AppCompatActivity {
         tile = new Tile(0);
         updateRotationIdTextView();
 
-        ZoomFunction zoomfunktion = new ZoomFunction(this);
-        gridView.setOnTouchListener(zoomfunktion);
+        //ZoomFunction zoomfunktion = new ZoomFunction(this);
+        //gridView.setOnTouchListener(zoomfunktion);
+        ZoomFunction zoomFunction = new ZoomFunction(this, gridView);
+        gridView.setOnTouchListener(zoomFunction);
+
     }
 
 
@@ -54,7 +59,7 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void setupRotationButtons() {
-        ImageView playingCard = findViewById(R.id.imageView3);
+        ImageView playingCard = findViewById(R.id.gameplay_card);
         final ImageRotator imageRotator = new ImageRotator(playingCard);
 
         findViewById(R.id.right_button).setOnClickListener(new View.OnClickListener() {
