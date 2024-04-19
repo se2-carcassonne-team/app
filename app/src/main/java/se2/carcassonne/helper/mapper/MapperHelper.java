@@ -113,4 +113,28 @@ public class MapperHelper {
         }
         return lobbyId.asLong();
     }
+
+    public Long getLobbyAdminIdFromLobbyString(String newGameLobbyStringAsJson) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode lobbyAdminId = null;
+        try {
+            lobbyAdminId = mapper.readTree(newGameLobbyStringAsJson).get("lobbyAdminId");
+        } catch (JsonProcessingException e) {
+            Log.e("Mapping Exception", "Error processing JSON in getIdFromLobbyString: " + e.getMessage());
+            return null;
+        }
+        return lobbyAdminId.asLong();
+    }
+
+    public Integer getNumOfPlayersFromLobby(String message) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode numOfPlayers = null;
+        try {
+            numOfPlayers = mapper.readTree(message).get("numPlayers");
+        } catch (JsonProcessingException e) {
+            Log.e("Mapping Exception", "Error processing JSON in getIdFromLobbyString: " + e.getMessage());
+            return null;
+        }
+        return numOfPlayers.asInt();
+    }
 }

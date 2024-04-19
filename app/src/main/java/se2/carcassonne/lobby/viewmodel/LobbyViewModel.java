@@ -40,6 +40,14 @@ public class LobbyViewModel extends ViewModel {
         return lobbyRepository.getPlayerLeavesLobbyLiveData();
     }
 
+    public MutableLiveData<String> getPlayerInLobbyReceivesUpdatedLobbyLiveData() {
+        return lobbyRepository.getPlayerInLobbyReceivesUpdatedLobbyLiveData();
+    }
+
+    public MutableLiveData<String> getGameToBeStartedLiveData() {
+        return lobbyRepository.getGameToBeStartedLiveData();
+    }
+
     public void createLobby(Lobby lobby) {
         lobbyRepository.createLobby(lobby);
     }
@@ -58,5 +66,9 @@ public class LobbyViewModel extends ViewModel {
 
     public void getAllPlayers(Lobby lobby) {
         lobbyRepository.getAllPlayers(lobby);
+    }
+
+    public void startGame(Long gameLobbyId) {
+        lobbyRepository.startGame(gameLobbyId);
     }
 }
