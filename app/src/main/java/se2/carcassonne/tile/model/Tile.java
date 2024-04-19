@@ -1,4 +1,4 @@
-package se2.carcassonne.Tile.model;
+package se2.carcassonne.tile.model;
 
 public class Tile {
     int tileId;
