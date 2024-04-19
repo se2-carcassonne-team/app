@@ -78,7 +78,10 @@ public class LobbyRepository {
         }
     }
 
-
+    /**
+     *
+     * @param message
+     */
     private void playerInLobbyReceivesJoinOrLeaveMessage(String message) {
         // TODO : DOES THIS MAKE SENSE?
         getPlayerJoinsOrLeavesLobbyLiveData().postValue(message);
