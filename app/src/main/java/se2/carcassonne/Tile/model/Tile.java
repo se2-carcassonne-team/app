@@ -12,6 +12,19 @@ public class Tile {
     String eastEdgeType;
     String westEdgeType;
 
+    public Tile() {
+    }
+
+    public Tile(int tileId, String tileName, int tileImage, String northEdgeType, String southEdgeType, String eastEdgeType, String westEdgeType) {
+        this.tileId = tileId;
+        this.tileName = tileName;
+        this.tileImage = tileImage;
+        this.northEdgeType = northEdgeType;
+        this.southEdgeType = southEdgeType;
+        this.eastEdgeType = eastEdgeType;
+        this.westEdgeType = westEdgeType;
+    }
+
     public int getTileId() {
         return tileId;
     }
