@@ -127,6 +127,7 @@ public class LobbyRepository {
         webSocketClient.subscribeToQueue("/user/queue/errors", this::playerJoinsLobbyMessageReceived);
         webSocketClient.subscribeToTopic("/topic/lobby-"+lobby.getId(), this::playerInLobbyReceivesJoinOrLeaveMessage);
         webSocketClient.subscribeToTopic("/topic/lobby-"+lobby.getId()+"/update", this::playerInLobbyReceivesUpdatedLobbyMessage);
+        webSocketClient.subscribeToTopic("/topic/lobby-"+lobby.getId()+"/game-start", this::playerReceivesGameStartMessage);
         lobbyApi.joinLobby(lobby.getId(), PlayerRepository.getInstance().getCurrentPlayer());
     }
 
@@ -150,6 +151,7 @@ public class LobbyRepository {
         webSocketClient.unsubscribe("/user/queue/errors");
         webSocketClient.unsubscribe("/topic/lobby-"+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId());
         webSocketClient.unsubscribe("/topic/lobby-"+(mapperHelper.getIdFromLobbyString(message))+"/update");
+        webSocketClient.unsubscribe("/topic/lobby-"+(mapperHelper.getIdFromLobbyString(message))+"/game-start");
         PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(null);
         playerLeavesLobbyLiveData.postValue(message);
     }
