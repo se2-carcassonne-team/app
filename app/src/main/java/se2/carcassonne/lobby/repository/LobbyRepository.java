@@ -92,7 +92,7 @@ public class LobbyRepository {
         && mapperHelper.getNumOfPlayersFromLobby(message) >= 2) {
             getPlayerInLobbyReceivesUpdatedLobbyLiveData().postValue(message);
         } else {
-            getPlayerInLobbyReceivesUpdatedLobbyLiveData().postValue("RESET");
+            getPlayerInLobbyReceivesUpdatedLobbyLiveData().postValue("RESET|" + message);
         }
     }
 

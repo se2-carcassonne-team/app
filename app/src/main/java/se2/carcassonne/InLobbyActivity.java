@@ -22,6 +22,7 @@ import se2.carcassonne.player.repository.PlayerRepository;
 
 public class InLobbyActivity extends AppCompatActivity {
     InLobbyActivityBinding binding;
+
     private LobbyViewModel lobbyViewmodel;
     private PlayerListAdapter adapter;
     private final MapperHelper mapperHelper = new MapperHelper();
@@ -52,12 +53,14 @@ public class InLobbyActivity extends AppCompatActivity {
                 finish();
             }
         });
-        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> adapter.updateData(playerList));
+        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> adapter.updateDataWithLobby(playerList, intent.getStringExtra("LOBBY")));
         lobbyViewmodel.getPlayerJoinsOrLeavesLobbyLiveData().observe(this, playerList -> adapter.updateData(playerList));
         lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().observe(this, newGameLobby -> {
-            if (newGameLobby != null && !newGameLobby.equals("RESET")){
+            if (newGameLobby != null && !newGameLobby.startsWith("RESET")){
                 binding.gameLobbyStartGameBtn.setVisibility(View.VISIBLE);
+                adapter.updateGameLobby(newGameLobby);
             } else if (newGameLobby != null) {
+                adapter.updateGameLobby(newGameLobby.split("\\|")[1]);
                 binding.gameLobbyStartGameBtn.setVisibility(View.GONE);
             }
         });

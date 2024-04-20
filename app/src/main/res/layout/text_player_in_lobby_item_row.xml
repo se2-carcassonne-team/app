@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvPlayerList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/gold"
     android:padding="8dp"
-    android:background="@color/gold">
+    android:visibility="visible">
 
     <ImageView
         android:id="@+id/ivPersonIcon"
@@ -21,10 +23,25 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Player name"
+        android:textColor="@color/dark_grey"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ivCrownIcon"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/ivPersonIcon"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/dark_grey"/>
+        app:layout_constraintVertical_bias="0.6" />
+
+    <ImageView
+        android:id="@+id/ivCrownIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/admin_crown"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
