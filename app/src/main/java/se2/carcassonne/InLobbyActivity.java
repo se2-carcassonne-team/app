@@ -65,7 +65,7 @@ public class InLobbyActivity extends AppCompatActivity {
             Intent startGameIntent = new Intent(this, GameBoardActivity.class);
             startActivity(startGameIntent);
         });
-        binding.gameLobbyStartGameBtn.setOnClickListener(view -> lobbyViewmodel.startGame(currentLobby.getLobbyAdminId()));
+        binding.gameLobbyStartGameBtn.setOnClickListener(view -> lobbyViewmodel.startGame(currentLobby.getId()));
         binding.gameLobbyLeaveBtn.setOnClickListener(view -> lobbyViewmodel.leaveLobby());
 
         lobbyViewmodel.getAllPlayers(currentLobby);

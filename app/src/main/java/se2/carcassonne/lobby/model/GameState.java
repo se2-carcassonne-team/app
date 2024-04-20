@@ -2,7 +2,6 @@ package se2.carcassonne.lobby.model;
 
 import lombok.Getter;
 
-@Getter
 public enum GameState {
     //Gamestates the lobby can be in
     LOBBY("LOBBY"),
@@ -13,5 +12,9 @@ public enum GameState {
 
     GameState(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 }
