@@ -15,16 +15,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import se2.carcassonne.R;
+import se2.carcassonne.helper.mapper.MapperHelper;
+import se2.carcassonne.lobby.model.Lobby;
 import se2.carcassonne.player.model.Player;
 
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolder> {
     private List<Player> playerList;
     private Player playerToEdit;
 
+    private final MapperHelper mapperHelper = new MapperHelper();
+    private Lobby currentLobby;
+
     public PlayerListAdapter(List<Player> playerList) {
         this.playerList = playerList;
+    }
+
+    public void updateDataWithLobby(String newPlayerList, String currentLobbyString) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            playerList = objectMapper.readValue(newPlayerList, new TypeReference<List<Player>>() {});
+            this.currentLobby = mapperHelper.getLobbyFromJsonString(currentLobbyString);
+            notifyDataSetChanged();// Notify RecyclerView about the changes
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateData(String newPlayerList) {
@@ -37,6 +54,11 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
         }
     }
 
+
+    public void updateGameLobby(String currentLobbyString) {
+        this.currentLobby = mapperHelper.getLobbyFromJsonString(currentLobbyString);
+        notifyDataSetChanged();// Notify RecyclerView about the changes
+    }
     public void updateSingleDataAdd(String singlePlayer) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -76,7 +98,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
     @Override
     public void onBindViewHolder(@NonNull PlayerViewHolder holder, int position) {
         Player player = playerList.get(position);
-        holder.bind(player);
+        holder.bind(player, currentLobby);
     }
 
     @Override
@@ -84,10 +106,14 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
         return playerList.size();
     }
 
+    public Lobby getCurrentLobby(){
+        return this.currentLobby;
+    }
 
     public static class PlayerViewHolder extends RecyclerView.ViewHolder {
         private final TextView playerNameTextView;
         private final ConstraintLayout layout;
+        private Lobby currentLobby;
 
         public PlayerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -95,8 +121,14 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
             playerNameTextView = itemView.findViewById(R.id.tvPlayerName);
         }
 
-        public void bind(Player player) {
+        public void bind(Player player, Lobby updatedLobby) {
             playerNameTextView.setText(player.getUsername());
+            this.currentLobby = updatedLobby;
+            if (Objects.equals(player.getId(), currentLobby.getLobbyAdminId())){
+                itemView.findViewById(R.id.ivCrownIcon).setVisibility(View.VISIBLE);
+            } else {
+                itemView.findViewById(R.id.ivCrownIcon).setVisibility(View.GONE);
+            }
         }
     }
 }
