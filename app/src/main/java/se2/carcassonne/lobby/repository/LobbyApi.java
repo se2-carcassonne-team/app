@@ -55,6 +55,6 @@ public class LobbyApi {
     }
 
     public void startGame(Long gameLobbyId) {
-        webSocketClient.sendMessage("/app/start-game", gameLobbyId.toString());
+        webSocketClient.sendMessage("/app/game-start", gameLobbyId.toString());
     }
 }
