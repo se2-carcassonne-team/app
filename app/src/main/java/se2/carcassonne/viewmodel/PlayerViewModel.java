@@ -1,10 +1,10 @@
-package se2.carcassonne.player.viewmodel;
+package se2.carcassonne.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import se2.carcassonne.player.model.Player;
-import se2.carcassonne.player.repository.PlayerRepository;
+import se2.carcassonne.model.Player;
+import se2.carcassonne.repository.PlayerRepository;
 
 public class PlayerViewModel extends ViewModel {
     private final PlayerRepository playerRepository = PlayerRepository.getInstance();

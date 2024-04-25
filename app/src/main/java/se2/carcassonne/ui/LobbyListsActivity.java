@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.ui;
 
 import android.os.Bundle;
 
@@ -8,11 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import se2.carcassonne.R;
 import se2.carcassonne.databinding.LobbyListActivityBinding;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
-import se2.carcassonne.lobby.viewmodel.LobbyListAdapter;
-import se2.carcassonne.lobby.viewmodel.LobbyViewModel;
+import se2.carcassonne.viewmodel.LobbyListAdapter;
+import se2.carcassonne.viewmodel.LobbyViewModel;
 
 public class LobbyListsActivity extends AppCompatActivity {
     LobbyListActivityBinding binding;

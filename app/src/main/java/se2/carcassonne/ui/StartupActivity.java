@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import se2.carcassonne.R;
 import se2.carcassonne.databinding.StartupActivityBinding;
 import se2.carcassonne.helper.animation.AnimationHelper;
 import se2.carcassonne.helper.network.WebSocketClient;

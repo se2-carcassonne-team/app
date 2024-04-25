@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.ui;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -15,8 +15,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LiveData;
 
-import se2.carcassonne.player.model.Player;
-import se2.carcassonne.player.viewmodel.PlayerViewModel;
+import se2.carcassonne.R;
+import se2.carcassonne.model.Player;
+import se2.carcassonne.viewmodel.PlayerViewModel;
 
 public class ChooseUsernameDialogFragment extends DialogFragment {
     private final PlayerViewModel playerViewModel;

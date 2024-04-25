@@ -1,4 +1,4 @@
-package se2.carcassonne.lobby.model;
+package se2.carcassonne.model;
 
 import java.sql.Timestamp;
 

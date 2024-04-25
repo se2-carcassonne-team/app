@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.ui;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -18,9 +18,10 @@ import androidx.lifecycle.LiveData;
 
 import java.sql.Timestamp;
 
-import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.lobby.viewmodel.LobbyViewModel;
-import se2.carcassonne.player.repository.PlayerRepository;
+import se2.carcassonne.R;
+import se2.carcassonne.model.Lobby;
+import se2.carcassonne.viewmodel.LobbyViewModel;
+import se2.carcassonne.repository.PlayerRepository;
 
 public class CreateLobbyDialog extends DialogFragment {
     private final LobbyViewModel lobbyViewmodel;

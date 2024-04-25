@@ -1,10 +1,10 @@
-package se2.carcassonne;
+package se2.carcassonne.ui;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.GridView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import se2.carcassonne.R;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 
 

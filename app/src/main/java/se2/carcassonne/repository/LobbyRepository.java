@@ -1,4 +1,4 @@
-package se2.carcassonne.lobby.repository;
+package se2.carcassonne.repository;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -6,10 +6,10 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import lombok.RequiredArgsConstructor;
+import se2.carcassonne.api.LobbyApi;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.network.WebSocketClient;
-import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.player.repository.PlayerRepository;
+import se2.carcassonne.model.Lobby;
 
 @RequiredArgsConstructor
 public class LobbyRepository {

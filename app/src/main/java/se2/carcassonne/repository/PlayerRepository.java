@@ -1,4 +1,4 @@
-package se2.carcassonne.player.repository;
+package se2.carcassonne.repository;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -8,7 +8,8 @@ import java.util.regex.Pattern;
 
 import lombok.RequiredArgsConstructor;
 import se2.carcassonne.helper.network.WebSocketClient;
-import se2.carcassonne.player.model.Player;
+import se2.carcassonne.model.Player;
+import se2.carcassonne.api.PlayerApi;
 
 @RequiredArgsConstructor
 public class PlayerRepository {

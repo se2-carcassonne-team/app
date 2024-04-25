@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.ui;
 
 import android.content.Context;
 import android.view.MotionEvent;

@@ -1,4 +1,4 @@
-package se2.carcassonne.player.model;
+package se2.carcassonne.model;
 
 public class Player {
    private Long id;

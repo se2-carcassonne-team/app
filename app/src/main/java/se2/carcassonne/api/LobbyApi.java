@@ -1,11 +1,11 @@
-package se2.carcassonne.lobby.repository;
+package se2.carcassonne.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se2.carcassonne.helper.network.WebSocketClient;
-import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.player.model.Player;
+import se2.carcassonne.model.Lobby;
+import se2.carcassonne.model.Player;
 
 public class LobbyApi {
     private final ObjectMapper objectMapper = new ObjectMapper();

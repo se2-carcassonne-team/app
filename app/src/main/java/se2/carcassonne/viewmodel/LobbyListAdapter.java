@@ -1,8 +1,7 @@
-package se2.carcassonne.lobby.viewmodel;
+package se2.carcassonne.viewmodel;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +18,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Objects;
 
-import se2.carcassonne.InLobbyActivity;
+import se2.carcassonne.ui.InLobbyActivity;
 import se2.carcassonne.R;
 import se2.carcassonne.helper.network.WebSocketClient;
-import se2.carcassonne.lobby.model.GameState;
-import se2.carcassonne.lobby.model.Lobby;
+import se2.carcassonne.model.GameState;
+import se2.carcassonne.model.Lobby;
 
 public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.LobbyViewHolder> {
     private List<Lobby> lobbyList;

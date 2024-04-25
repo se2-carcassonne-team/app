@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,13 +8,13 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import se2.carcassonne.R;
 import se2.carcassonne.databinding.HomeActivityBinding;
 import se2.carcassonne.helper.animation.AnimationHelper;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 
-import se2.carcassonne.player.repository.PlayerRepository;
-import se2.carcassonne.player.viewmodel.PlayerViewModel;
+import se2.carcassonne.viewmodel.PlayerViewModel;
 
 public class HomeActivity extends AppCompatActivity {
     HomeActivityBinding binding;

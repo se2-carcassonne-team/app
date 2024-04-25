@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,14 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import se2.carcassonne.R;
 import se2.carcassonne.databinding.InLobbyActivityBinding;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
-import se2.carcassonne.lobby.model.GameState;
-import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.lobby.viewmodel.LobbyViewModel;
-import se2.carcassonne.lobby.viewmodel.PlayerListAdapter;
-import se2.carcassonne.player.repository.PlayerRepository;
+import se2.carcassonne.model.GameState;
+import se2.carcassonne.model.Lobby;
+import se2.carcassonne.viewmodel.LobbyViewModel;
+import se2.carcassonne.viewmodel.PlayerListAdapter;
+import se2.carcassonne.repository.PlayerRepository;
 
 public class InLobbyActivity extends AppCompatActivity {
     InLobbyActivityBinding binding;

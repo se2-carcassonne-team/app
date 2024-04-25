@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-import se2.carcassonne.lobby.model.Lobby;
+import se2.carcassonne.model.Lobby;
 
 public class MapperHelper {
     // PlayerMapping

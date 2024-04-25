@@ -1,4 +1,4 @@
-package se2.carcassonne.lobby.viewmodel;
+package se2.carcassonne.viewmodel;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +19,8 @@ import java.util.Objects;
 
 import se2.carcassonne.R;
 import se2.carcassonne.helper.mapper.MapperHelper;
-import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.player.model.Player;
+import se2.carcassonne.model.Lobby;
+import se2.carcassonne.model.Player;
 
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolder> {
     private List<Player> playerList;

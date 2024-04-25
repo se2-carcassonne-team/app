@@ -1,10 +1,10 @@
-package se2.carcassonne.lobby.viewmodel;
+package se2.carcassonne.viewmodel;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import se2.carcassonne.lobby.model.Lobby;
-import se2.carcassonne.lobby.repository.LobbyRepository;
+import se2.carcassonne.model.Lobby;
+import se2.carcassonne.repository.LobbyRepository;
 
 public class LobbyViewModel extends ViewModel {
     private final LobbyRepository lobbyRepository = LobbyRepository.getInstance();

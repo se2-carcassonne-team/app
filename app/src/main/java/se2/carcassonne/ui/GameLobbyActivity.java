@@ -1,4 +1,4 @@
-package se2.carcassonne;
+package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.GameLobbyActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
-import se2.carcassonne.lobby.viewmodel.LobbyViewModel;
 
 public class GameLobbyActivity extends AppCompatActivity {
     GameLobbyActivityBinding binding;
