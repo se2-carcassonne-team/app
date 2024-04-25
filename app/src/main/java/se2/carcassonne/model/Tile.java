@@ -76,7 +76,7 @@ public class Tile {
      * @param rotation clockwise rotation in 90 degree steps: <p>0 = no rotation (0 deg)</p><p>1 = 90 deg</p><p>2 = 180 deg</p><p>3 = 270 deg</p>
      * @return new array of the tile edges rotated by the given rotation.
      */
-    private int[] rotatedEdges(int rotation){
+    public int[] rotatedEdges(int rotation){
         switch (rotation) {
             case 0:
                 return getEdges();
@@ -128,11 +128,14 @@ public class Tile {
      * @param rotation clockwise rotation in 90 degree steps: <p>0 = no rotation (0 deg)</p><p>1 = 90 deg</p><p>2 = 180 deg</p><p>3 = 270 deg</p>
      * @return new array of the tile features rotated by the given rotation.
      */
-    private int[] rotatedFeatures(int rotation) {
+    public int[] rotatedFeatures(int rotation) {
         // rotate a 3x3 matrix by 90 degrees: transpose matrix & switch first and last columns
         // e.g. {1 2 3 4 5 6 7 8 9} --> {7 4 1 8 5 2 9 6 3}
         // TODO: implement efficiently (hardcoded)
         switch (rotation){
+            case 0: {
+                return getFeatures();
+            }
             case 1: {
                 // hard-coded 90-degree rotation of the features
                 int[] rotatedMatrix = new int[9];
@@ -176,9 +179,6 @@ public class Tile {
             default: {
                 throw new RuntimeException("Invalid rotation");
             }
-
         }
-
     }
-
 }
