@@ -16,17 +16,6 @@ public class Lobby {
     private Integer numPlayers;
     private Long lobbyAdminId;
 
-    @Override
-    public String toString() {
-        return "Lobby{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", gameStartTimestamp=" + gameStartTimestamp +
-                ", gameState='" + gameState + '\'' +
-                ", numPlayers=" + numPlayers +
-                '}';
-    }
-
     public String toJsonString() {
         return "{" +
                 "\"id\":" + id +
