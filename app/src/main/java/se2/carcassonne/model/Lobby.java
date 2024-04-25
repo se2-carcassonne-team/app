@@ -2,7 +2,16 @@ package se2.carcassonne.model;
 
 import java.sql.Timestamp;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Lobby {
     private Long id;
     private String name;
@@ -10,66 +19,6 @@ public class Lobby {
     private String gameState;
     private Integer numPlayers;
     private Long lobbyAdminId;
-
-    public Lobby(Long id, String name, Timestamp gameStartTimestamp, String gameState, Integer numPlayers, Long lobbyAdminId) {
-        this.id = id;
-        this.name = name;
-        this.gameStartTimestamp = gameStartTimestamp;
-        this.gameState = gameState;
-        this.numPlayers = numPlayers;
-        this.lobbyAdminId = lobbyAdminId;
-    }
-
-    public Lobby() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Timestamp getGameStartTimestamp() {
-        return gameStartTimestamp;
-    }
-
-    public void setGameStartTimestamp(Timestamp gameStartTimestamp) {
-        this.gameStartTimestamp = gameStartTimestamp;
-    }
-
-    public String getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(String gameState) {
-        this.gameState = gameState;
-    }
-
-    public Integer getNumPlayers() {
-        return numPlayers;
-    }
-
-    public void setNumPlayers(Integer numPlayers) {
-        this.numPlayers = numPlayers;
-    }
-
-    public Long getLobbyAdminId() {
-        return lobbyAdminId;
-    }
-
-    public void setLobbyAdminId(Long lobbyAdminId) {
-        this.lobbyAdminId = lobbyAdminId;
-    }
 
     @Override
     public String toString() {
