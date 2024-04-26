@@ -71,6 +71,20 @@ public class Tile {
         this.coordinates = null;
     }
 
+    public void rotate(boolean right){
+        if(right){
+            rotation++;
+            if (rotation > 3) {
+                rotation=0;
+            }
+        }else {
+            rotation--;
+            if(rotation<0){
+                rotation =3;
+            }
+        }
+    }
+
     /**
      *
      * @param rotation clockwise rotation in 90 degree steps: <p>0 = no rotation (0 deg)</p><p>1 = 90 deg</p><p>2 = 180 deg</p><p>3 = 270 deg</p>

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.R;
+import se2.carcassonne.model.Tile;
 
 
 public class GameBoardActivity extends AppCompatActivity {
@@ -26,7 +27,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void updateRotationIdTextView() {
         TextView textViewRoutineId = findViewById(R.id.textViewRoutineId);
-        textViewRoutineId.setText("Routine ID: " + tile.getRoutineId());
+        textViewRoutineId.setText("Routine ID: " + tile.getRotation());
     }
 
     @Override
@@ -45,7 +46,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
         setupRotationButtons(gameplay_card);
-        tile = new Tile(0);
+        tile = new Tile(0L,"castle_wall_road", new int[]{3,2,1,2}, new int[]{3,3,3, 2,2,2, 1,1,1});
         updateRotationIdTextView();
 
         //ZoomFunction zoomfunktion = new ZoomFunction(this);
