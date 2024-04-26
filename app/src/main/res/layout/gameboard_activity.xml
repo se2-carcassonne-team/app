@@ -13,7 +13,7 @@
         android:id="@+id/gridview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:horizontalSpacing="90dp"
+        android:horizontalSpacing="50dp"
         android:numColumns="25"
         android:stretchMode="columnWidth"
         android:verticalSpacing="1dp"
@@ -71,7 +71,7 @@
         app:layout_constraintStart_toEndOf="@+id/gridview"
         app:layout_constraintTop_toBottomOf="@+id/right_button" />
 
-    <!--<Button
+    <Button
         android:id="@+id/button3"
         android:layout_width="66dp"
         android:layout_height="48dp"
@@ -80,7 +80,7 @@
         app:layout_constraintBottom_toBottomOf="@id/guideline7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/points_player_blue" />
--->
+
 
     <ImageView
         android:id="@+id/background_right"

@@ -35,6 +35,8 @@ public class StartupActivity extends AppCompatActivity {
         final Button startGameBtn = findViewById(R.id.startgame);
         startGameBtn.setVisibility(View.INVISIBLE);
 
+        final Button loggameboard = findViewById(R.id.button2);
+
         AnimationHelper.fadeIn(castle, 2000, new Runnable(){
             @Override
             public void run(){
@@ -56,6 +58,13 @@ public class StartupActivity extends AppCompatActivity {
 
         //binding.button.setOnClickListener(v -> {
             Intent intent = new Intent(StartupActivity.this, HomeActivity.class);
+            startActivity(intent);
+        });
+
+        loggameboard.setOnClickListener(v -> {
+
+            //binding.button.setOnClickListener(v -> {
+            Intent intent = new Intent(StartupActivity.this, GameBoardActivity.class);
             startActivity(intent);
         });
 

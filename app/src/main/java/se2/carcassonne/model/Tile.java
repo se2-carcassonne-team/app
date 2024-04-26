@@ -71,7 +71,7 @@ public class Tile {
         this.coordinates = null;
     }
 
-    public void rotate(boolean right){
+    public int rotate(boolean right){
         if(right){
             rotation++;
             if (rotation > 3) {
@@ -83,6 +83,7 @@ public class Tile {
                 rotation =3;
             }
         }
+        return rotation;
     }
 
     /**

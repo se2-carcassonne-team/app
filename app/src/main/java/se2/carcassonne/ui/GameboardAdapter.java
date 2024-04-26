@@ -6,12 +6,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+
 import se2.carcassonne.R;
+import se2.carcassonne.model.Tile;
 
 public class GameboardAdapter extends BaseAdapter {
 
     private Context context;
     private int rows, cols;
+    private boolean yourTurn = true;
+
+    private int r_id = 3;
+
+
 
     public GameboardAdapter(Context context, int rows, int cols) {
         this.context = context;
@@ -39,7 +46,7 @@ public class GameboardAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(80, 75)); // Anpassen Sie die Größe nach Bedarf
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(75, 75)); // Anpassen Sie die Größe nach Bedarf
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             imageView = (ImageView) convertView;
@@ -48,6 +55,8 @@ public class GameboardAdapter extends BaseAdapter {
         int middleRow = 5;
         int middleCol = 12;
         boolean isMiddleField = position / cols == middleRow && position % cols == middleCol;
+
+
 
         // Startfeld-Bedingung
         if (isMiddleField) {
@@ -60,7 +69,12 @@ public class GameboardAdapter extends BaseAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!isMiddleField && yourTurn){
+                    float currentRotation = imageView.getRotation();
+                    v.setRotation(currentRotation + 90*r_id);
                 toggleImageScale((ImageView) v);
+                    yourTurn = false;;
+                }
             }
         });
 
@@ -76,7 +90,6 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setAlpha(0.9f);
         }
     }
-
 
 
 }

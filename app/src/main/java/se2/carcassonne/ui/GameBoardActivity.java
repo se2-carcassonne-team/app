@@ -42,7 +42,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gridView.setScaleY(3.5f);
         gameboardAdapter = new GameboardAdapter(this, ROWS, COLS);
         gridView.setAdapter(gameboardAdapter);
-
+        final Button closeGame = findViewById(R.id.button3);
 
 
         setupRotationButtons(gameplay_card);
@@ -54,7 +54,12 @@ public class GameBoardActivity extends AppCompatActivity {
         ZoomFunction zoomFunction = new ZoomFunction(this, gridView);
         gridView.setOnTouchListener(zoomFunction);
 
+        closeGame.setOnClickListener(v -> {
 
+            //binding.button.setOnClickListener(v -> {
+            Intent intent = new Intent(GameBoardActivity.this, StartupActivity.class);
+            startActivity(intent);
+        });
 
 
     }
