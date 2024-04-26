@@ -10,9 +10,8 @@ import se2.carcassonne.R;
 
 public class GameboardAdapter extends BaseAdapter {
 
-    private final Context context;
-    private final int rows;
-    private final int cols;
+    private Context context;
+    private int rows, cols;
 
     public GameboardAdapter(Context context, int rows, int cols) {
         this.context = context;
@@ -40,40 +39,48 @@ public class GameboardAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(18, 15)); // Anpassen Sie die Größe nach Bedarf
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(80, 75)); // Anpassen Sie die Größe nach Bedarf
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        int middleRow = (rows - 1) / 2;
-        int middleCol = (cols - 1) / 2;
+        int middleRow = 5;
+        int middleCol = 12;
         boolean isMiddleField = position / cols == middleRow && position % cols == middleCol;
-        //Startfield
+
+        // Startfeld-Bedingung
         if (isMiddleField) {
             imageView.setImageResource(R.drawable.start_field);
         } else {
             // Andernfalls verwenden Sie das Standardbild
             imageView.setImageResource(R.drawable.backside);
+            imageView.setAlpha(0.4f);
         }
-
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (imageView.getScaleX() == 1.0f) {
-                    imageView.setScaleX(1.5f);
-                    imageView.setScaleY(1.5f);
-                } else {
-                    imageView.setScaleX(1.0f);
-                    imageView.setScaleY(1.0f);
-                }
+                toggleImageScale((ImageView) v);
             }
         });
 
-
-
         return imageView;
     }
+
+    private void toggleImageScale(ImageView imageView) {
+        if (imageView.getScaleX() != 1.0f) {
+            imageView.setImageResource(R.drawable.backside);
+            imageView.setAlpha(0.4f);
+        } else {
+            imageView.setImageResource(R.drawable.monastery_0);
+            imageView.setAlpha(0.9f);
+        }
+    }
+
+
+
 }
+
+
+
 

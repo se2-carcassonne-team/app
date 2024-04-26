@@ -1,23 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/startup_background">
+    android:background="@drawable/startup_background"
+
+    >
 
     <GridView
         android:id="@+id/gridview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:horizontalSpacing="1dp"
-        android:numColumns="30"
+        android:horizontalSpacing="90dp"
+        android:numColumns="25"
         android:stretchMode="columnWidth"
         android:verticalSpacing="1dp"
+        android:columnWidth="5dp"
         app:layout_constraintBottom_toBottomOf="@id/guideline4"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="2:1.1"
+        app:layout_constraintEnd_toEndOf="@id/guideline6"
+        app:layout_constraintTop_toTopOf="@id/guideline4"
+        />
+
+
+    <Button
+        android:id="@+id/right_button"
+        android:layout_width="52dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginBottom="163dp"
+        android:text="R"
+        android:textSize="20sp"
+        android:fontFamily="@font/almendra_sc"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/left_button"
+        app:layout_constraintTop_toBottomOf="@+id/gameplay_card" />
+
+    <Button
+        android:id="@+id/left_button"
+        android:layout_width="55dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="163dp"
+        android:text="L"
+        android:fontFamily="@font/almendra_sc"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/right_button"
+        app:layout_constraintStart_toEndOf="@+id/gridview"
+        app:layout_constraintTop_toBottomOf="@+id/gameplay_card" />
+
+    <Button
+        android:id="@+id/check_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/almendra_sc"
+        android:text="Check"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/gridview"
+        app:layout_constraintTop_toBottomOf="@+id/right_button" />
+
+    <!--<Button
+        android:id="@+id/button3"
+        android:layout_width="66dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:text="..."
+        app:layout_constraintBottom_toBottomOf="@id/guideline7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/points_player_blue" />
+-->
+
+    <ImageView
+        android:id="@+id/background_right"
+        android:layout_width="307dp"
+        android:layout_height="517dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="@id/guideline4" />
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/background_right_2" />
+
+    <ImageView
+        android:id="@+id/gameplay_card"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        app:srcCompat="@drawable/monastery_1"
+        app:layout_constraintBottom_toBottomOf="@id/guideline4"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@id/guideline3"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
+        />
+
+
+    <ImageView
+        android:id="@+id/blue_meeple"
+        android:layout_width="68dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="-20dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toEndOf="@+id/guideline6"
+        app:layout_constraintTop_toBottomOf="@+id/check_button"
+        app:srcCompat="@drawable/meeple_blue" />
+
+    <TextView
+        android:id="@+id/points_player_blue"
+        android:layout_width="65dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="2dp"
+        android:autoSizeMaxTextSize="20dp"
+        android:autoSizeMinTextSize="2dp"
+        android:fontFamily="@font/almendra_sc"
+        android:text="Points"
+        android:textColor="@color/gold"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/guideline7"
+        app:layout_constraintStart_toEndOf="@+id/blue_meeple" />
+
+    <TextView
+        android:id="@+id/name_player_blue"
+        android:layout_width="60dp"
+        android:layout_height="21dp"
+        android:layout_marginBottom="8dp"
+        android:autoSizeMaxTextSize="20dp"
+        android:autoSizeMinTextSize="2dp"
+        android:fontFamily="@font/almendra_sc"
+        android:text="Name"
+        android:textColor="@color/gold"
+        app:layout_constraintBottom_toTopOf="@+id/points_player_blue"
+        app:layout_constraintStart_toEndOf="@+id/blue_meeple" />
+
+    <TextView
+        android:id="@+id/textViewRoutineId"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autoSizeMaxTextSize="20dp"
+        android:text="Routine ID: "
+        android:autoSizeMinTextSize="1dp"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="@font/almendra_sc"
+        android:scaleType="centerCrop"
+        android:textColor="@color/btn_gold"
+        app:layout_constraintBottom_toTopOf="@+id/gameplay_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:targetApi="o" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -31,21 +171,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.75" />
+        app:layout_constraintGuide_percent="0.87" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.40" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
@@ -59,7 +199,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.75" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"
@@ -68,5 +208,21 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.95" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
