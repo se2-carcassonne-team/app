@@ -13,7 +13,7 @@
         android:id="@+id/gridview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:horizontalSpacing="30dp"
+        android:horizontalSpacing="90dp"
         android:numColumns="25"
         android:stretchMode="columnWidth"
         android:verticalSpacing="1dp"
@@ -71,10 +71,21 @@
         app:layout_constraintStart_toEndOf="@+id/gridview"
         app:layout_constraintTop_toBottomOf="@+id/right_button" />
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="66dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:text="..."
+        app:layout_constraintBottom_toBottomOf="@id/guideline7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/points_player_blue" />
+
     <ImageView
         android:id="@+id/background_right_side"
         android:layout_width="307dp"
         android:layout_height="517dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -97,9 +108,8 @@
         android:id="@+id/blue_meeple"
         android:layout_width="68dp"
         android:layout_height="55dp"
-
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginStart="-20dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toEndOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/check_button"
         app:srcCompat="@drawable/meeple_blue" />

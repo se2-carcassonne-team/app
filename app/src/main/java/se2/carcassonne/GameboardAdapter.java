@@ -37,7 +37,7 @@ public class GameboardAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(85, 80)); // Anpassen Sie die Größe nach Bedarf
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(80, 75)); // Anpassen Sie die Größe nach Bedarf
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             imageView = (ImageView) convertView;
@@ -55,24 +55,28 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setImageResource(R.drawable.backside);
             imageView.setAlpha(0.4f);
         }
-
-        // OnClickListener hinzufügen
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (imageView.getScaleX() != 1.0f && isMiddleField) {
-                    imageView.setScaleX(1.5f);
-                    imageView.setScaleY(1.5f);
-                    imageView.setImageResource(R.id.gameplay_card);
-                } else {
-                    imageView.setScaleX(1.0f);
-                    imageView.setScaleY(1.0f);
-                }
+                toggleImageScale((ImageView) v);
             }
         });
 
         return imageView;
     }
+
+        private void toggleImageScale(ImageView imageView) {
+            if (imageView.getScaleX() != 1.0f) {
+                imageView.setImageResource(R.drawable.backside);
+                imageView.setAlpha(0.4f);
+            } else {
+                imageView.setImageResource(R.drawable.roadcurve);
+                imageView.setAlpha(0.9f);
+            }
+        }
+
+
+
 }
 
 

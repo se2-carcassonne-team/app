@@ -1,7 +1,9 @@
 package se2.carcassonne;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private GameboardAdapter gameboardAdapter;
     private Tile tile;
     private TextView textViewRoutineId;
+    private ImageView gameplay_card;
 
     private void updateRotationIdTextView() {
         TextView textViewRoutineId = findViewById(R.id.textViewRoutineId);
@@ -37,8 +40,9 @@ public class GameBoardActivity extends AppCompatActivity {
         gameboardAdapter = new GameboardAdapter(this, ROWS, COLS);
         gridView.setAdapter(gameboardAdapter);
         textViewRoutineId = findViewById(R.id.textViewRoutineId);
+        final Button closeGame = findViewById(R.id.button3);
 
-        setupRotationButtons();
+        setupRotationButtons(gameplay_card);
         tile = new Tile(0);
         updateRotationIdTextView();
 
@@ -46,6 +50,14 @@ public class GameBoardActivity extends AppCompatActivity {
         //gridView.setOnTouchListener(zoomfunktion);
         ZoomFunction zoomFunction = new ZoomFunction(this, gridView);
         gridView.setOnTouchListener(zoomFunction);
+
+
+        closeGame.setOnClickListener(v -> {
+
+            //binding.button.setOnClickListener(v -> {
+            Intent intent = new Intent(GameBoardActivity.this, StartupActivity.class);
+            startActivity(intent);
+        });
 
     }
 
@@ -58,7 +70,7 @@ public class GameBoardActivity extends AppCompatActivity {
         );
     }
 
-    private void setupRotationButtons() {
+    private void setupRotationButtons(ImageView imageView) {
         ImageView playingCard = findViewById(R.id.gameplay_card);
         final ImageRotator imageRotator = new ImageRotator(playingCard);
 
@@ -79,6 +91,9 @@ public class GameBoardActivity extends AppCompatActivity {
                 updateRotationIdTextView();
             }
         });
+
+
+
     }
 }
 
