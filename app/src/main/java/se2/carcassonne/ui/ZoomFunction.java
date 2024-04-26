@@ -33,21 +33,20 @@ public class ZoomFunction implements View.OnTouchListener {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if (e1 != null && e2 != null) {
-                // Horizontales Scrollen
-                int scrollX = view.getScrollX() + (int) (e1.getX() - e2.getX());
-                int maxScrollX = view.getWidth() - view.getWidth(); // Anpassen, wenn das GridView nicht die volle Breite hat
-                view.scrollTo(Math.max(0, Math.min(maxScrollX, scrollX)), view.getScrollY());
+            // Horizontales Scrollen
+            int scrollX = view.getScrollX() + lastScrollX - (int) e2.getX();
+            view.scrollTo(scrollX, view.getScrollY());
+            lastScrollX = (int) e2.getX();
 
-                // Vertikales Scrollen
-                int scrollY = view.getScrollY() + (int) (e1.getY() - e2.getY());
-                int maxScrollY = view.getHeight() - view.getHeight(); // Anpassen, wenn das GridView nicht die volle Höhe hat
-                view.scrollTo(view.getScrollX(), Math.max(0, Math.min(maxScrollY, scrollY)));
-            }
+            // Vertikales Scrollen
+            int scrollY = view.getScrollY() + lastScrollY - (int) e2.getY();
+            view.scrollTo(view.getScrollX(), scrollY);
+            lastScrollY = (int) e2.getY();
             return true;
         }
-
     }
+
+
 }
 
 
