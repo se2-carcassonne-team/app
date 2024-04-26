@@ -106,6 +106,7 @@ dependencies {
     implementation libs.material3
     testImplementation libs.junit
     testImplementation libs.junit.jupiter.api
+    testImplementation libs.junit.jupiter
     androidTestImplementation platform(libs.compose.bom)
     androidTestImplementation libs.ui.test.junit4
     debugImplementation libs.ui.tooling
