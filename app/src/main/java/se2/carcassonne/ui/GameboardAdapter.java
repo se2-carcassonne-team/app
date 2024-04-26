@@ -57,12 +57,7 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setImageResource(R.drawable.backside);
             imageView.setAlpha(0.4f);
         }
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleImageScale((ImageView) v);
-            }
-        });
+        imageView.setOnClickListener(v -> toggleImageScale((ImageView) v));
 
         return imageView;
     }
@@ -76,9 +71,6 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setAlpha(0.9f);
         }
     }
-
-
-
 }
 
 

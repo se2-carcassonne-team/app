@@ -1,72 +1,71 @@
 package se2.carcassonne.ui;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
+import se2.carcassonne.model.Coordinates;
+import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Tile;
 
 
 public class GameBoardActivity extends AppCompatActivity {
     GameboardActivityBinding binding;
-    private static final int ROWS = 30;
-    private static final int COLS = 30;
-
+    private GameBoard gameBoard;
     private GridView gridView;
     private GameboardAdapter gameboardAdapter;
-    private Tile tile;
-    private ImageView gameplay_card;
+    private Tile tileToPlace;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gameboard_activity);
+        binding = GameboardActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
 
-        gridView = findViewById(R.id.gridview);
+        tileToPlace = new Tile(1L, "road_junction_large", new int[]{2, 2, 2, 2}, new int[]{1, 2, 1, 2, 4, 2, 1, 2, 1});
+        gameBoard = new GameBoard();
+
+        gridView = binding.gridview;
         gridView.setScaleX(3.5f);
         gridView.setScaleY(3.5f);
-        gameboardAdapter = new GameboardAdapter(this, ROWS, COLS);
+
+        gameboardAdapter = new GameboardAdapter(this, gameBoard.getGameBoardMatrix().length,
+                gameBoard.getGameBoardMatrix()[0].length);
         gridView.setAdapter(gameboardAdapter);
 
+        binding.gameplayCard.setImageResource(R.drawable.road_junction_large_0);
 
+        gridView.setOnItemClickListener((parent, view, position, id) -> {
+            // Calculate the row and column based on the position
+            int numColumns = gridView.getNumColumns();
+            int x = position / numColumns;
+            int y = position % numColumns;
 
+            gameBoard.placeTile(tileToPlace, new Coordinates(x, y));
+            gameboardAdapter.notifyDataSetChanged();
+        });
         setupRotationButtons();
-        tile = new Tile(0L,"castle_wall_road", new int[]{3,2,1,2}, new int[]{3,3,3, 2,2,2, 1,1,1});
-
-        // ZoomFunction zoomFunction = new ZoomFunction(this, gridView);
-        // gridView.setOnTouchListener(zoomFunction);
-
     }
 
 
     private void setupRotationButtons() {
-        ImageView playingCard = findViewById(R.id.gameplay_card);
-        final ImageRotator imageRotator = new ImageRotator(playingCard);
+        final ImageRotator imageRotator = new ImageRotator(binding.gameplayCard);
 
-        findViewById(R.id.right_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageRotator.rotateRight();
-                tile.rotate(true);
-            }
+        binding.rightButton.setOnClickListener(v -> {
+            imageRotator.rotateRight();
+            tileToPlace.rotate(true);
         });
 
-        findViewById(R.id.left_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageRotator.rotateLeft();
-                tile.rotate(false);
-            }
+        binding.leftButton.setOnClickListener(v -> {
+            imageRotator.rotateLeft();
+            tileToPlace.rotate(false);
         });
     }
 }
