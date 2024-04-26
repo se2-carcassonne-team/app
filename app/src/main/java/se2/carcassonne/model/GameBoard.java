@@ -30,20 +30,9 @@ public class GameBoard {
      * Update all Lists and the gameBoardMatrix.
      */
     private void initializeGameBoard() {
-        // initialize allTiles
         allTiles = TileInitializer.initializeTiles();
-
         Tile startTile = allTiles.get(0);
-        startTile.setCoordinates(new Coordinates(13, 13));
-
-        // initialize gameBoard - same every time!
-        gameBoardMatrix[13][13] = startTile;
-
-        // place start tile at 13,13 (middle of the board)
-        placedTiles.add(startTile);
-
-        // initialize placeablePositions (north, east, south, west from the startTile) based on the startTile
-        updatePlaceablePositions();
+        placeTile(startTile, new Coordinates(13, 13));
     }
 
     public void placeTile(Tile tile, Coordinates coordinates) {
@@ -72,13 +61,13 @@ public class GameBoard {
 
             // Check if surrounding positions are empty and add them to newPlaceablePositions if they are
             if (surroundingFields[0]) { // North
-                newPlaceablePositions.add(new Coordinates(placedCoordinates.getXPosition(), placedCoordinates.getYPosition() + 1));
+                newPlaceablePositions.add(new Coordinates(placedCoordinates.getXPosition(), placedCoordinates.getYPosition() - 1));
             }
             if (surroundingFields[1]) { // East
                 newPlaceablePositions.add(new Coordinates(placedCoordinates.getXPosition() + 1, placedCoordinates.getYPosition()));
             }
             if (surroundingFields[2]) { // South
-                newPlaceablePositions.add(new Coordinates(placedCoordinates.getXPosition(), placedCoordinates.getYPosition() - 1));
+                newPlaceablePositions.add(new Coordinates(placedCoordinates.getXPosition(), placedCoordinates.getYPosition() + 1));
             }
             if (surroundingFields[3]) { // West
                 newPlaceablePositions.add(new Coordinates(placedCoordinates.getXPosition() - 1, placedCoordinates.getYPosition()));
@@ -119,8 +108,6 @@ public class GameBoard {
         ArrayList<Coordinates> validPositions = new ArrayList<>(72);
 
         for (Coordinates position : placeablePositions) {
-            int x = position.getXPosition();
-            int y = position.getYPosition();
             // Check if the tile can be placed at the position
             if (validPlacementForTileWithCurrentRotation(tileToPlace, position)){
                 validPositions.add(position);

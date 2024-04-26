@@ -1,15 +1,11 @@
-package se2.carcassonne;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.Timestamp;
 
-import se2.carcassonne.model.GameState;
 import se2.carcassonne.model.Lobby;
 
 public class LobbyModelTests {
+
     @Test
     public void testToJsonString() {
         Timestamp timestamp = Timestamp.valueOf("2024-04-25 12:00:00");
@@ -33,6 +29,6 @@ public class LobbyModelTests {
                 '}';
 
         // Call the toJsonString() method and compare with the expected JSON string
-        assertEquals(expectedJson, lobby.toJsonString());
+        Assertions.assertEquals(expectedJson, lobby.toJsonString());
     }
 }
