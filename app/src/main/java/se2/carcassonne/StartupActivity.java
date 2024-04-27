@@ -5,17 +5,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import se2.carcassonne.databinding.StartupActivityBinding;
 import se2.carcassonne.helper.animation.AnimationHelper;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
+import se2.carcassonne.player.model.Player;
+import se2.carcassonne.player.repository.PlayerRepository;
 
 public class StartupActivity extends AppCompatActivity {
     StartupActivityBinding binding;
+    PlayerRepository repository = PlayerRepository.getInstance();
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,4 +59,12 @@ public class StartupActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Player player = PlayerRepository.getInstance().getCurrentPlayer();
+        if(player != null) repository.deletePlayer(player);
+    }
+
 }

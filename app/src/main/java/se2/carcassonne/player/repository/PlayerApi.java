@@ -21,4 +21,12 @@ public class PlayerApi {
             e.printStackTrace();
         }
     }
+
+    public void deleteUser(Player player) {
+        try {
+            webSocketClient.sendMessage("/app/player-delete", objectMapper.writeValueAsString(player));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
 }

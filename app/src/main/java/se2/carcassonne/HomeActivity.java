@@ -43,6 +43,8 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void showChooseUsernameDialog() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         ChooseUsernameDialogFragment dialogFragment = new ChooseUsernameDialogFragment(playerViewModel);

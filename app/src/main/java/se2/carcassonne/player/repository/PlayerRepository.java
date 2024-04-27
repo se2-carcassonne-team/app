@@ -1,5 +1,7 @@
 package se2.carcassonne.player.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,6 +70,23 @@ public class PlayerRepository {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public void deletePlayer(Player player) {
+        webSocketClient.subscribeToQueue("/user/queue/response", this::deletePlayerMessageReceived);
+        webSocketClient.subscribeToQueue("/user/queue/errors", this::createPlayerMessageReceived);
+        playerApi.deleteUser(player);
+    }
+
+    private void deletePlayerMessageReceived(String message) {
+        webSocketClient.unsubscribe("/user/queue/response");
+        webSocketClient.unsubscribe("/user/queue/errors");
+
+        if(message.equals("103")) {
+            Log.d("onDelete", "Player deleted");
+        } else if (message.contains("ERROR")) {
+            Log.d("onDelete", "Error while deleting");
+        }
     }
 
     public MutableLiveData<String> getCreatePlayerLiveData() {
