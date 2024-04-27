@@ -24,12 +24,19 @@ public class GameBoardActivity extends AppCompatActivity {
     private Tile tile;
     private TextView textViewRoutineId;
     private ImageView gameplay_card;
+    static int rota=0;
 
     private void updateRotationIdTextView() {
         TextView textViewRoutineId = findViewById(R.id.textViewRoutineId);
         textViewRoutineId.setText("Routine ID: " + tile.getRotation());
+        rota=(tile.getRotation()) ;
     }
 
+    static int getText()
+    {
+
+        return rota;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,4 +106,3 @@ public class GameBoardActivity extends AppCompatActivity {
 
     }
 }
-

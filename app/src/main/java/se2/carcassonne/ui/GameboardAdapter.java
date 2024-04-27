@@ -16,7 +16,7 @@ public class GameboardAdapter extends BaseAdapter {
     private int rows, cols;
     private boolean yourTurn = true;
 
-    private int r_id = 3;
+    private Tile tile;
 
 
 
@@ -69,11 +69,12 @@ public class GameboardAdapter extends BaseAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int rota=GameBoardActivity.getText();
                 if(!isMiddleField && yourTurn){
                     float currentRotation = imageView.getRotation();
-                    v.setRotation(currentRotation + 90*r_id);
-                toggleImageScale((ImageView) v);
-                    yourTurn = false;;
+                    v.setRotation(currentRotation + 90*rota);
+                    toggleImageScale((ImageView) v);
+                    yourTurn = true;
                 }
             }
         });
@@ -86,7 +87,7 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setImageResource(R.drawable.backside);
             imageView.setAlpha(0.4f);
         } else {
-            imageView.setImageResource(R.drawable.monastery_0);
+            imageView.setImageResource(R.drawable.monastery_1);
             imageView.setAlpha(0.9f);
         }
     }
