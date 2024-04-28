@@ -224,10 +224,10 @@
         app:layout_constraintGuide_percent="0" />
 
     <Button
-        android:id="@+id/scroll_left_btn"
+        android:id="@+id/left_scrl_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="18dp"
         android:layout_marginBottom="29dp"
         android:text="left_scrl"
@@ -239,12 +239,36 @@
         android:id="@+id/right_scrl_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="158dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="30dp"
         android:text="right_scrl"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/scroll_left_btn"
+        app:layout_constraintStart_toEndOf="@+id/left_scrl_btn"
+        app:layout_constraintTop_toBottomOf="@+id/gridview" />
+
+    <Button
+        android:id="@+id/up_scrl_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginBottom="29dp"
+        android:text="Up_SCRL"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/right_scrl_btn"
+        app:layout_constraintTop_toBottomOf="@+id/gridview" />
+
+    <Button
+        android:id="@+id/down_scrl_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginBottom="29dp"
+        android:text="DOWN_SCRL"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/up_scrl_btn"
         app:layout_constraintTop_toBottomOf="@+id/gridview" />
 
 

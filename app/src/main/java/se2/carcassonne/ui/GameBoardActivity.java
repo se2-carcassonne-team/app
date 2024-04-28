@@ -25,8 +25,10 @@ public class GameBoardActivity extends AppCompatActivity {
     private TextView textViewRoutineId;
     private ImageView gameplay_card;
     static int rota=0;
-    private Button buttonlinks;
+    private Button buttonleft;
     private Button buttonright;
+    private Button buttonup;
+    private Button buttondown;
 
     private void updateRotationIdTextView() {
         TextView textViewRoutineId = findViewById(R.id.textViewRoutineId);
@@ -53,8 +55,10 @@ public class GameBoardActivity extends AppCompatActivity {
         gridView.setAdapter(gameboardAdapter);
         final Button closeGame = findViewById(R.id.button3);
         gridView.setNestedScrollingEnabled(true);
-        buttonlinks = findViewById(R.id.scroll_left_btn);
+        buttonleft = findViewById(R.id.left_scrl_btn);
         buttonright = findViewById(R.id.right_scrl_btn);
+        buttondown = findViewById(R.id.down_scrl_btn);
+        buttonup = findViewById(R.id.up_scrl_btn);
 
 
 
@@ -84,13 +88,40 @@ public class GameBoardActivity extends AppCompatActivity {
 
             }
         });
-        buttonlinks.setOnClickListener(new View.OnClickListener() {
+        buttonleft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (gridView != null) {
                     float currentTranslationX = gridView.getTranslationX();
                     float newX = currentTranslationX + 50;
                     gridView.setTranslationX(newX);
+
+
+                }
+
+            }
+        });
+
+        buttonup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (gridView != null) {
+                    float currentTranslationY = gridView.getTranslationY();
+                    float newY = currentTranslationY + 50;
+                    gridView.setTranslationY(newY);
+
+
+                }
+
+            }
+        });
+        buttondown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (gridView != null) {
+                    float currentTranslationY = gridView.getTranslationY();
+                    float newY = currentTranslationY - 50;
+                    gridView.setTranslationY(newY);
 
 
                 }
