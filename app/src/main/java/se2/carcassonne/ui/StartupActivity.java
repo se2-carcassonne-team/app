@@ -15,6 +15,7 @@ import se2.carcassonne.helper.animation.AnimationHelper;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Player;
+import se2.carcassonne.repository.PlayerRepository;
 
 public class StartupActivity extends AppCompatActivity {
     StartupActivityBinding binding;
