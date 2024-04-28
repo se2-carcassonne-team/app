@@ -25,6 +25,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private TextView textViewRoutineId;
     private ImageView gameplay_card;
     static int rota=0;
+    private Button buttonlinks;
+    private Button buttonright;
 
     private void updateRotationIdTextView() {
         TextView textViewRoutineId = findViewById(R.id.textViewRoutineId);
@@ -50,22 +52,50 @@ public class GameBoardActivity extends AppCompatActivity {
         gameboardAdapter = new GameboardAdapter(this, ROWS, COLS);
         gridView.setAdapter(gameboardAdapter);
         final Button closeGame = findViewById(R.id.button3);
+        gridView.setNestedScrollingEnabled(true);
+        buttonlinks = findViewById(R.id.scroll_left_btn);
+        buttonright = findViewById(R.id.right_scrl_btn);
+
 
 
         setupRotationButtons(gameplay_card);
         tile = new Tile(0L,"castle_wall_road", new int[]{3,2,1,2}, new int[]{3,3,3, 2,2,2, 1,1,1});
         updateRotationIdTextView();
 
-        //ZoomFunction zoomfunktion = new ZoomFunction(this);
-        //gridView.setOnTouchListener(zoomfunktion);
-        ZoomFunction zoomFunction = new ZoomFunction(this, gridView);
-        gridView.setOnTouchListener(zoomFunction);
+
 
         closeGame.setOnClickListener(v -> {
 
             //binding.button.setOnClickListener(v -> {
             Intent intent = new Intent(GameBoardActivity.this, StartupActivity.class);
             startActivity(intent);
+        });
+
+        buttonright.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (gridView != null) {
+                    float currentTranslationX = gridView.getTranslationX();
+                    float newX = currentTranslationX - 50;
+                    gridView.setTranslationX(newX);
+
+
+                }
+
+            }
+        });
+        buttonlinks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (gridView != null) {
+                    float currentTranslationX = gridView.getTranslationX();
+                    float newX = currentTranslationX + 50;
+                    gridView.setTranslationX(newX);
+
+
+                }
+
+            }
         });
 
 
