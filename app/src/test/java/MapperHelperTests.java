@@ -21,7 +21,6 @@ public class MapperHelperTests {
         long playerId = mapperHelper.getPlayerId(validJson);
         assertEquals(0L, playerId);
     }
-
     @Test
     public void testGetPlayerId_ValidJson2() {
         MapperHelper mapperHelper = new MapperHelper();
@@ -29,19 +28,16 @@ public class MapperHelperTests {
         long playerId = mapperHelper.getPlayerId(validJson);
         assertEquals(1234567891, playerId);
     }
-
     @Test
     public void testGetPlayerId_InvalidJson() {
         MapperHelper mapperHelper = new MapperHelper();
         String invalidJson = "{\"invalid\": \"json\"}";
         assertThrows(RuntimeException.class,() -> mapperHelper.getPlayerId(invalidJson));
     }
-
     @Test
     public void testGetLobbyFromPlayer_ValidJson() {
         MapperHelper mapperHelper = new MapperHelper();
 
-        // Create a sample player JSON string
         String playerJson = "{" +
                 "\"id\":123" +
                 ", \"username\":\"TestPlayer\"" +
@@ -74,7 +70,6 @@ public class MapperHelperTests {
     public void testGetLobbyFromPlayer_InvalidJson() {
         MapperHelper mapperHelper = new MapperHelper();
 
-        // Create an invalid player JSON string (missing gameLobbyDto field)
         String invalidPlayerJson = "{" +
                 "\"id\":123" +
                 ", \"username\":\"TestPlayer\"" +
@@ -83,12 +78,10 @@ public class MapperHelperTests {
 
         assertNull(mapperHelper.getLobbyFromPlayer(invalidPlayerJson));
     }
-
     @Test
     public void testGetLobbyFromPlayer_MissingIdField() {
         MapperHelper mapperHelper = new MapperHelper();
 
-        // Create an invalid player JSON string (missing id field)
         String missingIdJson = "{" +
                 "\"gameLobbyDto\":{" +
                 "\"name\":\"Test Lobby\"," +
@@ -102,12 +95,10 @@ public class MapperHelperTests {
 
         assertThrows(RuntimeException.class,() -> mapperHelper.getPlayerId(missingIdJson));
     }
-
     @Test
     public void testGetLobbyFromPlayer_InvalidLobbyData() {
         MapperHelper mapperHelper = new MapperHelper();
 
-        // Create an invalid lobby JSON string (invalid gameStartTimestamp format)
         String invalidLobbyJson = "{" +
                 "\"id\":123," +
                 "\"name\":\"Test Lobby\"," +
@@ -119,8 +110,6 @@ public class MapperHelperTests {
 
         assertNull(mapperHelper.getLobbyFromPlayer(invalidLobbyJson));
     }
-
-
     @Test
     public void testGetPlayerName_ValidJson() {
         MapperHelper mapperHelper = new MapperHelper();
@@ -128,8 +117,5 @@ public class MapperHelperTests {
         String playerName = mapperHelper.getPlayerName(validJson);
         assertEquals("TestPlayer", playerName);
     }
-
-
-
 
 }
