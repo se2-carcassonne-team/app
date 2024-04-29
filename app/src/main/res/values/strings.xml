@@ -22,5 +22,6 @@
     <string name="leave_lobby">Leave</string>
     <string name="playGame">Play</string>
     <string name="goToGameboard">Gameboard</string>
+    <string name="tile">Tile\n</string>
 
 </resources>

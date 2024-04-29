@@ -12,19 +12,19 @@
 
     <GridView
         android:id="@+id/gridview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="700dp"
+        android:layout_height="1000dp"
+        android:columnWidth="3dp"
+        android:fastScrollEnabled="true"
         android:horizontalSpacing="50dp"
+        android:isScrollContainer="true"
+        android:nestedScrollingEnabled="true"
         android:numColumns="25"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="1dp"
-        android:columnWidth="5dp"
+        android:verticalSpacing="3dp"
         app:layout_constraintBottom_toBottomOf="@id/guideline4"
         app:layout_constraintDimensionRatio="2:1.1"
         app:layout_constraintEnd_toEndOf="@id/guideline6"
-        app:layout_constraintTop_toTopOf="@id/guideline4"
-        />
-
+        app:layout_constraintTop_toTopOf="@id/guideline4" />
 
     <Button
         android:id="@+id/right_button"
@@ -34,9 +34,9 @@
         android:layout_marginTop="14dp"
         android:layout_marginEnd="27dp"
         android:layout_marginBottom="163dp"
+        android:fontFamily="@font/almendra_sc"
         android:text="R"
         android:textSize="20sp"
-        android:fontFamily="@font/almendra_sc"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,10 +50,10 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="14dp"
         android:layout_marginBottom="163dp"
-        android:text="L"
         android:fontFamily="@font/almendra_sc"
-        android:textStyle="bold"
+        android:text="L"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/right_button"
         app:layout_constraintStart_toEndOf="@+id/gridview"
@@ -98,12 +98,11 @@
         android:id="@+id/gameplay_card"
         android:layout_width="135dp"
         android:layout_height="135dp"
-        app:srcCompat="@drawable/monastery_1"
         app:layout_constraintBottom_toBottomOf="@id/guideline4"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@id/guideline3"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        />
+        app:srcCompat="@drawable/monastery_1" />
 
 
     <ImageView
@@ -148,11 +147,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:autoSizeMaxTextSize="20dp"
-        android:text="Routine ID: "
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:fontFamily="@font/almendra_sc"
         android:scaleType="centerCrop"
+        android:text="Routine ID: "
         android:textColor="@color/btn_gold"
         app:layout_constraintBottom_toTopOf="@+id/gameplay_card"
         app:layout_constraintEnd_toEndOf="parent"
@@ -225,51 +224,47 @@
 
     <Button
         android:id="@+id/left_scrl_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginBottom="29dp"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
         android:text="left_scrl"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guideline7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridview" />
+        app:layout_constraintTop_toBottomOf="@id/guideline29" />
 
     <Button
         android:id="@+id/right_scrl_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="30dp"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
         android:text="right_scrl"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guideline7"
         app:layout_constraintStart_toEndOf="@+id/left_scrl_btn"
-        app:layout_constraintTop_toBottomOf="@+id/gridview" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline29" />
 
     <Button
         android:id="@+id/up_scrl_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginBottom="29dp"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
         android:text="Up_SCRL"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guideline7"
         app:layout_constraintStart_toEndOf="@+id/right_scrl_btn"
-        app:layout_constraintTop_toBottomOf="@+id/gridview" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline29" />
 
     <Button
         android:id="@+id/down_scrl_btn"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:text="DOWN_SCRL"
+        app:layout_constraintBottom_toBottomOf="@id/guideline7"
+        app:layout_constraintStart_toEndOf="@+id/up_scrl_btn"
+        app:layout_constraintTop_toBottomOf="@+id/guideline29" />
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline29"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginBottom="29dp"
-        android:text="DOWN_SCRL"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/up_scrl_btn"
-        app:layout_constraintTop_toBottomOf="@+id/gridview" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.86374694" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

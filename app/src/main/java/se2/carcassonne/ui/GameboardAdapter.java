@@ -7,23 +7,37 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 
+import java.util.ArrayList;
+
+import lombok.Getter;
+import lombok.Setter;
 import se2.carcassonne.R;
+import se2.carcassonne.model.Coordinates;
+import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Tile;
 
+@Getter
+@Setter
 public class GameboardAdapter extends BaseAdapter {
-
     private Context context;
-    private int rows, cols;
+    private final int rows;
+    private final int cols;
     private boolean yourTurn = true;
-
+    private GameBoard gameBoard;
     private Tile tile;
 
 
-
-    public GameboardAdapter(Context context, int rows, int cols) {
+    public GameboardAdapter(Context context, GameBoard gameBoard, Tile tileToPlace) {
         this.context = context;
-        this.rows = rows;
-        this.cols = cols;
+        this.gameBoard = gameBoard;
+        this.rows = gameBoard.getGameBoardMatrix().length;
+        this.cols = gameBoard.getGameBoardMatrix()[0].length;
+        this.tile = tileToPlace;
+    }
+
+    public void setCurrentTileRotation(Tile tile) {
+        this.tile = tile;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -46,40 +60,50 @@ public class GameboardAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(75, 75)); // Anpassen Sie die Größe nach Bedarf
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(75, 75));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        int middleRow = 5;
-        int middleCol = 12;
-        boolean isMiddleField = position / cols == middleRow && position % cols == middleCol;
+        imageView.setClickable(false);
 
+        int currentRow = position / rows;
+        int currentCol = position % cols;
+        boolean isMiddleField = (currentRow == 12 && currentCol == 12);
+        boolean isNextToMiddleField = (currentCol == 13 && currentRow == 12);
 
-
-        // Startfeld-Bedingung
         if (isMiddleField) {
-            imageView.setImageResource(R.drawable.start_field);
+            imageView.setImageResource(R.drawable.castle_wall_road_0);
+        } else if(isNextToMiddleField && gameBoard.getGameBoardMatrix()[12][13] == null){
+            gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(currentCol, currentRow));
+            imageView.setImageResource(R.drawable.road_junction_large_0);
         } else {
-            // Andernfalls verwenden Sie das Standardbild
-            imageView.setImageResource(R.drawable.backside);
-            imageView.setAlpha(0.4f);
+                imageView.setImageResource(R.drawable.backside);
+                imageView.setAlpha(0.4f);
         }
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int rota=GameBoardActivity.getText();
-                if(!isMiddleField && yourTurn){
+
+        highlightWithCurrentRotation(tile, currentCol, currentRow, imageView, isMiddleField);
+
+        return imageView;
+    }
+
+    private void highlightWithCurrentRotation(Tile currentTileToPlace, int currentCol, int currentRow, ImageView imageView, boolean isMiddleField) {
+        ArrayList<Coordinates> highlightCoordinates = gameBoard.highlightValidPositions(currentTileToPlace);
+        if (highlightCoordinates.contains(new Coordinates(currentCol, currentRow))) {
+            imageView.setImageResource(
+                    context.getResources().getIdentifier(tile.getImageName()+"_"+tile.getRotation(), "drawable", context.getPackageName()));
+            imageView.setOnClickListener(v -> {
+                int rota = currentTileToPlace.getRotation();
+                if (!isMiddleField && yourTurn) {
                     float currentRotation = imageView.getRotation();
-                    v.setRotation(currentRotation + 90*rota);
+                    v.setRotation(currentRotation + 90 * rota);
                     toggleImageScale((ImageView) v);
                     yourTurn = true;
                 }
-            }
-        });
-
-        return imageView;
+            });
+            notifyDataSetChanged();
+        }
     }
 
     private void toggleImageScale(ImageView imageView) {
@@ -91,8 +115,6 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setAlpha(0.9f);
         }
     }
-
-
 }
 
 

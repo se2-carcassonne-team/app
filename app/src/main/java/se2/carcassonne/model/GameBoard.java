@@ -21,6 +21,7 @@ public class GameBoard {
 
     private ArrayList<Tile> allTiles = new ArrayList<>();
 
+
     public GameBoard() {
         initializeGameBoard();
     }
@@ -32,7 +33,7 @@ public class GameBoard {
     private void initializeGameBoard() {
         allTiles = TileInitializer.initializeTiles();
         Tile startTile = allTiles.get(0);
-        placeTile(startTile, new Coordinates(13, 13));
+        placeTile(startTile, new Coordinates(12, 12));
     }
 
     public void placeTile(Tile tile, Coordinates coordinates) {
