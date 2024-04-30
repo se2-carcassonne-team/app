@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
+import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Tile;
 
@@ -35,6 +36,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
         gameBoard = new GameBoard();
+        gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(13, 12));
+
 
         gridView = binding.gridview;
         gridView.setScaleX(3.5f);

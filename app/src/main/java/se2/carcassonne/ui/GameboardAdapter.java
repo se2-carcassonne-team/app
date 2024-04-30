@@ -76,7 +76,7 @@ public class GameboardAdapter extends BaseAdapter {
         if (isMiddleField) {
             imageView.setImageResource(R.drawable.castle_wall_road_0);
         } else if(isNextToMiddleField && gameBoard.getGameBoardMatrix()[12][13] == null){
-            gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(currentCol, currentRow));
+            //gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(currentCol, currentRow));
             imageView.setImageResource(R.drawable.road_junction_large_0);
         } else {
                 imageView.setImageResource(R.drawable.backside);
