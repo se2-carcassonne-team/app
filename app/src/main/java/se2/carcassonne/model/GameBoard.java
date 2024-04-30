@@ -131,25 +131,25 @@ public class GameBoard {
 
         // Check if the north edge of the tile to place matches the south edge of the tile above
         if (gameBoardMatrix[x][y-1] != null) {
-            northEdgeMatches = edges[0] == gameBoardMatrix[x][y - 1].getEdges()[2];
+            northEdgeMatches = edges[0] == gameBoardMatrix[x][y - 1].rotatedEdges(gameBoardMatrix[x][y - 1].getRotation())[2];
         } else {
             northEdgeMatches =true;
         }
         // Check if the east edge of the tile to place matches the west edge of the tile to the right
         if (gameBoardMatrix[x+1][y] != null) { // Check east
-            eastEdgeMatches = edges[1] == gameBoardMatrix[x + 1][y].getEdges()[3];
+            eastEdgeMatches = edges[1] == gameBoardMatrix[x + 1][y].rotatedEdges(gameBoardMatrix[x + 1][y].getRotation())[3];
         } else {
             eastEdgeMatches =true;
         }
         // Check if the south edge of the tile to place matches the north edge of the tile below
         if (gameBoardMatrix[x][y+1] != null) { // Check south
-            southEdgeMatches = edges[2] == gameBoardMatrix[x][y + 1].getEdges()[0];
+            southEdgeMatches = edges[2] == gameBoardMatrix[x][y + 1].rotatedEdges(gameBoardMatrix[x][y + 1].getRotation())[0];
         } else {
             southEdgeMatches =true;
         }
         // Check if the west edge of the tile to place matches the east edge of the tile to the left
         if (gameBoardMatrix[x-1][y] != null) { // Check west
-            westEdgeMatches = edges[3] == gameBoardMatrix[x - 1][y].getEdges()[1];
+            westEdgeMatches = edges[3] == gameBoardMatrix[x - 1][y].rotatedEdges(gameBoardMatrix[x - 1][y].getRotation())[1];
         } else {
             westEdgeMatches =true;
         }
