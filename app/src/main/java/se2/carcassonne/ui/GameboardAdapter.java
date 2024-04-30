@@ -77,23 +77,24 @@ public class GameboardAdapter extends BaseAdapter {
 
         if (isMiddleField) {
             imageView.setImageResource(R.drawable.castle_wall_road_0);
-        } else if(isNextToMiddleField && gameBoard.getGameBoardMatrix()[12][13] == null){
+        } else if (isNextToMiddleField && gameBoard.getGameBoardMatrix()[12][13] == null) {
             //gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(currentCol, currentRow));
             imageView.setImageResource(R.drawable.road_junction_large_0);
         } else {
-                if(gameBoard.getGameBoardMatrix()[currentCol][currentRow] != null){
-                    // something was placed in this field
-                    imageView.setImageResource(
-                            context.getResources().getIdentifier(tileToPlace.getImageName()+"_"+ tileToPlace.getRotation(), "drawable", context.getPackageName()));
-                    imageView.setAlpha(0.9f);
-                } else {
-                    imageView.setImageResource(R.drawable.backside);
-                    imageView.setAlpha(0.4f);
-                }
+            if (gameBoard.getGameBoardMatrix()[currentCol][currentRow] != null && tileToPlace != null) {
+                // something was placed in this field
+                imageView.setImageResource(
+                        context.getResources().getIdentifier(tileToPlace.getImageName() + "_" + tileToPlace.getRotation(), "drawable", context.getPackageName()));
+                imageView.setAlpha(0.9f);
+            } else {
+                imageView.setImageResource(R.drawable.backside);
+                imageView.setAlpha(0.4f);
+            }
 
         }
-
-        highlightWithCurrentRotation(tileToPlace, currentCol, currentRow, imageView, isMiddleField);
+        if (tileToPlace != null) {
+            highlightWithCurrentRotation(tileToPlace, currentCol, currentRow, imageView, isMiddleField);
+        }
 
         return imageView;
     }
@@ -102,7 +103,7 @@ public class GameboardAdapter extends BaseAdapter {
         ArrayList<Coordinates> highlightCoordinates = gameBoard.highlightValidPositions(currentTileToPlace);
         if (highlightCoordinates.contains(new Coordinates(currentCol, currentRow))) {
             imageView.setImageResource(
-                    context.getResources().getIdentifier(tileToPlace.getImageName()+"_"+ tileToPlace.getRotation(), "drawable", context.getPackageName()));
+                    context.getResources().getIdentifier(tileToPlace.getImageName() + "_" + tileToPlace.getRotation(), "drawable", context.getPackageName()));
             imageView.setOnClickListener(v -> {
                 int rota = currentTileToPlace.getRotation();
                 toPlaceCoordinates = new Coordinates(currentCol, currentRow);
@@ -124,7 +125,7 @@ public class GameboardAdapter extends BaseAdapter {
         } else {
             imageView.setImageResource(
                     context.getResources().getIdentifier(
-                            tileToPlace.getImageName()+"_"+ 0, "drawable", context.getPackageName())
+                            tileToPlace.getImageName() + "_" + 0, "drawable", context.getPackageName())
             );
             //imageView.setImageResource(R.drawable.castle_center_entry_0);
             imageView.setAlpha(0.9f);
