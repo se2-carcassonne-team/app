@@ -105,7 +105,6 @@ public class GameBoardActivity extends AppCompatActivity {
                 int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                 int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
                 gameBoard.placeTile(tile, new Coordinates(xToPlace, yToPlace));
-                gameboardAdapter.placeTile(tile);
             } else {
                 Toast.makeText(this, "Please select a valid position", Toast.LENGTH_SHORT).show();
             }
