@@ -83,9 +83,15 @@ public class GameboardAdapter extends BaseAdapter {
         } else {
                 if(gameBoard.getGameBoardMatrix()[currentCol][currentRow] != null){
                     // something was placed in this field
-                    imageView.setImageResource(
-                            context.getResources().getIdentifier(tileToPlace.getImageName()+"_"+ tileToPlace.getRotation(), "drawable", context.getPackageName()));
-                    imageView.setAlpha(0.9f);
+                    for (Tile placedTile: gameBoard.getPlacedTiles()){
+                        if (currentCol == placedTile.getCoordinates().getXPosition() && currentRow == placedTile.getCoordinates().getYPosition()){
+                            imageView.setImageResource(
+                                    context.getResources().getIdentifier(placedTile.getImageName()+"_0", "drawable", context.getPackageName()));
+                            imageView.setRotation(placedTile.getRotation()*90f);
+                            imageView.setAlpha(0.9f);
+                        }
+                    }
+
                 } else {
                     imageView.setImageResource(R.drawable.backside);
                     imageView.setAlpha(0.4f);
@@ -99,22 +105,26 @@ public class GameboardAdapter extends BaseAdapter {
     }
 
     private void highlightWithCurrentRotation(Tile currentTileToPlace, int currentCol, int currentRow, ImageView imageView, boolean isMiddleField) {
-        ArrayList<Coordinates> highlightCoordinates = gameBoard.highlightValidPositions(currentTileToPlace);
-        if (highlightCoordinates.contains(new Coordinates(currentCol, currentRow))) {
-            imageView.setImageResource(
-                    context.getResources().getIdentifier(tileToPlace.getImageName()+"_"+ tileToPlace.getRotation(), "drawable", context.getPackageName()));
-            imageView.setOnClickListener(v -> {
-                int rota = currentTileToPlace.getRotation();
-                toPlaceCoordinates = new Coordinates(currentCol, currentRow);
-                if (yourTurn) {
+        if(yourTurn){
+            ArrayList<Coordinates> highlightCoordinates = gameBoard.highlightValidPositions(currentTileToPlace);
+            if (highlightCoordinates.contains(new Coordinates(currentCol, currentRow))) {
+                imageView.setImageResource(
+                        context.getResources().getIdentifier(tileToPlace.getImageName()+"_0", "drawable", context.getPackageName()));
+                imageView.setRotation(tileToPlace.getRotation() * 90f);
+                imageView.setOnClickListener(v -> {
+                    int currentTileRotation = currentTileToPlace.getRotation();
+                    toPlaceCoordinates = new Coordinates(currentCol, currentRow);
+
                     float currentRotation = imageView.getRotation();
-                    v.setRotation(currentRotation + 90 * rota);
+                    v.setRotation(currentRotation + 90 * currentTileRotation);
                     toggleImage((ImageView) v);
                     yourTurn = true;
-                }
-            });
-            notifyDataSetChanged();
+
+                });
+                notifyDataSetChanged();
+            }
         }
+
     }
 
     private void toggleImage(ImageView imageView) {
@@ -123,9 +133,8 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setAlpha(0.4f);
         } else {
             imageView.setImageResource(
-                    context.getResources().getIdentifier(
-                            tileToPlace.getImageName()+"_"+ 0, "drawable", context.getPackageName())
-            );
+                    context.getResources().getIdentifier(tileToPlace.getImageName()+"_0", "drawable", context.getPackageName()));
+            imageView.setRotation(tileToPlace.getRotation() * 90f);
             //imageView.setImageResource(R.drawable.castle_center_entry_0);
             imageView.setAlpha(0.9f);
         }

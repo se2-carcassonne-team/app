@@ -2,6 +2,7 @@ package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Coordinates;
@@ -19,14 +21,18 @@ public class GameBoardActivity extends AppCompatActivity {
     GameboardActivityBinding binding;
     private GridView gridView;
     private GameboardAdapter gameboardAdapter;
-    private Tile tile;
-    private Button buttonleft;
-    private Button buttonright;
-    private Button buttonup;
-    private Button buttondown;
+    private Tile tileToPlace;
+    private Button buttonLeft;
+    private Button buttonRight;
+    private Button buttonUp;
+    private Button buttonDown;
     private Button buttonConfirm;
+    private Button buttonGetCard;
     private GameBoard gameBoard;
-    private ImageView playingCard;
+    private ImageView previewTileToPlace;
+
+    // remove later, only here for testing
+    private static int counter=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,21 +51,22 @@ public class GameBoardActivity extends AppCompatActivity {
         gridView.setScaleY(3.5f);
         gridView.setStretchMode(GridView.NO_STRETCH);
 
-        tile = gameBoard.getAllTiles().get(3);
-        gameboardAdapter = new GameboardAdapter(this, gameBoard, tile);
+        tileToPlace = gameBoard.getAllTiles().get(3);
+        gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
 
-        buttonleft = binding.leftScrlBtn;
-        buttonright = binding.rightScrlBtn;
-        buttondown = binding.downScrlBtn;
-        buttonup = binding.upScrlBtn;
+        buttonLeft = binding.leftScrlBtn;
+        buttonRight = binding.rightScrlBtn;
+        buttonDown = binding.downScrlBtn;
+        buttonUp = binding.upScrlBtn;
 
         buttonConfirm = binding.buttonConfirmTilePlacement;
+        buttonGetCard = binding.buttonGetNextCard;
 
-        playingCard = binding.gameplayCard;
+        previewTileToPlace = binding.previewTileToPlace;
         setupRotationButtons();
-        playingCard.setImageResource(
-                getResources().getIdentifier(tile.getImageName()+"_"+tile.getRotation(), "drawable", getPackageName()));
+        previewTileToPlace.setImageResource(
+                getResources().getIdentifier(tileToPlace.getImageName()+"_"+ tileToPlace.getRotation(), "drawable", getPackageName()));
 
         final Button closeGame = binding.button3;
         closeGame.setOnClickListener(v -> {
@@ -67,7 +74,7 @@ public class GameBoardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        buttonright.setOnClickListener(v -> {
+        buttonRight.setOnClickListener(v -> {
             if (gridView != null) {
                 float currentTranslationX = gridView.getTranslationX();
                 float newX = currentTranslationX - 300;
@@ -75,7 +82,7 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
 
-        buttonleft.setOnClickListener(v -> {
+        buttonLeft.setOnClickListener(v -> {
             if (gridView != null) {
                 float currentTranslationX = gridView.getTranslationX();
                 float newX = currentTranslationX + 300;
@@ -83,7 +90,7 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
 
-        buttonup.setOnClickListener(v -> {
+        buttonUp.setOnClickListener(v -> {
             if (gridView != null) {
                 float currentTranslationY = gridView.getTranslationY();
                 float newY = currentTranslationY + 300;
@@ -91,7 +98,7 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
 
-        buttondown.setOnClickListener(v -> {
+        buttonDown.setOnClickListener(v -> {
             if (gridView != null) {
                 float currentTranslationY = gridView.getTranslationY();
                 float newY = currentTranslationY - 300;
@@ -101,37 +108,77 @@ public class GameBoardActivity extends AppCompatActivity {
 
         buttonConfirm.setOnClickListener(v -> {
             // TODO : Check if it's actually my turn when placing tile
-            if (gameboardAdapter.getToPlaceCoordinates() != null){
+            if (gameboardAdapter.getToPlaceCoordinates() != null && gameboardAdapter.isYourTurn()){
+
+                // get the x and y coordinates of the field where the tile should be placed
                 int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                 int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
-                gameBoard.placeTile(tile, new Coordinates(xToPlace, yToPlace));
+
+                // place the Tile on the gameBoard
+                gameBoard.placeTile(tileToPlace, new Coordinates(xToPlace, yToPlace));
+
+                // end tile-placement for this turn & reset values
+//                gameboardAdapter.setTileToPlace(null);
+//                this.tileToPlace = null;
+
+                gameboardAdapter.setYourTurn(false);
+                previewTileToPlace.setImageResource(R.drawable.backside);
+                gameboardAdapter.notifyDataSetChanged();
+
+                //gameboardAdapter.getGameBoard().getPlaceablePositions();
             } else {
                 Toast.makeText(this, "Please select a valid position", Toast.LENGTH_SHORT).show();
             }
         });
+
+        buttonGetCard.setOnClickListener(v -> {
+            if (!gameboardAdapter.isYourTurn()){
+                gameboardAdapter.setYourTurn(true);
+                counter += 2;
+                Tile nextTile = gameBoard.getAllTiles().get(counter);
+                gameboardAdapter.setTileToPlace(nextTile);
+                this.tileToPlace = nextTile;
+
+                previewTileToPlace.setImageResource(getResources().getIdentifier(tileToPlace.getImageName()+"_0", "drawable", getPackageName()));
+                previewTileToPlace.setRotation(0);
+                gameboardAdapter.notifyDataSetChanged();
+
+                Log.e("placed", gameBoard.getPlacedTiles().toString());
+                Log.e("placeable", gameBoard.getPlaceablePositions().toString());
+                Log.e("highlighted", gameBoard.highlightValidPositions(tileToPlace).toString());
+            }
+        });
+
         gameboardAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        gameboardAdapter.setCurrentTileRotation(tile);
+        gameboardAdapter.setCurrentTileRotation(tileToPlace);
     }
 
     private void setupRotationButtons() {
-        ImageView playingCard = binding.gameplayCard;
-        final ImageRotator imageRotator = new ImageRotator(playingCard);
+        //ImageView playingCard = binding.previewTileToPlace;
+        final ImageRotator imageRotator = new ImageRotator(previewTileToPlace);
 
-        binding.rightButton.setOnClickListener(v -> {
-            imageRotator.rotateRight();
-            tile.rotate(true);
-            gameboardAdapter.setCurrentTileRotation(tile);
+        binding.buttonRotateClockwise.setOnClickListener(v -> {
+            if (gameboardAdapter.isYourTurn()) {
+                imageRotator.rotateRight();
+                tileToPlace.rotate(true);
+                gameboardAdapter.setCurrentTileRotation(tileToPlace);
+                Log.e("placed", gameBoard.getPlacedTiles().toString());
+                Log.e("placeable", gameBoard.getPlaceablePositions().toString());
+                Log.e("highlighted", gameBoard.highlightValidPositions(tileToPlace).toString());
+            }
         });
 
-        binding.leftButton.setOnClickListener(v -> {
-            imageRotator.rotateLeft();
-            tile.rotate(false);
-            gameboardAdapter.setCurrentTileRotation(tile);
+        binding.buttonRotateCounterClockwise.setOnClickListener(v -> {
+            if (gameboardAdapter.isYourTurn()) {
+                imageRotator.rotateLeft();
+                tileToPlace.rotate(false);
+                gameboardAdapter.setCurrentTileRotation(tileToPlace);
+            }
         });
     }
 }
