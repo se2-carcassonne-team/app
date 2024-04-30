@@ -111,7 +111,7 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setImageResource(R.drawable.backside);
             imageView.setAlpha(0.4f);
         } else {
-            imageView.setImageResource(R.drawable.monastery_1);
+            imageView.setImageResource(R.drawable.castle_center_entry_0);
             imageView.setAlpha(0.9f);
         }
     }
