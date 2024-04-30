@@ -120,6 +120,9 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setAlpha(0.9f);
         }
     }
+
+    public void placeTile(Tile tile) {
+    }
 }
 
 

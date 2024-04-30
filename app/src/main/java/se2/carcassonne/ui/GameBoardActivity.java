@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -95,6 +96,18 @@ public class GameBoardActivity extends AppCompatActivity {
                 float currentTranslationY = gridView.getTranslationY();
                 float newY = currentTranslationY - 300;
                 gridView.setTranslationY(newY);
+            }
+        });
+
+        buttonConfirm.setOnClickListener(v -> {
+            // TODO : Check if it's actually my turn when placing tile
+            if (gameboardAdapter.getToPlaceCoordinates() != null){
+                int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
+                int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
+                gameBoard.placeTile(tile, new Coordinates(xToPlace, yToPlace));
+                gameboardAdapter.placeTile(tile);
+            } else {
+                Toast.makeText(this, "Please select a valid position", Toast.LENGTH_SHORT).show();
             }
         });
         gameboardAdapter.notifyDataSetChanged();
