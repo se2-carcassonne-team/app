@@ -25,6 +25,7 @@ public class GameboardAdapter extends BaseAdapter {
     private boolean yourTurn = true;
     private GameBoard gameBoard;
     private Tile tile;
+    private Coordinates toPlaceCoordinates;
 
 
     public GameboardAdapter(Context context, GameBoard gameBoard, Tile tileToPlace) {
@@ -37,6 +38,7 @@ public class GameboardAdapter extends BaseAdapter {
 
     public void setCurrentTileRotation(Tile tile) {
         this.tile = tile;
+        toPlaceCoordinates = null;
         notifyDataSetChanged();
     }
 
@@ -95,6 +97,7 @@ public class GameboardAdapter extends BaseAdapter {
                     context.getResources().getIdentifier(tile.getImageName()+"_"+tile.getRotation(), "drawable", context.getPackageName()));
             imageView.setOnClickListener(v -> {
                 int rota = currentTileToPlace.getRotation();
+                toPlaceCoordinates = new Coordinates(currentCol, currentRow);
                 if (yourTurn) {
                     float currentRotation = imageView.getRotation();
                     v.setRotation(currentRotation + 90 * rota);

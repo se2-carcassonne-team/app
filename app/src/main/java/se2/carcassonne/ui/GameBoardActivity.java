@@ -95,6 +95,8 @@ public class GameBoardActivity extends AppCompatActivity {
                 gridView.setTranslationY(newY);
             }
         });
+
+
         gameboardAdapter.notifyDataSetChanged();
     }
 
@@ -105,16 +107,16 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void setupRotationButtons() {
-        ImageView playingCard = findViewById(R.id.gameplay_card);
+        ImageView playingCard = binding.gameplayCard;
         final ImageRotator imageRotator = new ImageRotator(playingCard);
 
-        findViewById(R.id.right_button).setOnClickListener(v -> {
+        binding.rightButton.setOnClickListener(v -> {
             imageRotator.rotateRight();
             tile.rotate(true);
             gameboardAdapter.setCurrentTileRotation(tile);
         });
 
-        findViewById(R.id.left_button).setOnClickListener(v -> {
+        binding.leftButton.setOnClickListener(v -> {
             imageRotator.rotateLeft();
             tile.rotate(false);
             gameboardAdapter.setCurrentTileRotation(tile);
