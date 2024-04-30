@@ -95,7 +95,7 @@ public class GameboardAdapter extends BaseAdapter {
                     context.getResources().getIdentifier(tile.getImageName()+"_"+tile.getRotation(), "drawable", context.getPackageName()));
             imageView.setOnClickListener(v -> {
                 int rota = currentTileToPlace.getRotation();
-                if (!isMiddleField && yourTurn) {
+                if (yourTurn) {
                     float currentRotation = imageView.getRotation();
                     v.setRotation(currentRotation + 90 * rota);
                     toggleImage((ImageView) v);
