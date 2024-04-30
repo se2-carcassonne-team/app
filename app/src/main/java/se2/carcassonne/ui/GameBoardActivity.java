@@ -42,6 +42,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gridView = binding.gridview;
         gridView.setScaleX(3.5f);
         gridView.setScaleY(3.5f);
+        gridView.setStretchMode(GridView.NO_STRETCH);
 
         tile = gameBoard.getAllTiles().get(3);
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tile);

@@ -98,7 +98,7 @@ public class GameboardAdapter extends BaseAdapter {
                 if (!isMiddleField && yourTurn) {
                     float currentRotation = imageView.getRotation();
                     v.setRotation(currentRotation + 90 * rota);
-                    toggleImageScale((ImageView) v);
+                    toggleImage((ImageView) v);
                     yourTurn = true;
                 }
             });
@@ -106,7 +106,7 @@ public class GameboardAdapter extends BaseAdapter {
         }
     }
 
-    private void toggleImageScale(ImageView imageView) {
+    private void toggleImage(ImageView imageView) {
         if (imageView.getScaleX() != 1.0f) {
             imageView.setImageResource(R.drawable.backside);
             imageView.setAlpha(0.4f);
