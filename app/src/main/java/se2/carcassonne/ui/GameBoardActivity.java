@@ -24,6 +24,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button buttonright;
     private Button buttonup;
     private Button buttondown;
+
+    private Button buttonConfirm;
     private GameBoard gameBoard;
     private ImageView playingCard;
 
@@ -52,6 +54,8 @@ public class GameBoardActivity extends AppCompatActivity {
         buttonright = binding.rightScrlBtn;
         buttondown = binding.downScrlBtn;
         buttonup = binding.upScrlBtn;
+
+        buttonConfirm = binding.buttonConfirmTilePlacement;
 
         playingCard = binding.gameplayCard;
         setupRotationButtons();
@@ -95,6 +99,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 gridView.setTranslationY(newY);
             }
         });
+
         gameboardAdapter.notifyDataSetChanged();
     }
 

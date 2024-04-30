@@ -100,6 +100,8 @@ public class GameboardAdapter extends BaseAdapter {
                     v.setRotation(currentRotation + 90 * rota);
                     toggleImage((ImageView) v);
                     yourTurn = true;
+
+
                 }
             });
             notifyDataSetChanged();
