@@ -66,7 +66,7 @@ public class GameBoardActivity extends AppCompatActivity {
         previewTileToPlace = binding.previewTileToPlace;
         setupRotationButtons();
         previewTileToPlace.setImageResource(
-                getResources().getIdentifier(tileToPlace.getImageName()+"_"+ tileToPlace.getRotation(), "drawable", getPackageName()));
+                getResources().getIdentifier(tileToPlace.getImageName()+"_0", "drawable", getPackageName()));
 
         final Button closeGame = binding.button3;
         closeGame.setOnClickListener(v -> {
@@ -142,10 +142,6 @@ public class GameBoardActivity extends AppCompatActivity {
                 previewTileToPlace.setImageResource(getResources().getIdentifier(tileToPlace.getImageName()+"_0", "drawable", getPackageName()));
                 previewTileToPlace.setRotation(0);
                 gameboardAdapter.notifyDataSetChanged();
-
-                Log.e("placed", gameBoard.getPlacedTiles().toString());
-                Log.e("placeable", gameBoard.getPlaceablePositions().toString());
-                Log.e("highlighted", gameBoard.highlightValidPositions(tileToPlace).toString());
             }
         });
 
@@ -167,9 +163,6 @@ public class GameBoardActivity extends AppCompatActivity {
                 imageRotator.rotateRight();
                 tileToPlace.rotate(true);
                 gameboardAdapter.setCurrentTileRotation(tileToPlace);
-                Log.e("placed", gameBoard.getPlacedTiles().toString());
-                Log.e("placeable", gameBoard.getPlaceablePositions().toString());
-                Log.e("highlighted", gameBoard.highlightValidPositions(tileToPlace).toString());
             }
         });
 

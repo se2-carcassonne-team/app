@@ -99,12 +99,12 @@ public class GameboardAdapter extends BaseAdapter {
 
         }
 
-        highlightWithCurrentRotation(tileToPlace, currentCol, currentRow, imageView, isMiddleField);
+        highlightWithCurrentRotation(tileToPlace, currentCol, currentRow, imageView);
 
         return imageView;
     }
 
-    private void highlightWithCurrentRotation(Tile currentTileToPlace, int currentCol, int currentRow, ImageView imageView, boolean isMiddleField) {
+    private void highlightWithCurrentRotation(Tile currentTileToPlace, int currentCol, int currentRow, ImageView imageView) {
         if(yourTurn){
             ArrayList<Coordinates> highlightCoordinates = gameBoard.highlightValidPositions(currentTileToPlace);
             if (highlightCoordinates.contains(new Coordinates(currentCol, currentRow))) {
