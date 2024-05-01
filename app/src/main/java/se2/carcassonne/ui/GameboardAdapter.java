@@ -6,19 +6,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-
 import se2.carcassonne.R;
-import se2.carcassonne.model.Tile;
 
 public class GameboardAdapter extends BaseAdapter {
 
     private Context context;
     private int rows, cols;
-    private boolean yourTurn = true;
-
-    private Tile tile;
-
-
 
     public GameboardAdapter(Context context, int rows, int cols) {
         this.context = context;
@@ -46,7 +39,7 @@ public class GameboardAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(75, 75)); // Anpassen Sie die Größe nach Bedarf
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(80, 75)); // Anpassen Sie die Größe nach Bedarf
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             imageView = (ImageView) convertView;
@@ -56,8 +49,6 @@ public class GameboardAdapter extends BaseAdapter {
         int middleCol = 12;
         boolean isMiddleField = position / cols == middleRow && position % cols == middleCol;
 
-
-
         // Startfeld-Bedingung
         if (isMiddleField) {
             imageView.setImageResource(R.drawable.start_field);
@@ -66,18 +57,7 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setImageResource(R.drawable.backside);
             imageView.setAlpha(0.4f);
         }
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int rota=GameBoardActivity.getText();
-                if(!isMiddleField && yourTurn){
-                    float currentRotation = imageView.getRotation();
-                    v.setRotation(currentRotation + 90*rota);
-                    toggleImageScale((ImageView) v);
-                    yourTurn = true;
-                }
-            }
-        });
+        imageView.setOnClickListener(v -> toggleImageScale((ImageView) v));
 
         return imageView;
     }
@@ -87,12 +67,10 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setImageResource(R.drawable.backside);
             imageView.setAlpha(0.4f);
         } else {
-            imageView.setImageResource(R.drawable.monastery_1);
+            imageView.setImageResource(R.drawable.monastery_0);
             imageView.setAlpha(0.9f);
         }
     }
-
-
 }
 
 
