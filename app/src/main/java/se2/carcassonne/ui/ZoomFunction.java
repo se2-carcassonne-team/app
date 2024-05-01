@@ -7,10 +7,10 @@ import android.view.View;
 
 public class ZoomFunction implements View.OnTouchListener {
 
-    private GestureDetector gestureDetector;
+    private final GestureDetector gestureDetector;
     private int lastScrollX;
     private int lastScrollY;
-    private View view;
+    private final View view;
 
     public ZoomFunction(Context context, View view) {
         gestureDetector = new GestureDetector(context, new GestureListener());

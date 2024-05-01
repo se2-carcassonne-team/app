@@ -24,5 +24,11 @@
     <string name="goToGameboard">Gameboard</string>
     <string name="tile">Tile\n</string>
     <string name="nextturn">NextTurn</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="up">UP</string>
+    <string name="down">Down</string>
+    <string name="PlusSign">+</string>
+    <string name="MinusSign">-</string>
 
 </resources>

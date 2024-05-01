@@ -35,38 +35,14 @@ public class StartupActivity extends AppCompatActivity {
         final Button startGameBtn = findViewById(R.id.startgame);
         startGameBtn.setVisibility(View.INVISIBLE);
 
-        final Button loggameboard = findViewById(R.id.button2);
-
-        AnimationHelper.fadeIn(castle, 2000, new Runnable(){
-            @Override
-            public void run(){
-                AnimationHelper.fadeIn(carcassonneLogo, 2000, new Runnable(){
-                    @Override
-                    public void run(){
-                        AnimationHelper.fadeIn(startGameBtn, 2000, new Runnable(){
-                            @Override
-                            public void run(){
-                                AnimationHelper.startButtonAnimation(startGameBtn);
-                            }
-                        });
-                    }
-                });
-            }
-        });
+        AnimationHelper.fadeIn(castle, 2000, () ->
+                AnimationHelper.fadeIn(carcassonneLogo, 2000, () ->
+                        AnimationHelper.fadeIn(startGameBtn, 2000, () ->
+                                AnimationHelper.startButtonAnimation(startGameBtn))));
 
         startGameBtn.setOnClickListener(v -> {
-
-        //binding.button.setOnClickListener(v -> {
             Intent intent = new Intent(StartupActivity.this, HomeActivity.class);
             startActivity(intent);
         });
-
-        loggameboard.setOnClickListener(v -> {
-
-            //binding.button.setOnClickListener(v -> {
-            Intent intent = new Intent(StartupActivity.this, GameBoardActivity.class);
-            startActivity(intent);
-        });
-
     }
 }

@@ -91,6 +91,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/background_right_2" />
 
+    <Button
+        android:id="@+id/btnZoomIn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:textSize="20sp"
+        android:text="@string/PlusSign"
+        app:layout_constraintBottom_toTopOf="@+id/btnZoomOut"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6" />
+
+    <Button
+        android:id="@+id/btnZoomOut"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:text="@string/MinusSign"
+        app:layout_constraintBottom_toTopOf="@+id/guideline7"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6" />
+
     <ImageView
         android:id="@+id/preview_tile_to_place"
         android:layout_width="135dp"
@@ -168,40 +187,39 @@
 
     <Button
         android:id="@+id/left_scrl_btn"
-        android:layout_width="110dp"
+        android:layout_width="80dp"
         android:layout_height="40dp"
-        android:text="left_scrl"
+        android:text="@string/left"
         app:layout_constraintBottom_toBottomOf="@id/guideline7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline29" />
 
     <Button
         android:id="@+id/right_scrl_btn"
-        android:layout_width="110dp"
+        android:layout_width="80dp"
         android:layout_height="40dp"
-        android:text="right_scrl"
+        android:text="@string/right"
         app:layout_constraintBottom_toBottomOf="@id/guideline7"
         app:layout_constraintStart_toEndOf="@+id/left_scrl_btn"
         app:layout_constraintTop_toBottomOf="@+id/guideline29" />
 
     <Button
         android:id="@+id/up_scrl_btn"
-        android:layout_width="110dp"
+        android:layout_width="80dp"
         android:layout_height="40dp"
-        android:text="Up_SCRL"
+        android:text="@string/up"
         app:layout_constraintBottom_toBottomOf="@id/guideline7"
         app:layout_constraintStart_toEndOf="@+id/right_scrl_btn"
         app:layout_constraintTop_toBottomOf="@+id/guideline29" />
 
     <Button
         android:id="@+id/down_scrl_btn"
-        android:layout_width="110dp"
+        android:layout_width="80dp"
         android:layout_height="40dp"
-        android:text="DOWN_SCRL"
+        android:text="@string/down"
         app:layout_constraintBottom_toBottomOf="@id/guideline7"
         app:layout_constraintStart_toEndOf="@+id/up_scrl_btn"
         app:layout_constraintTop_toBottomOf="@+id/guideline29" />
-        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline29"
@@ -209,7 +227,4 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.86374694" />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
