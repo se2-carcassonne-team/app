@@ -22,7 +22,7 @@ public class GameboardAdapter extends BaseAdapter {
     private Context context;
     private final int rows;
     private final int cols;
-    private boolean yourTurn = true;
+    private boolean yourTurn = false;
     private GameBoard gameBoard;
     private Tile tileToPlace;
     private Coordinates toPlaceCoordinates;
@@ -73,30 +73,24 @@ public class GameboardAdapter extends BaseAdapter {
         int currentRow = position / rows;
         int currentCol = position % cols;
         boolean isMiddleField = (currentRow == 12 && currentCol == 12);
-        boolean isNextToMiddleField = (currentCol == 13 && currentRow == 12);
 
         if (isMiddleField) {
             imageView.setImageResource(R.drawable.castle_wall_road_0);
-        } else if(isNextToMiddleField && gameBoard.getGameBoardMatrix()[12][13] == null){
-            //gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(currentCol, currentRow));
-            imageView.setImageResource(R.drawable.road_junction_large_0);
         } else {
-                if(gameBoard.getGameBoardMatrix()[currentCol][currentRow] != null){
-                    // something was placed in this field
-                    for (Tile placedTile: gameBoard.getPlacedTiles()){
-                        if (currentCol == placedTile.getCoordinates().getXPosition() && currentRow == placedTile.getCoordinates().getYPosition()){
-                            imageView.setImageResource(
-                                    context.getResources().getIdentifier(placedTile.getImageName()+"_0", "drawable", context.getPackageName()));
-                            imageView.setRotation(placedTile.getRotation()*90f);
-                            imageView.setAlpha(0.9f);
-                        }
+            if (gameBoard.getGameBoardMatrix()[currentCol][currentRow] != null) {
+                // something was placed in this field
+                for (Tile placedTile : gameBoard.getPlacedTiles()) {
+                    if (currentCol == placedTile.getCoordinates().getXPosition() && currentRow == placedTile.getCoordinates().getYPosition()) {
+                        imageView.setImageResource(
+                                context.getResources().getIdentifier(placedTile.getImageName() + "_0", "drawable", context.getPackageName()));
+                        imageView.setRotation(placedTile.getRotation() * 90f);
+                        imageView.setAlpha(0.9f);
                     }
-
-                } else {
-                    imageView.setImageResource(R.drawable.backside);
-                    imageView.setAlpha(0.4f);
                 }
-
+            } else {
+                imageView.setImageResource(R.drawable.backside);
+                imageView.setAlpha(0.4f);
+            }
         }
 
         highlightWithCurrentRotation(tileToPlace, currentCol, currentRow, imageView);
@@ -105,11 +99,11 @@ public class GameboardAdapter extends BaseAdapter {
     }
 
     private void highlightWithCurrentRotation(Tile currentTileToPlace, int currentCol, int currentRow, ImageView imageView) {
-        if(yourTurn){
+        if (yourTurn) {
             ArrayList<Coordinates> highlightCoordinates = gameBoard.highlightValidPositions(currentTileToPlace);
             if (highlightCoordinates.contains(new Coordinates(currentCol, currentRow))) {
                 imageView.setImageResource(
-                        context.getResources().getIdentifier(tileToPlace.getImageName()+"_0", "drawable", context.getPackageName()));
+                        context.getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", context.getPackageName()));
                 imageView.setRotation(tileToPlace.getRotation() * 90f);
                 imageView.setOnClickListener(v -> {
                     int currentTileRotation = currentTileToPlace.getRotation();
@@ -133,7 +127,7 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setAlpha(0.4f);
         } else {
             imageView.setImageResource(
-                    context.getResources().getIdentifier(tileToPlace.getImageName()+"_0", "drawable", context.getPackageName()));
+                    context.getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", context.getPackageName()));
             imageView.setRotation(tileToPlace.getRotation() * 90f);
             //imageView.setImageResource(R.drawable.castle_center_entry_0);
             imageView.setAlpha(0.9f);

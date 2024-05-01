@@ -82,6 +82,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/points_player_blue" />
 
+    <Button
+        android:id="@+id/btnNextTurn"
+        android:layout_width="66dp"
+        android:layout_height="wrap_content"
+        android:text="@string/nextturn"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="@+id/background_right"
+        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+
 
     <ImageView
         android:id="@+id/background_right"

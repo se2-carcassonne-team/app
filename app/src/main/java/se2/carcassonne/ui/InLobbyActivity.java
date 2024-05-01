@@ -17,16 +17,19 @@ import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.GameState;
 import se2.carcassonne.model.Lobby;
+import se2.carcassonne.model.Player;
+import se2.carcassonne.repository.GameBoardRepository;
 import se2.carcassonne.viewmodel.LobbyViewModel;
 import se2.carcassonne.viewmodel.PlayerListAdapter;
 import se2.carcassonne.repository.PlayerRepository;
 
 public class InLobbyActivity extends AppCompatActivity {
     InLobbyActivityBinding binding;
-
     private LobbyViewModel lobbyViewmodel;
     private PlayerListAdapter adapter;
     private final MapperHelper mapperHelper = new MapperHelper();
+    private GameBoardRepository gameBoardRepository;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class InLobbyActivity extends AppCompatActivity {
         adapter = new PlayerListAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
+        gameBoardRepository = GameBoardRepository.getInstance();
         lobbyViewmodel = new LobbyViewModel();
         binding.textViewLobbyName.setText(mapperHelper.getLobbyName(intent.getStringExtra("LOBBY")));
 
@@ -67,6 +71,11 @@ public class InLobbyActivity extends AppCompatActivity {
         });
         lobbyViewmodel.getGameToBeStartedLiveData().observe(this, gameSessionId -> {
             Intent startGameIntent = new Intent(this, GameBoardActivity.class);
+            Long gameSessionIdLong = Long.parseLong(gameSessionId);
+//            Set the gameSessionId for the currentPlayer
+            PlayerRepository.getInstance().getCurrentPlayer().setGameSessionId(gameSessionIdLong);
+            gameBoardRepository.subscribeToNextTurn(gameSessionIdLong);
+            startGameIntent.putExtra("LOBBY_ADMIN_ID", currentLobby.getLobbyAdminId()+"");
             startActivity(startGameIntent);
         });
         binding.gameLobbyStartGameBtn.setOnClickListener(view -> lobbyViewmodel.startGame(currentLobby.getId()));

@@ -11,6 +11,7 @@ public class Player {
    private Long id;
    private String username;
    private Long gameLobbyId;
+   private Long gameSessionId;
 }
 
 
