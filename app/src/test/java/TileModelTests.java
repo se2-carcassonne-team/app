@@ -82,4 +82,113 @@ public class TileModelTests {
         Tile tile = new Tile(0L, "castle_wall_road", new int[]{3, 2, 1, 2}, new int[]{3, 3, 3, 2, 2, 2, 1, 1, 1});
         assertThrows(RuntimeException.class, () -> tile.rotatedFeatures(4));
     }
+
+    @Test
+    public void testRotate90DegreesClockwise() {
+        // Initial edges: {1, 2, 3, 4}
+        Tile tile = new Tile(1L, "tile_image", new int[]{1, 2, 3, 4}, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+        // Rotate 90 degrees clockwise
+        tile.rotate(true);
+
+        // After 90 degrees rotation
+        assertEquals(1, tile.getRotation());
+    }
+
+    @Test
+    public void testRotate180DegreesClockwise() {
+        // Initial edges: {1, 2, 3, 4}
+        Tile tile = new Tile(1L, "tile_image", new int[]{1, 2, 3, 4}, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+        // Rotate 180 degrees clockwise
+        tile.rotate(true);
+        tile.rotate(true);
+
+        // After 180 degrees rotation
+        assertEquals(2, tile.getRotation());
+    }
+
+    @Test
+    public void testRotate270DegreesClockwise() {
+        // Initial edges: {1, 2, 3, 4}
+        Tile tile = new Tile(1L, "tile_image", new int[]{1, 2, 3, 4}, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+        // Rotate 270 degrees clockwise
+        tile.rotate(true);
+        tile.rotate(true);
+        tile.rotate(true);
+
+        // After 270 degrees rotation
+        assertEquals(3, tile.getRotation());
+    }
+
+    @Test
+    public void testRotate360DegreesClockwise() {
+        // Initial edges: {1, 2, 3, 4}
+        Tile tile = new Tile(1L, "tile_image", new int[]{1, 2, 3, 4}, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+        // Rotate 360 degrees clockwise
+        tile.rotate(true);
+        tile.rotate(true);
+        tile.rotate(true);
+        tile.rotate(true);
+
+        // After 360 degrees rotation
+        assertEquals(0, tile.getRotation());
+    }
+
+    @Test
+    public void testRotate90DegreesCounterClockwise() {
+        // Initial edges: {1, 2, 3, 4}
+        Tile tile = new Tile(1L, "tile_image", new int[]{1, 2, 3, 4}, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+        // Rotate 90 degrees clockwise
+        tile.rotate(false);
+
+        // After 90 degrees rotation
+        assertEquals(3, tile.getRotation());
+    }
+
+    @Test
+    public void testRotate180DegreesCounterClockwise() {
+        // Initial edges: {1, 2, 3, 4}
+        Tile tile = new Tile(1L, "tile_image", new int[]{1, 2, 3, 4}, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+        // Rotate 180 degrees clockwise
+        tile.rotate(false);
+        tile.rotate(false);
+
+        // After 180 degrees rotation
+        assertEquals(2, tile.getRotation());
+    }
+
+    @Test
+    public void testRotate270DegreesCounterClockwise() {
+        // Initial edges: {1, 2, 3, 4}
+        Tile tile = new Tile(1L, "tile_image", new int[]{1, 2, 3, 4}, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+        // Rotate 270 degrees clockwise
+        tile.rotate(false);
+        tile.rotate(false);
+        tile.rotate(false);
+
+        // After 270 degrees rotation
+        assertEquals(1, tile.getRotation());
+    }
+
+    @Test
+    public void testRotate360DegreesCounterClockwise() {
+        // Initial edges: {1, 2, 3, 4}
+        Tile tile = new Tile(1L, "tile_image", new int[]{1, 2, 3, 4}, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+        // Rotate 360 degrees clockwise
+        tile.rotate(false);
+        tile.rotate(false);
+        tile.rotate(false);
+        tile.rotate(false);
+
+        // After 360 degrees rotation
+        assertEquals(0, tile.getRotation());
+    }
+
 }

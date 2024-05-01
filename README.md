@@ -36,10 +36,13 @@ android:usesCleartextTraffic="true"
         - Player then is in the lobby, yet can't leave
     - List all existing lobbies
         - Lobbies are clickable, yet can't be joined
-
-
-## To Be Done First Sprint
-
-- Leaving/Joining lobbies
-- Show players that are currently inside the lobby
-- Deleting lobbies after __x__ minutes, when no player is in the lobby
+    - Leaving/Joining lobbies
+    - Show players that are currently inside the lobby
+    - Show players who's the lobby admin
+    - Deleting lobbies when no player is in the lobby
+    - Starting the game when there are more than two players inside the lobby
+    - GameBoard with Android GridView
+        - Navigating with "Arrow Buttons"
+        - Zooming In And Out of the Board
+        - Highlighting Valid Tile Placement
+        - Placing Tiles with respect to current rotation  
