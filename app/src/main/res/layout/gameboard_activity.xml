@@ -31,7 +31,6 @@
         android:layout_width="52dp"
         android:layout_height="53dp"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="14dp"
         android:layout_marginEnd="27dp"
         android:layout_marginBottom="163dp"
         android:fontFamily="@font/almendra_sc"
@@ -48,7 +47,6 @@
         android:layout_width="55dp"
         android:layout_height="53dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="14dp"
         android:layout_marginBottom="163dp"
         android:fontFamily="@font/almendra_sc"
         android:text="L"
@@ -72,35 +70,24 @@
         app:layout_constraintStart_toEndOf="@+id/gridview"
         app:layout_constraintTop_toBottomOf="@+id/button_rotate_clockwise" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="66dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:text="..."
-        app:layout_constraintBottom_toBottomOf="@id/guideline7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/points_player_blue" />
 
     <Button
         android:id="@+id/btnNextTurn"
         android:layout_width="66dp"
         android:layout_height="wrap_content"
         android:text="@string/nextturn"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        app:layout_constraintStart_toStartOf="@+id/background_right"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toBottomOf="@+id/button_confirm_tile_placement" />
 
 
     <ImageView
         android:id="@+id/background_right"
-        android:layout_width="307dp"
-        android:layout_height="517dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="300dp"
+        android:layout_height="600dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/background_right_2" />
 
@@ -109,65 +96,12 @@
         android:layout_width="135dp"
         android:layout_height="135dp"
         app:layout_constraintBottom_toBottomOf="@id/guideline4"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@id/guideline3"
-        app:srcCompat="@drawable/monastery_1" />
-
-
-    <ImageView
-        android:id="@+id/blue_meeple"
-        android:layout_width="68dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="-20dp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toEndOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/button_confirm_tile_placement"
-        app:srcCompat="@drawable/meeple_blue" />
-
-    <TextView
-        android:id="@+id/points_player_blue"
-        android:layout_width="65dp"
-        android:layout_height="28dp"
-        android:layout_marginStart="2dp"
-        android:autoSizeMaxTextSize="20dp"
-        android:autoSizeMinTextSize="2dp"
-        android:fontFamily="@font/almendra_sc"
-        android:text="Points"
-        android:textColor="@color/gold"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline7"
-        app:layout_constraintStart_toEndOf="@+id/blue_meeple" />
-
-    <TextView
-        android:id="@+id/name_player_blue"
-        android:layout_width="60dp"
-        android:layout_height="21dp"
-        android:layout_marginBottom="8dp"
-        android:autoSizeMaxTextSize="20dp"
-        android:autoSizeMinTextSize="2dp"
-        android:fontFamily="@font/almendra_sc"
-        android:text="Name"
-        android:textColor="@color/gold"
-        app:layout_constraintBottom_toTopOf="@+id/points_player_blue"
-        app:layout_constraintStart_toEndOf="@+id/blue_meeple" />
-
-    <TextView
-        android:id="@+id/textViewRoutineId"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:autoSizeMaxTextSize="20dp"
-        android:autoSizeMinTextSize="1dp"
-        android:autoSizeTextType="uniform"
-        android:fontFamily="@font/almendra_sc"
-        android:scaleType="centerCrop"
-        android:text="Routine ID: "
-        android:textColor="@color/btn_gold"
-        app:layout_constraintBottom_toTopOf="@+id/preview_tile_to_place"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toTopOf="parent"
-        tools:targetApi="o" />
+        app:srcCompat="@drawable/monastery_1" />
+
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -188,7 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_begin="62dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -209,7 +143,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.75" />
+        app:layout_constraintGuide_percent="0.725" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"
@@ -276,15 +210,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.86374694" />
 
-    <Button
-        android:id="@+id/button_get_next_card"
-        android:layout_width="70dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="5dp"
-        android:text="Card"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button_rotate_counter_clockwise"
-        app:layout_constraintTop_toBottomOf="@+id/preview_tile_to_place" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
