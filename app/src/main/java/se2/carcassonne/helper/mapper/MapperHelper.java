@@ -8,9 +8,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import se2.carcassonne.model.Lobby;
+import se2.carcassonne.model.Player;
 
 public class MapperHelper {
-    // PlayerMapping
+    public Player getPlayer(String playerStringAsJson) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode player = null;
+        try {
+            player = mapper.readTree(playerStringAsJson);
+            return mapper.treeToValue(player, Player.class);
+        } catch (JsonProcessingException e) {
+            Log.e("Mapping Exception", "Error processing JSON in getPlayer: " + e.getMessage());
+            return null;
+        }
+    }
+
     public long getPlayerId(String playerStringAsJson) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode playerId = null;
