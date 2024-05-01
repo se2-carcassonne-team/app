@@ -3,7 +3,7 @@ import android.widget.ImageView;
 
 
 public class ImageRotator {
-    private ImageView imageView;
+    private final ImageView imageView;
 
 
     public ImageRotator(ImageView i) {
