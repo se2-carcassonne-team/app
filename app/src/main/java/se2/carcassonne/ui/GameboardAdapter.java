@@ -1,9 +1,12 @@
 package se2.carcassonne.ui;
 
+import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
+
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
@@ -60,16 +63,35 @@ public class GameboardAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        FrameLayout frameLayout;
         ImageView imageView;
+        ImageView ovarlayImageView;
+
         if (convertView == null) {
+            frameLayout = new FrameLayout(context);
+            frameLayout.setLayoutParams(new ViewGroup.LayoutParams(75, 75));
+
             imageView = new ImageView(context);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(75, 75));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            frameLayout.addView(imageView);
+
+            ovarlayImageView = new ImageView(context);
+            FrameLayout.LayoutParams overlayParams = new FrameLayout.LayoutParams(20, 20);
+            overlayParams.setMargins(10, 15, 0, 0); // left, top, right, bottom
+            ovarlayImageView.setLayoutParams(overlayParams);
+//            ovarlayImageView.setLayoutParams(new ViewGroup.LayoutParams(20, 20));
+            ovarlayImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            frameLayout.addView(ovarlayImageView);
         } else {
-            imageView = (ImageView) convertView;
+            frameLayout = (FrameLayout) convertView;
+            imageView = (ImageView) frameLayout.getChildAt(0);
+            ovarlayImageView = (ImageView) frameLayout.getChildAt(1);
         }
 
+
         imageView.setClickable(false);
+        ovarlayImageView.setClickable(false);
 
         int currentRow = position / rows;
         int currentCol = position % cols;
@@ -84,6 +106,7 @@ public class GameboardAdapter extends BaseAdapter {
                     if (currentCol == placedTile.getCoordinates().getXPosition() && currentRow == placedTile.getCoordinates().getYPosition()) {
                         imageView.setImageResource(
                                 context.getResources().getIdentifier(placedTile.getImageName() + "_0", "drawable", context.getPackageName()));
+                        ovarlayImageView.setImageDrawable(getDrawable(context, R.drawable.meeple_blue));
                         imageView.setRotation(placedTile.getRotation() * 90f);
                         imageView.setAlpha(0.9f);
                     }
@@ -96,7 +119,7 @@ public class GameboardAdapter extends BaseAdapter {
 
         highlightWithCurrentRotation(tileToPlace, currentCol, currentRow, imageView);
 
-        return imageView;
+        return frameLayout;
     }
 
     private void highlightWithCurrentRotation(Tile currentTileToPlace, int currentCol, int currentRow, ImageView imageView) {
@@ -113,7 +136,7 @@ public class GameboardAdapter extends BaseAdapter {
                     float currentRotation = imageView.getRotation();
                     v.setRotation(currentRotation + 90 * currentTileRotation);
                     toggleImage((ImageView) v);
-                    // yourTurn = true;
+                    yourTurn = true;
 
                 });
                 notifyDataSetChanged();
