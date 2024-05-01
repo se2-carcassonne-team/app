@@ -23,6 +23,7 @@ public class GameboardAdapter extends BaseAdapter {
     private final int rows;
     private final int cols;
     private boolean yourTurn = false;
+    private boolean canPlaceTile = false;
     private GameBoard gameBoard;
     private Tile tileToPlace;
     private Coordinates toPlaceCoordinates;
@@ -99,7 +100,7 @@ public class GameboardAdapter extends BaseAdapter {
     }
 
     private void highlightWithCurrentRotation(Tile currentTileToPlace, int currentCol, int currentRow, ImageView imageView) {
-        if (yourTurn) {
+        if (yourTurn && canPlaceTile) {
             ArrayList<Coordinates> highlightCoordinates = gameBoard.highlightValidPositions(currentTileToPlace);
             if (highlightCoordinates.contains(new Coordinates(currentCol, currentRow))) {
                 imageView.setImageResource(
@@ -112,7 +113,7 @@ public class GameboardAdapter extends BaseAdapter {
                     float currentRotation = imageView.getRotation();
                     v.setRotation(currentRotation + 90 * currentTileRotation);
                     toggleImage((ImageView) v);
-                    yourTurn = true;
+                    // yourTurn = true;
 
                 });
                 notifyDataSetChanged();
