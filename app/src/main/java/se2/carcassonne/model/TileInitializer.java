@@ -4,16 +4,18 @@ import java.util.ArrayList;
 
 public class TileInitializer {
     public static ArrayList<Tile> initializeTiles() {
+
+        //TODO : Add relevant fields to each tile
         ArrayList<Tile> tiles = new ArrayList<>(72);
 
         //1x castle_wall_road (4 in total but that's the start tile)
-        tiles.add(new Tile(0L,"castle_wall_road", new int[]{3,2,1,2}, new int[]{3,3,3, 2,2,2, 1,1,1}));
+        tiles.add(new Tile(0L,"castle_wall_road", new int[]{3,2,1,2}, new int[]{3,3,3, 2,2,2, 1,1,1}, new boolean[]{false, false, false, false, false, false, false, false, false}));
 
         //1x road_junction_large
-        tiles.add(new Tile(1L, "road_junction_large", new int[]{2,2,2,2}, new int[]{1,2,1, 2,4,2, 1,2,1}));
+        tiles.add(new Tile(1L, "road_junction_large", new int[]{2,2,2,2}, new int[]{1,2,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, false, true, false}));
 
         //1x castle_center
-        tiles.add(new Tile(2L, "castle_center", new int[]{3,3,3,3}, new int[]{3,3,3, 3,3,3, 3,3,3}));
+        tiles.add(new Tile(2L, "castle_center", new int[]{3,3,3,3}, new int[]{3,3,3, 3,3,3, 3,3,3}, ));
 
         //3x castle_center_entry
         tiles.add(new Tile(3L, "castle_center_entry", new int[]{3,3,2,3}, new int[]{3,3,3, 3,3,3, 3,2,3}));

@@ -42,6 +42,10 @@ public class Tile {
      */
     private final int[] features = new int[9];
 
+    private final boolean[] allowedMeeplePositions = new boolean[9];
+
+    private Meeple placedMeeple;
+
     /**
      * Edge Types:
      * <p>1 = field</p>
@@ -51,7 +55,7 @@ public class Tile {
      * @param imageName name of image in app
      * @param
      */
-    public Tile(Long id, String imageName, int[] edges, int[] features) {
+    public Tile(Long id, String imageName, int[] edges, int[] features, boolean[] allowedMeeplePositions) {
         this.id = id;
         this.imageName = imageName;
         this.rotation = 0;
@@ -68,7 +72,17 @@ public class Tile {
         this.features[6] = features[6];
         this.features[7] = features[7];
         this.features[8] = features[8];
+        this.allowedMeeplePositions[0] = allowedMeeplePositions[0];
+        this.allowedMeeplePositions[1] = allowedMeeplePositions[1];
+        this.allowedMeeplePositions[2] = allowedMeeplePositions[2];
+        this.allowedMeeplePositions[3] = allowedMeeplePositions[3];
+        this.allowedMeeplePositions[4] = allowedMeeplePositions[4];
+        this.allowedMeeplePositions[5] = allowedMeeplePositions[5];
+        this.allowedMeeplePositions[6] = allowedMeeplePositions[6];
+        this.allowedMeeplePositions[7] = allowedMeeplePositions[7];
+        this.allowedMeeplePositions[8] = allowedMeeplePositions[8];
         this.coordinates = null;
+        this.placedMeeple = null;
     }
 
     public void rotate(boolean right){

@@ -1,5 +1,8 @@
 package se2.carcassonne.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +15,15 @@ public class Player {
    private String username;
    private Long gameLobbyId;
    private Long gameSessionId;
+   private List<Meeple> meepleList;
+
+   public Player(Long id, String username, Long gameLobbyId, Long gameSessionId) {
+      this.id = id;
+      this.username = username;
+      this.gameLobbyId = gameLobbyId;
+      this.gameSessionId = gameSessionId;
+      this.meepleList = new ArrayList<>(7);
+   }
 }
 
 
