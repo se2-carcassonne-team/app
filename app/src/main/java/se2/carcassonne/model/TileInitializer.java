@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class TileInitializer {
     public static ArrayList<Tile> initializeTiles() {
 
-        //TODO : Add relevant fields to each tile
         ArrayList<Tile> tiles = new ArrayList<>(72);
 
         //1x castle_wall_road (4 in total but that's the start tile)
@@ -15,53 +14,53 @@ public class TileInitializer {
         tiles.add(new Tile(1L, "road_junction_large", new int[]{2,2,2,2}, new int[]{1,2,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, false, true, false}));
 
         //1x castle_center
-        tiles.add(new Tile(2L, "castle_center", new int[]{3,3,3,3}, new int[]{3,3,3, 3,3,3, 3,3,3}, ));
+        tiles.add(new Tile(2L, "castle_center", new int[]{3,3,3,3}, new int[]{3,3,3, 3,3,3, 3,3,3}, new boolean[]{true, true, true, true, true, true, true, true, true}));
 
         //3x castle_center_entry
-        tiles.add(new Tile(3L, "castle_center_entry", new int[]{3,3,2,3}, new int[]{3,3,3, 3,3,3, 3,2,3}));
-        tiles.add(new Tile(4L, "castle_center_entry", new int[]{3,3,2,3}, new int[]{3,3,3, 3,3,3, 3,2,3}));
-        tiles.add(new Tile(5L, "castle_center_entry", new int[]{3,3,2,3}, new int[]{3,3,3, 3,3,3, 3,2,3}));
+        tiles.add(new Tile(3L, "castle_center_entry", new int[]{3,3,2,3}, new int[]{3,3,3, 3,3,3, 3,2,3}, new boolean[]{true, true, true,true, true, true, false, true, false}));
+        tiles.add(new Tile(4L, "castle_center_entry", new int[]{3,3,2,3}, new int[]{3,3,3, 3,3,3, 3,2,3}, new boolean[]{true, true, true, true, true, true, false, true, false}));
+        tiles.add(new Tile(5L, "castle_center_entry", new int[]{3,3,2,3}, new int[]{3,3,3, 3,3,3, 3,2,3}, new boolean[]{true, true, true, true, true, true, false, true, false}));
 
         //4x castle_center_side
-        tiles.add(new Tile(6L, "castle_center_side", new int[]{3,3,1,3}, new int[]{3,3,3, 3,3,3, 3,1,3}));
-        tiles.add(new Tile(7L, "castle_center_side", new int[]{3,3,1,3}, new int[]{3,3,3, 3,3,3, 3,1,3}));
-        tiles.add(new Tile(8L, "castle_center_side", new int[]{3,3,1,3}, new int[]{3,3,3, 3,3,3, 3,1,3}));
-        tiles.add(new Tile(9L, "castle_center_side", new int[]{3,3,1,3}, new int[]{3,3,3, 3,3,3, 3,1,3}));
+        tiles.add(new Tile(6L, "castle_center_side", new int[]{3,3,1,3}, new int[]{3,3,3, 3,3,3, 3,1,3}, new boolean[]{true, true, true, true, true, true, false, true, false}));
+        tiles.add(new Tile(7L, "castle_center_side", new int[]{3,3,1,3}, new int[]{3,3,3, 3,3,3, 3,1,3}, new boolean[]{true, true, true, true, true, true, false, true, false}));
+        tiles.add(new Tile(8L, "castle_center_side", new int[]{3,3,1,3}, new int[]{3,3,3, 3,3,3, 3,1,3}, new boolean[]{true, true, true, true, true, true, false, true, false}));
+        tiles.add(new Tile(9L, "castle_center_side", new int[]{3,3,1,3}, new int[]{3,3,3, 3,3,3, 3,1,3}, new boolean[]{true, true, true, true, true, true, false, true, false}));
 
         //5x castle_edge TODO: Check features!
-        tiles.add(new Tile(10L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}));
-        tiles.add(new Tile(11L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}));
-        tiles.add(new Tile(12L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}));
-        tiles.add(new Tile(13L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}));
-        tiles.add(new Tile(14L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}));
+        tiles.add(new Tile(10L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}, new boolean[]{false, true, true, true, false, true, true, true, false}));
+        tiles.add(new Tile(11L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}, new boolean[]{false, true, true, true, false, true, true, true, false}));
+        tiles.add(new Tile(12L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}, new boolean[]{false, true, true, true, false, true, true, true, false}));
+        tiles.add(new Tile(13L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}, new boolean[]{false, true, true, true, false, true, true, true, false}));
+        tiles.add(new Tile(14L,"castle_edge", new int[]{3,3,1,1}, new int[]{3,3,3, 1,1,3, 1,1,3}, new boolean[]{false, true, true, true, false, true, true, true, false}));
 
         //5x castle_edge_road
-        tiles.add(new Tile(15L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}));
-        tiles.add(new Tile(16L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}));
-        tiles.add(new Tile(17L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}));
-        tiles.add(new Tile(18L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}));
-        tiles.add(new Tile(19L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}));
+        tiles.add(new Tile(15L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}, new boolean[]{false, true, true, true, true, true, true, true, false}));
+        tiles.add(new Tile(16L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}, new boolean[]{false, true, true, true, true, true, true, true, false}));
+        tiles.add(new Tile(17L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}, new boolean[]{false, true, true, true, true, true, true, true, false}));
+        tiles.add(new Tile(18L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}, new boolean[]{false, true, true, true, true, true, true, true, false}));
+        tiles.add(new Tile(19L,"castle_edge_road", new int[]{3,3,2,2}, new int[]{3,3,3, 2,2,3, 1,2,3}, new boolean[]{false, true, true, true, true, true, true, true, false}));
 
         //3x castle_sides //TODO: Check features!
-        tiles.add(new Tile(20L,"castle_sides", new int[]{3,1,3,1}, new int[]{3,3,3, 1,1,1, 3,3,3}));
-        tiles.add(new Tile(21L,"castle_sides", new int[]{3,1,3,1}, new int[]{3,3,3, 1,1,1, 3,3,3}));
-        tiles.add(new Tile(22L,"castle_sides", new int[]{3,1,3,1}, new int[]{3,3,3, 1,1,1, 3,3,3}));
+        tiles.add(new Tile(20L,"castle_sides", new int[]{3,1,3,1}, new int[]{3,3,3, 1,1,1, 3,3,3}, new boolean[]{false, true, false, true, true, true, false, true, false}));
+        tiles.add(new Tile(21L,"castle_sides", new int[]{3,1,3,1}, new int[]{3,3,3, 1,1,1, 3,3,3}, new boolean[]{false, true, false, true, true, true, false, true, false}));
+        tiles.add(new Tile(22L,"castle_sides", new int[]{3,1,3,1}, new int[]{3,3,3, 1,1,1, 3,3,3}, new boolean[]{false, true, false, true, true, true, false, true, false}));
 
         //2x castle_sides_edge //TODO: Check features!
-        tiles.add(new Tile(23L,"castle_sides_edge", new int[]{3,1,1,3}, new int[]{3,3,3, 3,1,1, 3,1,1}));
-        tiles.add(new Tile(24L,"castle_sides_edge", new int[]{3,1,1,3}, new int[]{3,3,3, 3,1,1, 3,1,1}));
+        tiles.add(new Tile(23L,"castle_sides_edge", new int[]{3,1,1,3}, new int[]{3,3,3, 3,1,1, 3,1,1}, new boolean[]{false, true, false, true, true, true, false, true, true}));
+        tiles.add(new Tile(24L,"castle_sides_edge", new int[]{3,1,1,3}, new int[]{3,3,3, 3,1,1, 3,1,1}, new boolean[]{false, true, false, true, true, true, false, true, true}));
 
         //3x castle_tube
-        tiles.add(new Tile(25L,"castle_tube", new int[]{1,3,1,3}, new int[]{3,1,3, 3,3,3, 3,1,3}));
-        tiles.add(new Tile(26L,"castle_tube", new int[]{1,3,1,3}, new int[]{3,1,3, 3,3,3, 3,1,3}));
-        tiles.add(new Tile(27L,"castle_tube", new int[]{1,3,1,3}, new int[]{3,1,3, 3,3,3, 3,1,3}));
+        tiles.add(new Tile(25L,"castle_tube", new int[]{1,3,1,3}, new int[]{3,1,3, 3,3,3, 3,1,3}, new boolean[]{false, true, false, true, true, true, false, true, false}));
+        tiles.add(new Tile(26L,"castle_tube", new int[]{1,3,1,3}, new int[]{3,1,3, 3,3,3, 3,1,3}, new boolean[]{false, true, false, true, true, true, false, true, false}));
+        tiles.add(new Tile(27L,"castle_tube", new int[]{1,3,1,3}, new int[]{3,1,3, 3,3,3, 3,1,3}, new boolean[]{false, true, false, true, true, true, false, true, false}));
 
         //5x castle_wall
-        tiles.add(new Tile(28L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}));
-        tiles.add(new Tile(29L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}));
-        tiles.add(new Tile(30L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}));
-        tiles.add(new Tile(31L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}));
-        tiles.add(new Tile(32L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}));
+        tiles.add(new Tile(28L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}));
+        tiles.add(new Tile(29L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}));
+        tiles.add(new Tile(30L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}));
+        tiles.add(new Tile(31L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}));
+        tiles.add(new Tile(32L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}));
 
         //3x castle_wall_curve_left
         tiles.add(new Tile(33L,"castle_wall_curve_left", new int[]{3,1,2,2}, new int[]{3,3,3, 2,2,1, 1,2,1}));
