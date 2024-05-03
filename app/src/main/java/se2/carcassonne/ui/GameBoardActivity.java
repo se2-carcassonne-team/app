@@ -2,6 +2,9 @@ package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -30,6 +33,7 @@ public class GameBoardActivity extends AppCompatActivity {
     Player currentPlayer;
     private GridView gridView;
     private GameboardAdapter gameboardAdapter;
+    private MeepleGridAdapter meepleAdapter;
     private Tile tileToPlace;
     private Button buttonLeft;
     private Button buttonRight;
@@ -81,9 +85,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gameSessionViewModel.getPlacedTileLiveData().observe(this, tilePlaced -> {
             Tile tilePlacedByOtherPlayer = gameboardAdapter.getGameBoard().getAllTiles().get(Math.toIntExact(tilePlaced.getTileId()));
             tilePlacedByOtherPlayer.setRotation(tilePlaced.getRotation());
-
             gameboardAdapter.getGameBoard().placeTile(tilePlacedByOtherPlayer, tilePlaced.getCoordinates());
-
             gameboardAdapter.notifyDataSetChanged();
         });
 
@@ -100,6 +102,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 gameboardAdapter.setTileToPlace(tileToPlace);
                 previewTileToPlace.setImageResource(
                         getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
+                binding.buttonConfirmTilePlacement.setVisibility(View.VISIBLE);
             } else {
                 tileToPlace = null;
                 gameboardAdapter.setYourTurn(false);
@@ -118,8 +121,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
         // GameLogic
         confirmTilePlacement();
+        confirmMeeplePlacement();
         setupRotationButtons();
-        confirmNextTurnToStart();
 
         // Navigating across the game board
         moveRight();
@@ -133,18 +136,8 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void confirmNextTurnToStart() {
-        buttonNextTurn.setOnClickListener(v -> {
-            if (gameboardAdapter.isYourTurn() && !gameboardAdapter.isCanPlaceTile()){
-                gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
-                gameboardAdapter.setYourTurn(false);
-            } else {
-                if (gameboardAdapter.isCanPlaceTile()){
-                    Toast.makeText(this, "Please place the tile first", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "It's not your turn. Please wait.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
+        gameboardAdapter.setYourTurn(false);
     }
 
     private void bindGameBoardUiElements() {
@@ -163,13 +156,12 @@ public class GameBoardActivity extends AppCompatActivity {
 
         // Init Control Elements
         buttonConfirm = binding.buttonConfirmTilePlacement;
-        buttonNextTurn = binding.btnNextTurn;
         previewTileToPlace = binding.previewTileToPlace;
     }
 
     private void confirmTilePlacement() {
         buttonConfirm.setOnClickListener(v -> {
-            if (gameboardAdapter.getToPlaceCoordinates() != null && gameboardAdapter.isYourTurn()) {
+            if (gameboardAdapter.getToPlaceCoordinates() != null && gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
                 // get the x and y coordinates of the field where the tile should be placed
                 int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                 int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
@@ -177,11 +169,13 @@ public class GameBoardActivity extends AppCompatActivity {
                 // place the Tile on the gameBoard
                 PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation());
                 gameSessionViewModel.sendPlacedTile(placedTileDto);
-                // gameBoard.placeTile(tileToPlace, new Coordinates(xToPlace, yToPlace)); --> performed on receiving livedata update!
 
+                buttonConfirm.setVisibility(View.GONE);
                 gameboardAdapter.setCanPlaceTile(false);
-                previewTileToPlace.setImageResource(R.drawable.backside);
+                gameboardAdapter.setCanPlaceMeeple(true);
                 gameboardAdapter.notifyDataSetChanged();
+                showMeepleGrid();
+
             } else {
                 if (!gameboardAdapter.isYourTurn()){
                     Toast.makeText(this, "It's not your turn. Please wait.", Toast.LENGTH_SHORT).show();
@@ -191,6 +185,38 @@ public class GameBoardActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void confirmMeeplePlacement() {
+        binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
+            if (gameboardAdapter.isYourTurn()) {
+                // get the x and y coordinates of the field where the tile should be placed
+                int xToPlace = meepleAdapter.getMeeplePlacementCoordinates().getXPosition();
+                int yToPlace = meepleAdapter.getMeeplePlacementCoordinates().getYPosition();
+
+                // place the meeple on the gameBoard
+                gameboardAdapter.setCanPlaceMeeple(false);
+                gameboardAdapter.notifyDataSetChanged();
+
+                binding.buttonConfirmMeeplePlacement.setVisibility(View.GONE);
+
+                hideMeepleGrid();
+
+                confirmNextTurnToStart();
+            }
+        });
+    }
+
+    private void showMeepleGrid() {
+        binding.overlayGridview.setVisibility(GridView.VISIBLE);
+        meepleAdapter = new MeepleGridAdapter(this);
+        binding.overlayGridview.setAdapter(meepleAdapter);
+        binding.buttonConfirmMeeplePlacement.setVisibility(View.VISIBLE);
+    }
+
+    private void hideMeepleGrid() {
+        binding.overlayGridview.setVisibility(GridView.GONE);
+        // gameboardAdapter.notifyDataSetChanged();
     }
 
     private void zoomOut() {

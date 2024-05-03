@@ -24,6 +24,7 @@ public class GameboardAdapter extends BaseAdapter {
     private final int cols;
     private boolean yourTurn = false;
     private boolean canPlaceTile = false;
+    private boolean canPlaceMeeple = false;
     private GameBoard gameBoard;
     private Tile tileToPlace;
     private Coordinates toPlaceCoordinates;
@@ -88,6 +89,11 @@ public class GameboardAdapter extends BaseAdapter {
                         imageView.setAlpha(0.9f);
                     }
                 }
+                /*
+                    get meeple position on tile and render meeple above tile
+                    switch(){
+                    }
+                 */
             } else {
                 imageView.setImageResource(R.drawable.backside);
                 imageView.setAlpha(0.4f);
@@ -135,6 +141,7 @@ public class GameboardAdapter extends BaseAdapter {
         }
     }
 }
+
 
 
 

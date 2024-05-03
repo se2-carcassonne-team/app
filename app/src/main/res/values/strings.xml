@@ -30,5 +30,8 @@
     <string name="down">Down</string>
     <string name="PlusSign">+</string>
     <string name="MinusSign">-</string>
+    <string name="choose_meeple_placement">Choose Meeple Placement</string>
+    <string name="confirm">Confirm</string>
+    <string name="skip">Skip</string>
 
 </resources>

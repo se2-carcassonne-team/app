@@ -21,6 +21,14 @@ public class Tile {
 
     private Coordinates coordinates;
 
+    // TODO : Add meeple to tile
+    /*
+    private Meeple meeple;
+        private int meeplePosition; () // 0-8 for 3x3 grid
+        -> Further ideas in GameBoardAdapter.java
+     */
+
+
     /**
      * <p>indices: 0 = North, 1 = East, 2 = South, 3 = West</p>
      * <p>possible values</p>

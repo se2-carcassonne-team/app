@@ -6,6 +6,8 @@ public class TileInitializer {
     public static ArrayList<Tile> initializeTiles() {
         ArrayList<Tile> tiles = new ArrayList<>(72);
 
+
+         //TODO : Add relevant fields to each tile
         //1x castle_wall_road (4 in total but that's the start tile)
         tiles.add(new Tile(0L,"castle_wall_road", new int[]{3,2,1,2}, new int[]{3,3,3, 2,2,2, 1,1,1}));
 
