@@ -95,6 +95,7 @@ public class GameBoardActivity extends AppCompatActivity {
          */
         gameSessionViewModel.getNextTurnMessageLiveData().observe(this, nextTurn -> {
             if (Objects.equals(nextTurn.getPlayerId(), currentPlayer.getId())) {
+                // TODO : Vibration logic here!
                 tileToPlace = gameBoard.getAllTiles().get(Math.toIntExact(nextTurn.getTileId()));
                 previewTileToPlace.setRotation(0);
                 gameboardAdapter.setCanPlaceTile(true);
