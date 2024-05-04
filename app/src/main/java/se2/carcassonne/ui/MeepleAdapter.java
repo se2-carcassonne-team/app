@@ -11,7 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import se2.carcassonne.R;
 import se2.carcassonne.model.Coordinates;
+import se2.carcassonne.model.Player;
 import se2.carcassonne.model.Tile;
+import se2.carcassonne.repository.PlayerRepository;
 
 @Getter
 @Setter
@@ -89,7 +91,8 @@ public class MeepleAdapter extends BaseAdapter {
             boolean isMeeplePlacement = placeMeepleCoordinates != null && placeMeepleCoordinates.getXPosition() == currentRow &&
                     placeMeepleCoordinates.getYPosition() == currentCol;
 
-            imageView.setImageResource(isMeeplePlacement ? R.drawable.meeple_blue : R.drawable.meeple_road);
+            String resourceName = "meeple_" + PlayerRepository.getInstance().getCurrentPlayer().getPlayerColour().name().toLowerCase();
+            imageView.setImageResource(isMeeplePlacement ? context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName()) : R.drawable.meeple_road);
 
             imageView.setOnClickListener(v -> {
                 placeMeepleCoordinates = new Coordinates(currentRow, currentCol);

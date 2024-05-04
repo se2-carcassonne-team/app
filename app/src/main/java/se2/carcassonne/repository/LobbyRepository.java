@@ -1,5 +1,7 @@
 package se2.carcassonne.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.Objects;
@@ -55,7 +57,10 @@ public class LobbyRepository {
         if (isValidLobbyName(lobby.getName())) {
             webSocketClient.subscribeToQueue("/user/queue/response", this::createLobbyLiveData);
             webSocketClient.subscribeToQueue("/user/queue/errors", this::createLobbyLiveData);
-            webSocketClient.subscribeToTopic("/topic/lobby-" + lobby.getId() + "-creator", this::createPlayerLiveData);
+
+            // TODO: Add gamelobbyId in the future
+            webSocketClient.subscribeToTopic("/topic/lobby-creator", this::updatePlayerAfterLobbyCreation);
+
             // TODO : CHECK HERE
             lobbyApi.createLobby(lobby, playerRepository.getCurrentPlayer());
         } else {
@@ -71,9 +76,10 @@ public class LobbyRepository {
      *
      * @param message Updated Player
      */
-    private void createPlayerLiveData(String message) {
+    private void updatePlayerAfterLobbyCreation(String message) {
+        Log.d("response", message);
         PlayerRepository.getInstance().getCurrentPlayer().setPlayerColour(mapperHelper.getPlayerColour(message));
-        webSocketClient.unsubscribe("/topic/lobby-" + PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId() + "-creator");
+        webSocketClient.unsubscribe("/topic/lobby-creator");
     }
 
     /**
@@ -85,6 +91,7 @@ public class LobbyRepository {
      * @param message Received Response from Server when creating Lobby
      */
     private void createLobbyLiveData(String message) {
+
         // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.unsubscribe("/user/queue/response");
         webSocketClient.unsubscribe("/user/queue/errors");

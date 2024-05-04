@@ -19,6 +19,7 @@ import se2.carcassonne.R;
 import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Tile;
+import se2.carcassonne.repository.PlayerRepository;
 
 @Getter
 @Setter
@@ -107,16 +108,22 @@ public class GameboardAdapter extends BaseAdapter {
                         imageView.setImageResource(
                                 context.getResources().getIdentifier(placedTile.getImageName() + "_0", "drawable", context.getPackageName()));
                         //overlayImageView.setImageDrawable(getDrawable(context, R.drawable.meeple_blue));
+
                         imageView.setRotation(placedTile.getRotation() * 90f);
                         imageView.setAlpha(0.9f);
 
                         if (placedTile.getPlacedMeeple() != null) {
+                            if(placedTile.getPlacedMeeple().getColor() != null) {
+                                String resourceName = "meeple_" + placedTile.getPlacedMeeple().getColor().name().toLowerCase();
+                                overlayImageView.setImageResource(context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName()));
+                            }
+
                             Coordinates meepleCoordinates = placedTile.getPlacedMeeple().getCoordinates();
                             int meeplePosition = meepleCoordinates.getXPosition() * 3 + meepleCoordinates.getYPosition();
 
                             Log.d("meeple", "ID: " + placedTile.getId() + " Pos: " + meeplePosition);
 
-                            overlayImageView.setImageDrawable(getDrawable(context, R.drawable.meeple_blue));
+                            //overlayImageView.setImageDrawable(getDrawable(context, R.drawable.meeple_blue));
                             overlayImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                             switch (meeplePosition) {

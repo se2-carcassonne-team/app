@@ -194,7 +194,7 @@ public class GameBoardActivity extends AppCompatActivity {
             if (gameboardAdapter.isYourTurn()) {
                 // TODO: Dynamically adjust player color
                 Meeple placedMeeple = new Meeple();
-                placedMeeple.setColor(PlayerColour.BLUE);
+                placedMeeple.setColor(currentPlayer.getPlayerColour());
                 placedMeeple.setPlayerId(currentPlayer.getId());
                 placedMeeple.setPlaced(true);
                 placedMeeple.setCoordinates(meepleAdapter.getPlaceMeepleCoordinates());
