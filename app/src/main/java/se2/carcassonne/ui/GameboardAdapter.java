@@ -33,7 +33,7 @@ public class GameboardAdapter extends BaseAdapter {
     private GameBoard gameBoard;
     private Tile tileToPlace;
     private Coordinates toPlaceCoordinates;
-
+    private int meepleCount = 7;
 
     public GameboardAdapter(Context context, GameBoard gameBoard, Tile tileToPlace) {
         this.context = context;

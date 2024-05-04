@@ -1,7 +1,9 @@
 package se2.carcassonne.ui;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -78,6 +81,12 @@ public class GameBoardActivity extends AppCompatActivity {
 
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
+
+        String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
+        binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
+
+
+
 
         /**
          * placed tile observable
@@ -149,6 +158,11 @@ public class GameBoardActivity extends AppCompatActivity {
         // Zooming In and Out of the game board
         zoomIn();
         zoomOut();
+
+
+        binding.tvMeepleCount.setTextColor(getResources().getColor(R.color.btn_gold, null));
+        String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
+        binding.tvMeepleCount.setText(formattedString);
     }
 
     private void moveButtonsRight() {
@@ -236,6 +250,13 @@ public class GameBoardActivity extends AppCompatActivity {
                     placedMeeple.setCoordinates(meepleAdapter.getPlaceMeepleCoordinates());
 
                     tileToPlace.setPlacedMeeple(placedMeeple);
+
+                    gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount() - 1);
+
+                    int newCount = gameboardAdapter.getMeepleCount() - 1;
+                    gameboardAdapter.setMeepleCount(newCount);
+                    String formattedString = String.format(getString(R.string.meepleCount), newCount);
+                    binding.tvMeepleCount.setText(formattedString);
 
                     int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                     int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();

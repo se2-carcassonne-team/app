@@ -23,6 +23,29 @@
         app:layout_constraintEnd_toEndOf="@id/guideline6"
         app:layout_constraintTop_toTopOf="@id/guideline4" />
 
+    <TextView
+        android:id="@+id/tvMeepleCount"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="64sp"
+        android:fontFamily="@font/almendra_sc"
+        android:textColor="@color/btn_gold"
+        android:text="@string/meepleCount"
+        app:layout_constraintBottom_toBottomOf="@id/guideline25"
+        app:layout_constraintEnd_toStartOf="@id/ivMeepleWithPlayerColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline27" />
+
+    <ImageView
+        android:id="@+id/ivMeepleWithPlayerColor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/meeple_with_color_of_your_player"
+        app:layout_constraintBottom_toBottomOf="@id/guideline25"
+        app:layout_constraintEnd_toStartOf="@id/guideline26"
+        app:layout_constraintStart_toEndOf="@id/tvMeepleCount"
+        app:layout_constraintTop_toTopOf="@id/guideline27" />
+
     <Button
         android:id="@+id/button_rotate_clockwise"
         android:layout_width="52dp"
@@ -31,7 +54,7 @@
         android:layout_marginEnd="27dp"
         android:layout_marginBottom="163dp"
         android:fontFamily="@font/almendra_sc"
-        android:text="R"
+        android:text="@string/r"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,10 +86,10 @@
         android:text="@string/confirm"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/gridview"
-        app:layout_constraintTop_toBottomOf="@+id/button_rotate_clockwise"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_rotate_clockwise" />
 
     <Button
         android:id="@+id/button_confirm_meeple_placement"
@@ -77,10 +100,10 @@
         android:text="Meeple"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/gridview"
-        app:layout_constraintTop_toBottomOf="@+id/button_rotate_clockwise"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_rotate_clockwise" />
 
 
     <ImageView
@@ -97,8 +120,8 @@
         android:id="@+id/btnZoomIn"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:textSize="20sp"
         android:text="@string/PlusSign"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/btnZoomOut"
         app:layout_constraintEnd_toStartOf="@+id/guideline6" />
 
@@ -106,17 +129,17 @@
         android:id="@+id/btnZoomOut"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:textSize="20sp"
         android:gravity="center"
         android:text="@string/MinusSign"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline7"
         app:layout_constraintEnd_toStartOf="@+id/guideline6" />
 
     <ImageView
         android:id="@+id/preview_tile_to_place"
-        android:layout_marginTop="50dp"
         android:layout_width="180dp"
         android:layout_height="180dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintBottom_toBottomOf="@id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
@@ -127,15 +150,14 @@
         android:id="@+id/overlay_gridview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:numColumns="3"
-        android:columnWidth="60dp"
         android:background="@android:color/transparent"
-        app:layout_constraintTop_toTopOf="@id/preview_tile_to_place"
+        android:columnWidth="60dp"
+        android:numColumns="3"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/preview_tile_to_place"
-        app:layout_constraintStart_toStartOf="@id/preview_tile_to_place"
         app:layout_constraintEnd_toEndOf="@id/preview_tile_to_place"
-        android:visibility="gone"/>
-
+        app:layout_constraintStart_toStartOf="@id/preview_tile_to_place"
+        app:layout_constraintTop_toTopOf="@id/preview_tile_to_place" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -157,7 +179,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="62dp" />
+        app:layout_constraintGuide_percent="0.15085158" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -243,4 +265,25 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.86374694" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline26"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.12" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline27"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
 </androidx.constraintlayout.widget.ConstraintLayout>
