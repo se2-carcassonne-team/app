@@ -1,26 +1,52 @@
 package se2.carcassonne.ui;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import lombok.Getter;
 import lombok.Setter;
 import se2.carcassonne.R;
 import se2.carcassonne.model.Coordinates;
+import se2.carcassonne.model.Tile;
 
 @Getter
 @Setter
 public class MeepleAdapter extends BaseAdapter {
     private final Context context;
-    private Coordinates meeplePlacementCoordinates;
+    private Coordinates placeMeepleCoordinates;
     private ImageView meepleSelected = null;
+    private Tile tileToPlace;
+    private boolean[] allowedMeeplePositions;
 
-    public MeepleAdapter(Context context) {
+    public MeepleAdapter(Context context, Tile tileToPlace) {
         this.context = context;
+        this.tileToPlace = tileToPlace;
+        this.allowedMeeplePositions = tileToPlace.getAllowedMeeplePositions();
+        rotateAllowedMeeplePositions();
+    }
+
+    private void rotateAllowedMeeplePositions() {
+        if(tileToPlace.getRotation() != 0) {
+            for(int i = 0; i < tileToPlace.getRotation(); i++) {
+                this.allowedMeeplePositions = rotate90DegreesClockwise(allowedMeeplePositions);
+            }
+        }
+    }
+
+    public static boolean[] rotate90DegreesClockwise(boolean[] matrix) {
+        boolean[] rotated = new boolean[9]; // Since it's a 3x3 matrix
+        int N = 3; // Dimension of the matrix
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                rotated[j * N + (N - 1 - i)] = matrix[i * N + j];
+            }
+        }
+        return rotated;
     }
 
     @Override
@@ -53,23 +79,25 @@ public class MeepleAdapter extends BaseAdapter {
         }
 
         // TODO : Check if image is relevant for the meeple placement
-        imageView.setClickable(true);
-        imageView.setImageResource(R.drawable.meeple_road);
+        if(this.allowedMeeplePositions[position]) {
+            imageView.setClickable(true);
+            //imageView.setImageResource(R.drawable.meeple_road);
 
-        int currentRow = position / 3;
-        int currentCol = position % 3;
+            int currentRow = position / 3;
+            int currentCol = position % 3;
 
+            boolean isMeeplePlacement = placeMeepleCoordinates != null && placeMeepleCoordinates.getXPosition() == currentRow &&
+                    placeMeepleCoordinates.getYPosition() == currentCol;
 
-        boolean isMeeplePlacement = meeplePlacementCoordinates != null && meeplePlacementCoordinates.getXPosition() == currentRow &&
-                meeplePlacementCoordinates.getYPosition() == currentCol;
+            imageView.setImageResource(isMeeplePlacement ? R.drawable.meeple_blue : R.drawable.meeple_road);
+
+            imageView.setOnClickListener(v -> {
+                placeMeepleCoordinates = new Coordinates(currentRow, currentCol);
+                notifyDataSetChanged();
+            });
+        }
 
         // TODO : Set meeple dynamically based on color and if the place is relevant
-        imageView.setImageResource(isMeeplePlacement ? R.drawable.meeple_blue : R.drawable.meeple_road);
-
-        imageView.setOnClickListener(v -> {
-            meeplePlacementCoordinates = new Coordinates(currentRow, currentCol);
-            notifyDataSetChanged();
-        });
 
         return imageView;
     }

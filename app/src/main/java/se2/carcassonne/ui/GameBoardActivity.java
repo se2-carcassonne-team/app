@@ -2,9 +2,7 @@ package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -21,8 +19,10 @@ import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.GameBoard;
+import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Player;
+import se2.carcassonne.model.PlayerColour;
 import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
@@ -85,6 +85,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gameSessionViewModel.getPlacedTileLiveData().observe(this, tilePlaced -> {
             Tile tilePlacedByOtherPlayer = gameboardAdapter.getGameBoard().getAllTiles().get(Math.toIntExact(tilePlaced.getTileId()));
             tilePlacedByOtherPlayer.setRotation(tilePlaced.getRotation());
+            tilePlacedByOtherPlayer.setPlacedMeeple(tilePlaced.getPlacedMeeple());
             gameboardAdapter.getGameBoard().placeTile(tilePlacedByOtherPlayer, tilePlaced.getCoordinates());
             gameboardAdapter.notifyDataSetChanged();
         });
@@ -168,7 +169,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
 
                 // place the Tile on the gameBoard
-                PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation());
+                PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), null);
                 gameSessionViewModel.sendPlacedTile(placedTileDto);
 
                 buttonConfirm.setVisibility(View.GONE);
@@ -191,9 +192,19 @@ public class GameBoardActivity extends AppCompatActivity {
     private void confirmMeeplePlacement() {
         binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn()) {
-                // get the x and y coordinates of the field where the tile should be placed
-                int xToPlace = meepleAdapter.getMeeplePlacementCoordinates().getXPosition();
-                int yToPlace = meepleAdapter.getMeeplePlacementCoordinates().getYPosition();
+                // TODO: Dynamically adjust player color
+                Meeple placedMeeple = new Meeple();
+                placedMeeple.setColor(PlayerColour.BLUE);
+                placedMeeple.setPlayerId(currentPlayer.getId());
+                placedMeeple.setPlaced(true);
+                placedMeeple.setCoordinates(meepleAdapter.getPlaceMeepleCoordinates());
+
+                tileToPlace.setPlacedMeeple(placedMeeple);
+
+                int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
+                int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
+                PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), placedMeeple);
+                gameSessionViewModel.sendPlacedTile(placedTileDto);
 
                 // place the meeple on the gameBoard
                 gameboardAdapter.setCanPlaceMeeple(false);
@@ -210,7 +221,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void showMeepleGrid() {
         binding.overlayGridview.setVisibility(GridView.VISIBLE);
-        meepleAdapter = new MeepleAdapter(this);
+        meepleAdapter = new MeepleAdapter(this, tileToPlace);
         binding.overlayGridview.setAdapter(meepleAdapter);
         binding.buttonConfirmMeeplePlacement.setVisibility(View.VISIBLE);
     }

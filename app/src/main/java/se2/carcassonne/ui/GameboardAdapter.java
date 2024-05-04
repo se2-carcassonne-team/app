@@ -1,6 +1,9 @@
 package se2.carcassonne.ui;
 
+import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
+
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -65,6 +68,7 @@ public class GameboardAdapter extends BaseAdapter {
         FrameLayout frameLayout;
         ImageView imageView;
         ImageView overlayImageView;
+        FrameLayout.LayoutParams overlayParams = new FrameLayout.LayoutParams(25, 25);
 
         if (convertView == null) {
             frameLayout = new FrameLayout(context);
@@ -76,8 +80,6 @@ public class GameboardAdapter extends BaseAdapter {
             frameLayout.addView(imageView);
 
             overlayImageView = new ImageView(context);
-            FrameLayout.LayoutParams overlayParams = new FrameLayout.LayoutParams(20, 20);
-            overlayParams.setMargins(10, 15, 0, 0); // left, top, right, bottom
             overlayImageView.setLayoutParams(overlayParams);
             overlayImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             frameLayout.addView(overlayImageView);
@@ -109,11 +111,59 @@ public class GameboardAdapter extends BaseAdapter {
                         imageView.setAlpha(0.9f);
                     }
                 }
-                /*
-                    get meeple position on tile and render meeple above tile
-                    switch(){
+
+                    //get meeple position on tile and render meeple above tile
+                if(tileToPlace != null) {
+                    if(tileToPlace.getPlacedMeeple() != null) {
+                        Coordinates meepleCoordinates = tileToPlace.getPlacedMeeple().getCoordinates();
+                        int meeplePosition = meepleCoordinates.getXPosition() * 3 + meepleCoordinates.getYPosition();
+
+                        Log.d("meeple", meeplePosition + "");
+
+                        overlayImageView.setImageDrawable(getDrawable(context, R.drawable.meeple_blue));
+                        overlayImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                        switch (meeplePosition) {
+                            case 0:
+                                overlayParams.setMargins(5, 5, 0, 0);
+                                overlayImageView.setLayoutParams(overlayParams);
+                                break;
+                            case 1:
+                                overlayParams.setMargins(30, 5, 0, 0);
+                                overlayImageView.setLayoutParams(overlayParams);
+                                break;
+                            case 2:
+                                overlayParams.setMargins(0, 5, 5, 0);
+                                overlayImageView.setLayoutParams(overlayParams);
+                                break;
+                            case 3:
+                                overlayParams.setMargins(5, 30, 0, 0);
+                                overlayImageView.setLayoutParams(overlayParams);
+                                break;
+                            case 4:
+                                overlayParams.setMargins(30, 30, 0, 0);
+                                overlayImageView.setLayoutParams(overlayParams);
+                                break;
+                            case 5:
+                                overlayParams.setMargins(0, 30, 5, 0);
+                                overlayImageView.setLayoutParams(overlayParams);
+                                break;
+                            case 6:
+                                overlayParams.setMargins(5, 0, 0, 5);
+                                overlayImageView.setLayoutParams(overlayParams);
+                                break;
+                            case 7:
+                                overlayParams.setMargins(30, 0, 0, 5);
+                                overlayImageView.setLayoutParams(overlayParams);
+                                break;
+                            case 8:
+                                overlayParams.setMargins(0, 0, 5, 5);
+                                overlayImageView.setLayoutParams(overlayParams);
+                                break;
+                        }
                     }
-                 */
+                }
+
             } else {
                 imageView.setImageResource(R.drawable.backside);
                 imageView.setAlpha(0.4f);

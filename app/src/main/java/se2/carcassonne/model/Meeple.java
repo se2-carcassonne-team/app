@@ -12,5 +12,5 @@ public class Meeple {
     PlayerColour color;
     Long playerId;
     boolean placed;
-    int position;
+    Coordinates coordinates;
 }
