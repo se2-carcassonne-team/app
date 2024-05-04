@@ -1,5 +1,10 @@
 package se2.carcassonne.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
+// This is included to ignore the "availableColours" parameter that comes from the backend
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Lobby {
     private Long id;
     private String name;
@@ -15,6 +23,9 @@ public class Lobby {
     private String gameState;
     private Integer numPlayers;
     private Long lobbyAdminId;
+/*
+    @JsonIgnore
+    private List<String> availableColours;*/
 
     public String toJsonString() {
         return "{" +

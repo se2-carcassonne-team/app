@@ -15,6 +15,7 @@ import se2.carcassonne.model.Lobby;
 public class LobbyRepository {
     private static LobbyRepository instance;
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    private final MutableLiveData<String> updatedPlayerLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> createLobbyLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> lobbyAlreadyExistsErrorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> invalidLobbyNameErrorMessage = new MutableLiveData<>();
@@ -45,6 +46,7 @@ public class LobbyRepository {
      * Subscribe to:
      * <p>- /user/queue/response -> Return Value = Created Lobby with updated ID</p>
      * <p>- /user/queue/errors -> Return Value = ErrorMessage</p>
+     * <p>- /topic/lobby-$lobbyId-creator -> Return Value = Updated Player with Colour</p>
      *
      * @param lobby Lobby to create
      */
@@ -53,11 +55,25 @@ public class LobbyRepository {
         if (isValidLobbyName(lobby.getName())) {
             webSocketClient.subscribeToQueue("/user/queue/response", this::createLobbyLiveData);
             webSocketClient.subscribeToQueue("/user/queue/errors", this::createLobbyLiveData);
+            webSocketClient.subscribeToTopic("/topic/lobby-" + lobby.getId() + "-creator", this::createPlayerLiveData);
             // TODO : CHECK HERE
             lobbyApi.createLobby(lobby, playerRepository.getCurrentPlayer());
         } else {
             invalidLobbyNameErrorMessage.postValue("Invalid Lobby name!");
         }
+    }
+
+    /**
+     * Used to get the assigned player colour from the server when creating a lobby
+     *
+     * Unsubscribe from:
+     * <p>- /topic/lobby-$lobbyId-creator</p>
+     *
+     * @param message Updated Player
+     */
+    private void createPlayerLiveData(String message) {
+        PlayerRepository.getInstance().getCurrentPlayer().setPlayerColour(mapperHelper.getPlayerColour(message));
+        webSocketClient.unsubscribe("/topic/lobby-" + PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId() + "-creator");
     }
 
     /**
@@ -136,6 +152,7 @@ public class LobbyRepository {
         webSocketClient.unsubscribe("/user/queue/response");
         webSocketClient.unsubscribe("/user/queue/errors");
         PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getLobbyIdFromPlayer(message));
+        PlayerRepository.getInstance().getCurrentPlayer().setPlayerColour(mapperHelper.getPlayerColour(message));
     }
 
     public void leaveLobby() {

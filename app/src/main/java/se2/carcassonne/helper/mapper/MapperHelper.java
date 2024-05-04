@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se2.carcassonne.model.Lobby;
 import se2.carcassonne.model.Player;
+import se2.carcassonne.model.PlayerColour;
 
 public class MapperHelper {
     public Player getPlayer(String playerStringAsJson) {
@@ -21,6 +22,18 @@ public class MapperHelper {
             Log.e("Mapping Exception", "Error processing JSON in getPlayer: " + e.getMessage());
             return null;
         }
+    }
+
+    public PlayerColour getPlayerColour(String playerStringAsJson) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode playerColour = null;
+        try {
+            playerColour = mapper.readTree(playerStringAsJson).get("playerColour");
+        } catch (JsonProcessingException e) {
+            Log.e("Mapping Exception", "Error processing JSON in playerColour: " + e.getMessage());
+            return null;
+        }
+        return PlayerColour.valueOf(playerColour.asText());
     }
 
     public long getPlayerId(String playerStringAsJson) {
