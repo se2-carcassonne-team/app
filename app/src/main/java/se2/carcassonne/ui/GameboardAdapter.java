@@ -121,39 +121,39 @@ public class GameboardAdapter extends BaseAdapter {
 
                             switch (meeplePosition) {
                                 case 0:
-                                    overlayParams.setMargins(5, 5, 0, 0);
+                                    overlayParams.setMargins(0, 2, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
                                 case 1:
-                                    overlayParams.setMargins(30, 5, 0, 0);
+                                    overlayParams.setMargins(25, 2, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
                                 case 2:
-                                    overlayParams.setMargins(55, 5, 0, 0);
+                                    overlayParams.setMargins(50, 2, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
                                 case 3:
-                                    overlayParams.setMargins(5, 30, 0, 0);
+                                    overlayParams.setMargins(0, 25, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
                                 case 4:
-                                    overlayParams.setMargins(30, 30, 0, 0);
+                                    overlayParams.setMargins(25, 25, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
                                 case 5:
-                                    overlayParams.setMargins(55, 30, 0, 0);
+                                    overlayParams.setMargins(50, 25, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
                                 case 6:
-                                    overlayParams.setMargins(5, 55, 0, 0);
+                                    overlayParams.setMargins(0, 50, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
                                 case 7:
-                                    overlayParams.setMargins(30, 55, 0, 0);
+                                    overlayParams.setMargins(25, 50, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
                                 case 8:
-                                    overlayParams.setMargins(55, 55, 0, 0);
+                                    overlayParams.setMargins(50, 50, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
                             }
