@@ -95,7 +95,12 @@ public class MeepleAdapter extends BaseAdapter {
             imageView.setImageResource(isMeeplePlacement ? context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName()) : R.drawable.meeple_road);
 
             imageView.setOnClickListener(v -> {
-                placeMeepleCoordinates = new Coordinates(currentRow, currentCol);
+                if(placeMeepleCoordinates!= null && placeMeepleCoordinates.getXPosition() == currentRow && placeMeepleCoordinates.getYPosition() == currentCol) {
+                    placeMeepleCoordinates = null;
+                } else {
+                    placeMeepleCoordinates = new Coordinates(currentRow, currentCol);
+                }
+                // placeMeepleCoordinates = new Coordinates(currentRow, currentCol);
                 notifyDataSetChanged();
             });
         }
