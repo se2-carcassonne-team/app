@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,7 +24,6 @@ import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Player;
-import se2.carcassonne.model.PlayerColour;
 import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
@@ -40,7 +41,6 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button buttonUp;
     private Button buttonDown;
     private Button buttonConfirm;
-    private Button buttonNextTurn;
     private GameBoard gameBoard;
     private ImageView previewTileToPlace;
     private GameSessionViewModel gameSessionViewModel;
@@ -105,12 +105,26 @@ public class GameBoardActivity extends AppCompatActivity {
                 previewTileToPlace.setImageResource(
                         getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
                 binding.buttonConfirmTilePlacement.setVisibility(View.VISIBLE);
+                binding.buttonRotateClockwise.setVisibility(View.VISIBLE);
+                binding.buttonRotateCounterClockwise.setVisibility(View.VISIBLE);
+                binding.previewTileToPlace.setVisibility(View.VISIBLE);
+                binding.backgroundRight.setVisibility(View.VISIBLE);
+
+                moveButtonsLeft();
             } else {
                 tileToPlace = null;
                 gameboardAdapter.setYourTurn(false);
                 gameboardAdapter.setCanPlaceTile(false);
                 previewTileToPlace.setRotation(0);
                 previewTileToPlace.setImageResource(R.drawable.backside);
+                buttonConfirm.setVisibility(View.GONE);
+                binding.buttonRotateClockwise.setVisibility(View.GONE);
+                binding.buttonRotateCounterClockwise.setVisibility(View.GONE);
+                binding.previewTileToPlace.setVisibility(View.GONE);
+                binding.backgroundRight.setVisibility(View.GONE);
+
+                moveButtonsRight();
+
             }
             if (gameboardAdapter != null) {
                 gameboardAdapter.notifyDataSetChanged();
@@ -135,6 +149,24 @@ public class GameBoardActivity extends AppCompatActivity {
         // Zooming In and Out of the game board
         zoomIn();
         zoomOut();
+    }
+
+    private void moveButtonsRight() {
+        ConstraintLayout constraintLayout = binding.main;
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
+        constraintSet.connect(zoomInBtn.getId(), ConstraintSet.END, binding.main.getId(), ConstraintSet.END, 0);
+        constraintSet.connect(zoomOutBtn.getId(), ConstraintSet.END, binding.main.getId(), ConstraintSet.END, 0);
+        constraintSet.applyTo(constraintLayout);
+    }
+
+    private void moveButtonsLeft() {
+        ConstraintLayout constraintLayout = binding.main;
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
+        constraintSet.connect(zoomInBtn.getId(), ConstraintSet.END, binding.backgroundRight.getId(), ConstraintSet.START, 0);
+        constraintSet.connect(zoomOutBtn.getId(), ConstraintSet.END, binding.backgroundRight.getId(), ConstraintSet.START, 0);
+        constraintSet.applyTo(constraintLayout);
     }
 
     private void confirmNextTurnToStart() {
@@ -173,6 +205,9 @@ public class GameBoardActivity extends AppCompatActivity {
                 gameSessionViewModel.sendPlacedTile(placedTileDto);
 
                 buttonConfirm.setVisibility(View.GONE);
+                binding.buttonRotateClockwise.setVisibility(View.GONE);
+                binding.buttonRotateCounterClockwise.setVisibility(View.GONE);
+
                 gameboardAdapter.setCanPlaceTile(false);
                 gameboardAdapter.setCanPlaceMeeple(true);
                 gameboardAdapter.notifyDataSetChanged();
