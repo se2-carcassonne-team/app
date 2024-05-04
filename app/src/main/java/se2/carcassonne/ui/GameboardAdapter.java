@@ -187,8 +187,28 @@ public class GameboardAdapter extends BaseAdapter {
         if (yourTurn && canPlaceTile) {
             ArrayList<Coordinates> highlightCoordinates = gameBoard.highlightValidPositions(currentTileToPlace);
             if (highlightCoordinates.contains(new Coordinates(currentCol, currentRow))) {
-                imageView.setImageResource(
-                        context.getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", context.getPackageName()));
+                if (toPlaceCoordinates != null && toPlaceCoordinates.getXPosition() == currentCol && toPlaceCoordinates.getYPosition() == currentRow) {
+                    // set non-transparent imageView
+                    imageView.setImageResource(
+                            context.getResources().getIdentifier(tileToPlace.getImageName() + "_0",
+                                    "drawable", context.getPackageName())
+                    );
+                    imageView.setAlpha(0.9f);
+                } else {
+                    // set transparent imageView
+                    imageView.setImageResource(
+                            context.getResources().getIdentifier(tileToPlace.getImageName() + "_0",
+                                    "drawable", context.getPackageName())
+                    );
+                    imageView.setAlpha(0.4f);
+
+                }
+//                // set transparent imageView
+//                imageView.setImageResource(
+//                        context.getResources().getIdentifier(tileToPlace.getImageName() + "_0",
+//                                "drawable", context.getPackageName())
+//                );
+
                 imageView.setRotation(tileToPlace.getRotation() * 90f);
                 imageView.setOnClickListener(v -> {
                     int currentTileRotation = currentTileToPlace.getRotation();
@@ -197,8 +217,7 @@ public class GameboardAdapter extends BaseAdapter {
                     float currentRotation = imageView.getRotation();
                     v.setRotation(currentRotation + 90 * currentTileRotation);
                     toggleImage((ImageView) v);
-                    // yourTurn = true;
-
+                    notifyDataSetChanged();
                 });
                 notifyDataSetChanged();
             }
@@ -214,7 +233,6 @@ public class GameboardAdapter extends BaseAdapter {
             imageView.setImageResource(
                     context.getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", context.getPackageName()));
             imageView.setRotation(tileToPlace.getRotation() * 90f);
-            //imageView.setImageResource(R.drawable.castle_center_entry_0);
             imageView.setAlpha(0.9f);
         }
     }

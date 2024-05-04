@@ -249,6 +249,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 binding.buttonConfirmMeeplePlacement.setVisibility(View.GONE);
 
                 hideMeepleGrid();
+                gameboardAdapter.setToPlaceCoordinates(null);
 
                 confirmNextTurnToStart();
             }
