@@ -88,7 +88,6 @@ public class InLobbyActivity extends AppCompatActivity {
     protected void onDestroy() {
         lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().setValue(null);
         lobbyViewmodel.getPlayerLeavesLobbyLiveData().setValue(null);
-        lobbyViewmodel.leaveLobby();
         super.onDestroy();
     }
 }

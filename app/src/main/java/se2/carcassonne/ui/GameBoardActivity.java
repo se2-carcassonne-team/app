@@ -262,7 +262,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void setupRotationButtons() {
         final ImageRotator imageRotator = new ImageRotator(previewTileToPlace);
         binding.buttonRotateClockwise.setOnClickListener(v -> {
-            if (gameboardAdapter.isYourTurn()) {
+            if (gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
                 imageRotator.rotateRight();
                 tileToPlace.rotate(true);
                 gameboardAdapter.setCurrentTileRotation(tileToPlace);
@@ -270,7 +270,7 @@ public class GameBoardActivity extends AppCompatActivity {
         });
 
         binding.buttonRotateCounterClockwise.setOnClickListener(v -> {
-            if (gameboardAdapter.isYourTurn()) {
+            if (gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
                 imageRotator.rotateLeft();
                 tileToPlace.rotate(false);
                 gameboardAdapter.setCurrentTileRotation(tileToPlace);
