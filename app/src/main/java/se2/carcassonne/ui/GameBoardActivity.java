@@ -160,9 +160,9 @@ public class GameBoardActivity extends AppCompatActivity {
         zoomOut();
 
 
-        binding.tvMeepleCount.setTextColor(getResources().getColor(R.color.btn_gold, null));
-        String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
-        binding.tvMeepleCount.setText(formattedString);
+        //binding.tvMeepleCount.setTextColor(getResources().getColor(R.color.btn_gold, null));
+        //String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
+        binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
     }
 
     private void moveButtonsRight() {
@@ -253,9 +253,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
                     gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount() - 1);
 
-                    int newCount = gameboardAdapter.getMeepleCount() - 1;
-                    gameboardAdapter.setMeepleCount(newCount);
-                    String formattedString = String.format(getString(R.string.meepleCount), newCount);
+                    gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount());
+                    String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
                     binding.tvMeepleCount.setText(formattedString);
 
                     int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
