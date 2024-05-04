@@ -93,14 +93,14 @@ public class TileInitializer {
         tiles.add(new Tile(50L,"monastery_road", new int[]{1,1,2,1}, new int[]{1,1,1, 1,5,1, 1,2,1}, new boolean[]{false, true, false, true, true, true, false, true, false}));
 
         //8x road
-        tiles.add(new Tile(51L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{false, false, false, false, true, false, false, false, false}));
-        tiles.add(new Tile(52L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{false, false, false, false, true, false, false, false, false}));
-        tiles.add(new Tile(53L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{false, false, false, false, true, false, false, false, false}));
-        tiles.add(new Tile(54L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{false, false, false, false, true, false, false, false, false}));
-        tiles.add(new Tile(55L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{false, false, false, false, true, false, false, false, false}));
-        tiles.add(new Tile(56L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{false, false, false, false, true, false, false, false, false}));
-        tiles.add(new Tile(57L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{false, false, false, false, true, false, false, false, false}));
-        tiles.add(new Tile(58L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{false, false, false, false, true, false, false, false, false}));
+        tiles.add(new Tile(51L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{true, false, false, false, true, false, false, false, true}));
+        tiles.add(new Tile(52L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{true, false, false, false, true, false, false, false, true}));
+        tiles.add(new Tile(53L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{true, false, false, false, true, false, false, false, true}));
+        tiles.add(new Tile(54L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{true, false, false, false, true, false, false, false, true}));
+        tiles.add(new Tile(55L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{true, false, false, false, true, false, false, false, true}));
+        tiles.add(new Tile(56L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{true, false, false, false, true, false, false, false, true}));
+        tiles.add(new Tile(57L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{true, false, false, false, true, false, false, false, true}));
+        tiles.add(new Tile(58L,"road", new int[]{2,1,2,1}, new int[]{1,2,1, 1,2,1, 1,2,1}, new boolean[]{true, false, false, false, true, false, false, false, true}));
 
         //9x road_curve
         tiles.add(new Tile(59L,"road_curve", new int[]{1,1,2,2}, new int[]{1,1,1, 2,2,1, 1,2,1}, new boolean[]{false, true, false, false, true, false, true, false, false}));
