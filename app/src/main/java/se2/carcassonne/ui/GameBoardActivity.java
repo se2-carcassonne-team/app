@@ -227,21 +227,22 @@ public class GameBoardActivity extends AppCompatActivity {
     private void confirmMeeplePlacement() {
         binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn()) {
-                // TODO: Dynamically adjust player color
-                Meeple placedMeeple = new Meeple();
-                placedMeeple.setColor(currentPlayer.getPlayerColour());
-                placedMeeple.setPlayerId(currentPlayer.getId());
-                placedMeeple.setPlaced(true);
-                placedMeeple.setCoordinates(meepleAdapter.getPlaceMeepleCoordinates());
+                if(meepleAdapter.getPlaceMeepleCoordinates() != null){
+                    // TODO: Dynamically adjust player color - done?
+                    Meeple placedMeeple = new Meeple();
+                    placedMeeple.setColor(currentPlayer.getPlayerColour());
+                    placedMeeple.setPlayerId(currentPlayer.getId());
+                    placedMeeple.setPlaced(true);
+                    placedMeeple.setCoordinates(meepleAdapter.getPlaceMeepleCoordinates());
 
-                tileToPlace.setPlacedMeeple(placedMeeple);
+                    tileToPlace.setPlacedMeeple(placedMeeple);
 
-                int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
-                int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
-                PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), placedMeeple);
-                gameSessionViewModel.sendPlacedTile(placedTileDto);
+                    int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
+                    int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
+                    PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), placedMeeple);
+                    gameSessionViewModel.sendPlacedTile(placedTileDto);
+                }
 
-                // place the meeple on the gameBoard
                 gameboardAdapter.setCanPlaceMeeple(false);
                 gameboardAdapter.notifyDataSetChanged();
 
