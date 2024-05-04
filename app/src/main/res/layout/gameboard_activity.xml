@@ -23,11 +23,14 @@
         app:layout_constraintEnd_toEndOf="@id/guideline6"
         app:layout_constraintTop_toTopOf="@id/guideline4" />
 
+
+
     <TextView
         android:id="@+id/tvMeepleCount"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:textSize="64sp"
+        android:textSize="40sp"
+        android:gravity="center"
         android:fontFamily="@font/almendra_sc"
         android:textColor="@color/btn_gold"
         android:text="@string/meepleCount"
@@ -40,11 +43,14 @@
         android:id="@+id/ivMeepleWithPlayerColor"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginEnd="64dp"
         android:contentDescription="@string/meeple_with_color_of_your_player"
         app:layout_constraintBottom_toBottomOf="@id/guideline25"
         app:layout_constraintEnd_toStartOf="@id/guideline26"
         app:layout_constraintStart_toEndOf="@id/tvMeepleCount"
         app:layout_constraintTop_toTopOf="@id/guideline27" />
+
+
 
     <Button
         android:id="@+id/button_rotate_clockwise"

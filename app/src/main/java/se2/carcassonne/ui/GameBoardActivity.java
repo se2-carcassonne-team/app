@@ -240,7 +240,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void confirmMeeplePlacement() {
         binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
-            if (gameboardAdapter.isYourTurn()) {
+            if (gameboardAdapter.isYourTurn() && gameboardAdapter.getMeepleCount() > 0) {
                 if(meepleAdapter.getPlaceMeepleCoordinates() != null){
                     // TODO: Dynamically adjust player color - done?
                     Meeple placedMeeple = new Meeple();
@@ -252,8 +252,6 @@ public class GameBoardActivity extends AppCompatActivity {
                     tileToPlace.setPlacedMeeple(placedMeeple);
 
                     gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount() - 1);
-
-                    gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount());
                     String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
                     binding.tvMeepleCount.setText(formattedString);
 
@@ -277,10 +275,18 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void showMeepleGrid() {
-        binding.overlayGridview.setVisibility(GridView.VISIBLE);
-        meepleAdapter = new MeepleAdapter(this, tileToPlace);
-        binding.overlayGridview.setAdapter(meepleAdapter);
-        binding.buttonConfirmMeeplePlacement.setVisibility(View.VISIBLE);
+        if (gameboardAdapter.getMeepleCount() > 0) {
+            binding.overlayGridview.setVisibility(GridView.VISIBLE);
+            meepleAdapter = new MeepleAdapter(this, tileToPlace);
+            binding.overlayGridview.setAdapter(meepleAdapter);
+            binding.buttonConfirmMeeplePlacement.setVisibility(View.VISIBLE);
+        } else {
+            gameboardAdapter.setCanPlaceMeeple(false);
+            gameboardAdapter.setToPlaceCoordinates(null);
+            hideMeepleGrid();
+            confirmNextTurnToStart();
+            gameboardAdapter.notifyDataSetChanged();
+        }
     }
 
     private void hideMeepleGrid() {
