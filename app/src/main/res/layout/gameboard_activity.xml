@@ -9,7 +9,7 @@
 
     <GridView
         android:id="@+id/gridview"
-        android:layout_width="700dp"
+        android:layout_width="1000dp"
         android:layout_height="1000dp"
         android:columnWidth="75px"
         android:fastScrollEnabled="true"

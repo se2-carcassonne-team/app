@@ -2,6 +2,7 @@ package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -70,6 +71,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gridView.setScaleX(3.0f);
         gridView.setScaleY(3.0f);
         gridView.setStretchMode(GridView.NO_STRETCH);
+        Log.d("Grid", "Grid translation: " + "X: " + gridView.getTranslationX() + " Y:" + gridView.getTranslationY());
 
 //        Instantiate gameBoardActivityViewModel
         gameSessionViewModel = new GameSessionViewModel();
@@ -83,8 +85,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
         String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
         binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
-
-
 
 
         /**
@@ -149,35 +149,27 @@ public class GameBoardActivity extends AppCompatActivity {
         setupRotationButtons();
 
         JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
-        joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
-            @Override
-            public void onMove(int angle, int strength) {
-//               move accross the gridView
-                if (angle >= 45 && angle < 135 && strength > 50) {
-                    if (gridView != null) {
-                        float currentTranslationY = gridView.getTranslationY();
-                        float newY = currentTranslationY + 300;
-                        gridView.setTranslationY(newY);
-                    }
-                } else if (angle >= 135 && angle < 225 && strength > 50) {
-                    if (gridView != null) {
-                        float currentTranslationX = gridView.getTranslationX();
-                        float newX = currentTranslationX + 300;
-                        gridView.setTranslationX(newX);
-                    }
-                } else if (angle >= 225 && angle < 315 && strength > 50) {
-                    if (gridView != null) {
-                        float currentTranslationY = gridView.getTranslationY();
-                        float newY = currentTranslationY - 300;
-                        gridView.setTranslationY(newY);
-                    }
-                } else if ((angle >= 315 || angle < 45) && strength > 50){
-                    if (gridView != null) {
-                        float currentTranslationX = gridView.getTranslationX();
-                        float newX = currentTranslationX - 300;
-                        gridView.setTranslationX(newX);
-                    }
-                }
+        joystick.setOnMoveListener((angle, strength) -> {
+//            TODO: Future adjust strength based on the scale of the gridView
+//               Move across the gridView
+                // Convert angle to radians
+                double rad = Math.toRadians(angle);
+
+                // Calculate change in X and Y coordinates
+                float deltaX = (float) (-strength * Math.cos(rad)); // Negate this to reverse the direction
+                float deltaY = (float) (strength * Math.sin(rad));
+
+                // Check if gridView is not null
+                if (gridView != null) {
+                    // Get current translations
+                    float currentTranslationX = gridView.getTranslationX();
+                    float currentTranslationY = gridView.getTranslationY();
+
+                    // Update translations
+                    float newX = currentTranslationX + deltaX;
+                    float newY = currentTranslationY + deltaY;
+                    gridView.setTranslationX(newX);
+                    gridView.setTranslationY(newY);
             }
         });
 
@@ -262,7 +254,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 showMeepleGrid();
 
             } else {
-                if (!gameboardAdapter.isYourTurn()){
+                if (!gameboardAdapter.isYourTurn()) {
                     Toast.makeText(this, "It's not your turn. Please wait.", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -275,7 +267,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void confirmMeeplePlacement() {
         binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn() && gameboardAdapter.getMeepleCount() > 0) {
-                if(meepleAdapter.getPlaceMeepleCoordinates() != null){
+                if (meepleAdapter.getPlaceMeepleCoordinates() != null) {
                     // TODO: Dynamically adjust player color - done?
                     Meeple placedMeeple = new Meeple();
                     placedMeeple.setColor(currentPlayer.getPlayerColour());
@@ -353,11 +345,6 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
-
 
 
     private void moveDown() {
