@@ -1,9 +1,7 @@
 package se2.carcassonne.ui;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -13,12 +11,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Objects;
 
+import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
@@ -32,6 +30,7 @@ import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
 
 public class GameBoardActivity extends AppCompatActivity {
+    JoystickView joystickView;
     GameboardActivityBinding binding;
     ObjectMapper objectMapper;
     Player currentPlayer;
@@ -149,6 +148,39 @@ public class GameBoardActivity extends AppCompatActivity {
         confirmMeeplePlacement();
         setupRotationButtons();
 
+        JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
+        joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
+            @Override
+            public void onMove(int angle, int strength) {
+//               move accross the gridView
+                if (angle >= 45 && angle < 135 && strength > 50) {
+                    if (gridView != null) {
+                        float currentTranslationY = gridView.getTranslationY();
+                        float newY = currentTranslationY + 300;
+                        gridView.setTranslationY(newY);
+                    }
+                } else if (angle >= 135 && angle < 225 && strength > 50) {
+                    if (gridView != null) {
+                        float currentTranslationX = gridView.getTranslationX();
+                        float newX = currentTranslationX + 300;
+                        gridView.setTranslationX(newX);
+                    }
+                } else if (angle >= 225 && angle < 315 && strength > 50) {
+                    if (gridView != null) {
+                        float currentTranslationY = gridView.getTranslationY();
+                        float newY = currentTranslationY - 300;
+                        gridView.setTranslationY(newY);
+                    }
+                } else if ((angle >= 315 || angle < 45) && strength > 50){
+                    if (gridView != null) {
+                        float currentTranslationX = gridView.getTranslationX();
+                        float newX = currentTranslationX - 300;
+                        gridView.setTranslationX(newX);
+                    }
+                }
+            }
+        });
+
         // Navigating across the game board
         moveRight();
         moveLeft();
@@ -163,6 +195,8 @@ public class GameBoardActivity extends AppCompatActivity {
         //binding.tvMeepleCount.setTextColor(getResources().getColor(R.color.btn_gold, null));
         //String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
+
+
     }
 
     private void moveButtonsRight() {
@@ -319,6 +353,12 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+
+
+
 
     private void moveDown() {
         buttonDown.setOnClickListener(v -> {
