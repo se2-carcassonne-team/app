@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -51,12 +53,17 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button zoomInBtn;
     private Button zoomOutBtn;
 
+    Animation scaleAnimation = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = GameboardActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
+
+//        Animation for scaling the buttons
+        scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
 
         //Bind all UI elements
         bindGameBoardUiElements();
@@ -152,24 +159,24 @@ public class GameBoardActivity extends AppCompatActivity {
         joystick.setOnMoveListener((angle, strength) -> {
 //            TODO: Future adjust strength based on the scale of the gridView
 //               Move across the gridView
-                // Convert angle to radians
-                double rad = Math.toRadians(angle);
+            // Convert angle to radians
+            double rad = Math.toRadians(angle);
 
-                // Calculate change in X and Y coordinates
-                float deltaX = (float) (-strength * Math.cos(rad)); // Negate this to reverse the direction
-                float deltaY = (float) (strength * Math.sin(rad));
+            // Calculate change in X and Y coordinates
+            float deltaX = (float) (-strength * Math.cos(rad)); // Negate this to reverse the direction
+            float deltaY = (float) (strength * Math.sin(rad));
 
-                // Check if gridView is not null
-                if (gridView != null) {
-                    // Get current translations
-                    float currentTranslationX = gridView.getTranslationX();
-                    float currentTranslationY = gridView.getTranslationY();
+            // Check if gridView is not null
+            if (gridView != null) {
+                // Get current translations
+                float currentTranslationX = gridView.getTranslationX();
+                float currentTranslationY = gridView.getTranslationY();
 
-                    // Update translations
-                    float newX = currentTranslationX + deltaX;
-                    float newY = currentTranslationY + deltaY;
-                    gridView.setTranslationX(newX);
-                    gridView.setTranslationY(newY);
+                // Update translations
+                float newX = currentTranslationX + deltaX;
+                float newY = currentTranslationY + deltaY;
+                gridView.setTranslationX(newX);
+                gridView.setTranslationY(newY);
             }
         });
 
@@ -208,6 +215,7 @@ public class GameBoardActivity extends AppCompatActivity {
         constraintSet.connect(zoomOutBtn.getId(), ConstraintSet.END, binding.backgroundRight.getId(), ConstraintSet.START, 0);
         constraintSet.applyTo(constraintLayout);
     }
+
 
     private void confirmNextTurnToStart() {
         gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
@@ -350,6 +358,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void moveDown() {
         buttonDown.setOnClickListener(v -> {
             if (gridView != null) {
+                v.startAnimation(scaleAnimation);
                 float currentTranslationY = gridView.getTranslationY();
                 float newY = currentTranslationY - 300;
                 gridView.setTranslationY(newY);
@@ -360,6 +369,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void moveUp() {
         buttonUp.setOnClickListener(v -> {
             if (gridView != null) {
+                v.startAnimation(scaleAnimation);
                 float currentTranslationY = gridView.getTranslationY();
                 float newY = currentTranslationY + 300;
                 gridView.setTranslationY(newY);
@@ -370,6 +380,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void moveLeft() {
         buttonLeft.setOnClickListener(v -> {
             if (gridView != null) {
+                v.startAnimation(scaleAnimation);
                 float currentTranslationX = gridView.getTranslationX();
                 float newX = currentTranslationX + 300;
                 gridView.setTranslationX(newX);
@@ -380,6 +391,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void moveRight() {
         buttonRight.setOnClickListener(v -> {
             if (gridView != null) {
+                v.startAnimation(scaleAnimation);
                 float currentTranslationX = gridView.getTranslationX();
                 float newX = currentTranslationX - 300;
                 gridView.setTranslationX(newX);

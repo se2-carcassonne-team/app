@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,17 +22,18 @@
         app:layout_constraintBottom_toBottomOf="@id/guideline4"
         app:layout_constraintDimensionRatio="2:1.1"
         app:layout_constraintEnd_toEndOf="@id/guideline6"
-        app:layout_constraintTop_toTopOf="@id/guideline4" />
+        app:layout_constraintTop_toTopOf="@id/guideline4"
+        app:layout_constraintVertical_bias="0.499" />
 
     <TextView
         android:id="@+id/tvMeepleCount"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:textSize="40sp"
-        android:gravity="center"
         android:fontFamily="@font/almendra_sc"
-        android:textColor="@color/btn_gold"
+        android:gravity="center"
         android:text="@string/meepleCount"
+        android:textColor="@color/btn_gold"
+        android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="@id/guideline25"
         app:layout_constraintEnd_toStartOf="@id/ivMeepleWithPlayerColor"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +49,6 @@
         app:layout_constraintEnd_toStartOf="@id/guideline26"
         app:layout_constraintStart_toEndOf="@id/tvMeepleCount"
         app:layout_constraintTop_toTopOf="@id/guideline27" />
-
 
 
     <Button
@@ -117,8 +118,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.502"
         app:srcCompat="@drawable/background_right_2" />
-
 
     <Button
         android:id="@+id/btnZoomIn"
@@ -229,39 +230,55 @@
 
     <Button
         android:id="@+id/left_scrl_btn"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:text="@string/left"
-        app:layout_constraintBottom_toBottomOf="@id/guideline7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline29" />
+        android:layout_width="20dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="5dp"
+        android:alpha="0.5"
+        android:background="@drawable/button_left"
+        app:layout_constraintBottom_toBottomOf="@+id/joystickView"
+        app:layout_constraintEnd_toStartOf="@+id/joystickView"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline10"
+        app:layout_constraintTop_toTopOf="@+id/joystickView"
+        app:layout_constraintVertical_bias="0.505" />
 
     <Button
         android:id="@+id/right_scrl_btn"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:text="@string/right"
-        app:layout_constraintBottom_toBottomOf="@id/guideline7"
-        app:layout_constraintStart_toEndOf="@+id/left_scrl_btn"
-        app:layout_constraintTop_toBottomOf="@+id/guideline29" />
+        android:layout_width="20dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="5dp"
+        android:alpha="0.5"
+        android:background="@drawable/button_right"
+        app:layout_constraintBottom_toBottomOf="@+id/joystickView"
+        app:layout_constraintStart_toEndOf="@+id/joystickView"
+        app:layout_constraintTop_toTopOf="@+id/joystickView"
+        app:layout_constraintVertical_bias="0.505" />
 
     <Button
         android:id="@+id/up_scrl_btn"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:text="@string/up"
-        app:layout_constraintBottom_toBottomOf="@id/guideline7"
-        app:layout_constraintStart_toEndOf="@+id/right_scrl_btn"
-        app:layout_constraintTop_toBottomOf="@+id/guideline29" />
+        android:layout_width="32dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="5dp"
+        android:alpha="0.5"
+        android:background="@drawable/button_up"
+        app:layout_constraintBottom_toTopOf="@+id/joystickView"
+        app:layout_constraintEnd_toEndOf="@+id/joystickView"
+        app:layout_constraintStart_toStartOf="@+id/joystickView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/down_scrl_btn"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:text="@string/down"
-        app:layout_constraintBottom_toBottomOf="@id/guideline7"
-        app:layout_constraintStart_toEndOf="@+id/up_scrl_btn"
-        app:layout_constraintTop_toBottomOf="@+id/guideline29" />
+        android:layout_width="32dp"
+        android:layout_height="20dp"
+        android:alpha="0.5"
+        android:background="@drawable/button_down"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/joystickView"
+        app:layout_constraintStart_toStartOf="@+id/joystickView"
+        app:layout_constraintTop_toBottomOf="@+id/joystickView"
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginTop="5dp"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline29"
@@ -275,7 +292,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_begin="146dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline25"
@@ -291,19 +308,33 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.02" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@id/guidelineJoystick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@id/guidelineJoystickLeftSide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
     <io.github.controlwear.virtual.joystick.android.JoystickView
         android:id="@+id/joystickView"
-        xmlns:custom="http://schemas.android.com/apk/res-auto"
-        android:layout_width="120dp"
+        android:layout_width="85dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/button_rotate_counter_clockwise"
+        android:alpha="0.50"
         android:background="@drawable/joystick_background"
-        custom:JV_buttonImage="@drawable/joystick_face"
-        custom:JV_backgroundSizeRatio="50%"
-        custom:JV_buttonSizeRatio="50%">
+        app:JV_backgroundSizeRatio="50%"
+        app:JV_buttonImage="@drawable/joystick_face"
+        app:JV_buttonSizeRatio="50%"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineJoystick">
 
     </io.github.controlwear.virtual.joystick.android.JoystickView>
 
