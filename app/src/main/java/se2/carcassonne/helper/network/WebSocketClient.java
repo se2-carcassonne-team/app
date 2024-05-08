@@ -30,8 +30,7 @@ public class WebSocketClient {
     public void connect() {
         cancelAllSubscriptions();
         if (client != null && client.isConnected()) client.disconnect();
-//        10.0.2.2
-        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://192.168.0.4:8080/websocket-broker");
+        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://10.0.2.2:8080/websocket-broker");
         disposable.add(client.lifecycle().subscribe(event -> {
             switch (event.getType()){
                 case OPENED:

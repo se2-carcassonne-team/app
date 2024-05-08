@@ -180,7 +180,7 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
 
-        // Navigating across the game board
+        // Navigating across the game board with buttons
         moveRight();
         moveLeft();
         moveUp();

@@ -125,20 +125,18 @@
         android:id="@+id/btnZoomIn"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:text="@string/PlusSign"
-        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/btnZoomOut"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        android:background="@drawable/zoom_plus"/>
 
     <Button
         android:id="@+id/btnZoomOut"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:gravity="center"
-        android:text="@string/MinusSign"
-        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline7"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        android:background="@drawable/zoom_minus"/>
 
     <ImageView
         android:id="@+id/preview_tile_to_place"
