@@ -42,7 +42,7 @@ public class GameBoardModelTests {
 
     @Test
     public void testCheckGameBoardTilesAfterInit() {
-        Tile startTile = new Tile(0L, "castle_wall_road", new int[]{3, 2, 1, 2}, new int[]{3, 3, 3, 2, 2, 2, 1, 1, 1});
+        Tile startTile = new Tile(0L, "castle_wall_road", new int[]{3, 2, 1, 2}, new int[]{3, 3, 3, 2, 2, 2, 1, 1, 1}, new boolean[]{false, false, false, false, false, false, false, false, false});
         GameBoard gameBoard = new GameBoard();
         assertEquals(1, gameBoard.getPlacedTiles().size()); // start tile in the middle
         assertEquals(startTile.getId(), gameBoard.getGameBoardMatrix()[12][12].getId()); // tile in the middle of matrix equals start tile
@@ -56,7 +56,7 @@ public class GameBoardModelTests {
 
     @Test
     public void testHighlightValidPositions() {
-        Tile tileToPlace = new Tile(1L, "road_junction_large", new int[]{2, 2, 2, 2}, new int[]{1, 2, 1, 2, 4, 2, 1, 2, 1});
+        Tile tileToPlace = new Tile(1L, "road_junction_large", new int[]{2, 2, 2, 2}, new int[]{1, 2, 1, 2, 4, 2, 1, 2, 1}, new boolean[]{false, false, false, false, false, false, false, false, false});
         GameBoard gameBoard = new GameBoard();
         assertEquals(4, gameBoard.getPlaceablePositions().size()); // 4 valid positions around the start tile
         assertEquals(1, gameBoard.getPlacedTiles().size()); // 1 tile placed on the board
@@ -69,7 +69,7 @@ public class GameBoardModelTests {
 
     @Test
     public void testPlaceTile() {
-        Tile tileToPlace = new Tile(1L, "road_junction_large", new int[]{2, 2, 2, 2}, new int[]{1, 2, 1, 2, 4, 2, 1, 2, 1});
+        Tile tileToPlace = new Tile(1L, "road_junction_large", new int[]{2, 2, 2, 2}, new int[]{1, 2, 1, 2, 4, 2, 1, 2, 1}, new boolean[]{false, false, false, false, false, false, false, false, false});
         GameBoard gameBoard = new GameBoard();
         assertEquals(4, gameBoard.getPlaceablePositions().size()); // 4 valid positions around the start tile
         assertEquals(1, gameBoard.getPlacedTiles().size()); // 1 tile placed on the board

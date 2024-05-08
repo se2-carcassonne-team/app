@@ -30,5 +30,11 @@
     <string name="down">Down</string>
     <string name="PlusSign">+</string>
     <string name="MinusSign">-</string>
+    <string name="choose_meeple_placement">Choose Meeple Placement</string>
+    <string name="confirm">Confirm</string>
+    <string name="skip">Skip</string>
+    <string name="meeple_with_color_of_your_player">Meeple with color of your player</string>
+    <string name="r">R</string>
+    <string name="meepleCount">%d x</string>
 
 </resources>

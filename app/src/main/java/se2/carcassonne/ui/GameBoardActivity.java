@@ -1,13 +1,19 @@
 package se2.carcassonne.ui;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,6 +24,7 @@ import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.GameBoard;
+import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Player;
 import se2.carcassonne.model.Tile;
@@ -30,13 +37,13 @@ public class GameBoardActivity extends AppCompatActivity {
     Player currentPlayer;
     private GridView gridView;
     private GameboardAdapter gameboardAdapter;
+    private MeepleAdapter meepleAdapter;
     private Tile tileToPlace;
     private Button buttonLeft;
     private Button buttonRight;
     private Button buttonUp;
     private Button buttonDown;
     private Button buttonConfirm;
-    private Button buttonNextTurn;
     private GameBoard gameBoard;
     private ImageView previewTileToPlace;
     private GameSessionViewModel gameSessionViewModel;
@@ -75,15 +82,20 @@ public class GameBoardActivity extends AppCompatActivity {
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
 
+        String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
+        binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
+
+
+
+
         /**
          * placed tile observable
          */
         gameSessionViewModel.getPlacedTileLiveData().observe(this, tilePlaced -> {
             Tile tilePlacedByOtherPlayer = gameboardAdapter.getGameBoard().getAllTiles().get(Math.toIntExact(tilePlaced.getTileId()));
             tilePlacedByOtherPlayer.setRotation(tilePlaced.getRotation());
-
+            tilePlacedByOtherPlayer.setPlacedMeeple(tilePlaced.getPlacedMeeple());
             gameboardAdapter.getGameBoard().placeTile(tilePlacedByOtherPlayer, tilePlaced.getCoordinates());
-
             gameboardAdapter.notifyDataSetChanged();
         });
 
@@ -93,6 +105,7 @@ public class GameBoardActivity extends AppCompatActivity {
          */
         gameSessionViewModel.getNextTurnMessageLiveData().observe(this, nextTurn -> {
             if (Objects.equals(nextTurn.getPlayerId(), currentPlayer.getId())) {
+                // TODO : Vibration logic here!
                 tileToPlace = gameBoard.getAllTiles().get(Math.toIntExact(nextTurn.getTileId()));
                 previewTileToPlace.setRotation(0);
                 gameboardAdapter.setCanPlaceTile(true);
@@ -100,12 +113,27 @@ public class GameBoardActivity extends AppCompatActivity {
                 gameboardAdapter.setTileToPlace(tileToPlace);
                 previewTileToPlace.setImageResource(
                         getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
+                binding.buttonConfirmTilePlacement.setVisibility(View.VISIBLE);
+                binding.buttonRotateClockwise.setVisibility(View.VISIBLE);
+                binding.buttonRotateCounterClockwise.setVisibility(View.VISIBLE);
+                binding.previewTileToPlace.setVisibility(View.VISIBLE);
+                binding.backgroundRight.setVisibility(View.VISIBLE);
+
+                moveButtonsLeft();
             } else {
                 tileToPlace = null;
                 gameboardAdapter.setYourTurn(false);
                 gameboardAdapter.setCanPlaceTile(false);
                 previewTileToPlace.setRotation(0);
                 previewTileToPlace.setImageResource(R.drawable.backside);
+                buttonConfirm.setVisibility(View.GONE);
+                binding.buttonRotateClockwise.setVisibility(View.GONE);
+                binding.buttonRotateCounterClockwise.setVisibility(View.GONE);
+                binding.previewTileToPlace.setVisibility(View.GONE);
+                binding.backgroundRight.setVisibility(View.GONE);
+
+                moveButtonsRight();
+
             }
             if (gameboardAdapter != null) {
                 gameboardAdapter.notifyDataSetChanged();
@@ -118,8 +146,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
         // GameLogic
         confirmTilePlacement();
+        confirmMeeplePlacement();
         setupRotationButtons();
-        confirmNextTurnToStart();
 
         // Navigating across the game board
         moveRight();
@@ -130,21 +158,34 @@ public class GameBoardActivity extends AppCompatActivity {
         // Zooming In and Out of the game board
         zoomIn();
         zoomOut();
+
+
+        //binding.tvMeepleCount.setTextColor(getResources().getColor(R.color.btn_gold, null));
+        //String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
+        binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
+    }
+
+    private void moveButtonsRight() {
+        ConstraintLayout constraintLayout = binding.main;
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
+        constraintSet.connect(zoomInBtn.getId(), ConstraintSet.END, binding.main.getId(), ConstraintSet.END, 0);
+        constraintSet.connect(zoomOutBtn.getId(), ConstraintSet.END, binding.main.getId(), ConstraintSet.END, 0);
+        constraintSet.applyTo(constraintLayout);
+    }
+
+    private void moveButtonsLeft() {
+        ConstraintLayout constraintLayout = binding.main;
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
+        constraintSet.connect(zoomInBtn.getId(), ConstraintSet.END, binding.backgroundRight.getId(), ConstraintSet.START, 0);
+        constraintSet.connect(zoomOutBtn.getId(), ConstraintSet.END, binding.backgroundRight.getId(), ConstraintSet.START, 0);
+        constraintSet.applyTo(constraintLayout);
     }
 
     private void confirmNextTurnToStart() {
-        buttonNextTurn.setOnClickListener(v -> {
-            if (gameboardAdapter.isYourTurn() && !gameboardAdapter.isCanPlaceTile()){
-                gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
-                gameboardAdapter.setYourTurn(false);
-            } else {
-                if (gameboardAdapter.isCanPlaceTile()){
-                    Toast.makeText(this, "Please place the tile first", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "It's not your turn. Please wait.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
+        gameboardAdapter.setYourTurn(false);
     }
 
     private void bindGameBoardUiElements() {
@@ -163,25 +204,29 @@ public class GameBoardActivity extends AppCompatActivity {
 
         // Init Control Elements
         buttonConfirm = binding.buttonConfirmTilePlacement;
-        buttonNextTurn = binding.btnNextTurn;
         previewTileToPlace = binding.previewTileToPlace;
     }
 
     private void confirmTilePlacement() {
         buttonConfirm.setOnClickListener(v -> {
-            if (gameboardAdapter.getToPlaceCoordinates() != null && gameboardAdapter.isYourTurn()) {
+            if (gameboardAdapter.getToPlaceCoordinates() != null && gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
                 // get the x and y coordinates of the field where the tile should be placed
                 int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                 int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
 
                 // place the Tile on the gameBoard
-                PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation());
+                PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), null);
                 gameSessionViewModel.sendPlacedTile(placedTileDto);
-                // gameBoard.placeTile(tileToPlace, new Coordinates(xToPlace, yToPlace)); --> performed on receiving livedata update!
+
+                buttonConfirm.setVisibility(View.GONE);
+                binding.buttonRotateClockwise.setVisibility(View.GONE);
+                binding.buttonRotateCounterClockwise.setVisibility(View.GONE);
 
                 gameboardAdapter.setCanPlaceTile(false);
-                previewTileToPlace.setImageResource(R.drawable.backside);
+                gameboardAdapter.setCanPlaceMeeple(true);
                 gameboardAdapter.notifyDataSetChanged();
+                showMeepleGrid();
+
             } else {
                 if (!gameboardAdapter.isYourTurn()){
                     Toast.makeText(this, "It's not your turn. Please wait.", Toast.LENGTH_SHORT).show();
@@ -191,6 +236,62 @@ public class GameBoardActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void confirmMeeplePlacement() {
+        binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
+            if (gameboardAdapter.isYourTurn() && gameboardAdapter.getMeepleCount() > 0) {
+                if(meepleAdapter.getPlaceMeepleCoordinates() != null){
+                    // TODO: Dynamically adjust player color - done?
+                    Meeple placedMeeple = new Meeple();
+                    placedMeeple.setColor(currentPlayer.getPlayerColour());
+                    placedMeeple.setPlayerId(currentPlayer.getId());
+                    placedMeeple.setPlaced(true);
+                    placedMeeple.setCoordinates(meepleAdapter.getPlaceMeepleCoordinates());
+
+                    tileToPlace.setPlacedMeeple(placedMeeple);
+
+                    gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount() - 1);
+                    String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
+                    binding.tvMeepleCount.setText(formattedString);
+
+                    int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
+                    int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
+                    PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), placedMeeple);
+                    gameSessionViewModel.sendPlacedTile(placedTileDto);
+                }
+
+                gameboardAdapter.setCanPlaceMeeple(false);
+                gameboardAdapter.notifyDataSetChanged();
+
+                binding.buttonConfirmMeeplePlacement.setVisibility(View.GONE);
+
+                hideMeepleGrid();
+                gameboardAdapter.setToPlaceCoordinates(null);
+
+                confirmNextTurnToStart();
+            }
+        });
+    }
+
+    private void showMeepleGrid() {
+        if (gameboardAdapter.getMeepleCount() > 0) {
+            binding.overlayGridview.setVisibility(GridView.VISIBLE);
+            meepleAdapter = new MeepleAdapter(this, tileToPlace);
+            binding.overlayGridview.setAdapter(meepleAdapter);
+            binding.buttonConfirmMeeplePlacement.setVisibility(View.VISIBLE);
+        } else {
+            gameboardAdapter.setCanPlaceMeeple(false);
+            gameboardAdapter.setToPlaceCoordinates(null);
+            hideMeepleGrid();
+            confirmNextTurnToStart();
+            gameboardAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void hideMeepleGrid() {
+        binding.overlayGridview.setVisibility(GridView.GONE);
+        // gameboardAdapter.notifyDataSetChanged();
     }
 
     private void zoomOut() {
