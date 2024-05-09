@@ -31,14 +31,14 @@ public class PointCalculatorModelTests {
     }
 
     @Test
-    public void testGetAllTilesThatArePartOfRoadForIncompleteRoadWithStartTile(){
+    void testGetAllTilesThatArePartOfRoadForIncompleteRoadWithStartTile(){
         PointCalculator pointCalculator = new PointCalculator(gameBoard);
         RoadResult roadResult = pointCalculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[12][12]);
         assertFalse(roadResult.isRoadCompleted());
     }
 
     @Test
-    public void testGetAllTilesThatArePartOfRoadForIncompleteRoadWithStartAndOneCompletingTile(){
+    void testGetAllTilesThatArePartOfRoadForIncompleteRoadWithStartAndOneCompletingTile(){
         // Junction to the right of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(13, 12));
 
@@ -48,7 +48,7 @@ public class PointCalculatorModelTests {
     }
 
     @Test
-    public void testGetAllTilesThatArePartOfRoadForCompleteRoadWithStartAndTwoCompletingTiles(){
+    void testGetAllTilesThatArePartOfRoadForCompleteRoadWithStartAndTwoCompletingTiles(){
         // Junction to the right of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(13, 12));
 
@@ -62,7 +62,7 @@ public class PointCalculatorModelTests {
     }
 
     @Test
-    public void longerRoadCompletenessTest1(){
+    void longerRoadCompletenessTest1(){
         // Large junction to the left of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
 
@@ -95,7 +95,7 @@ public class PointCalculatorModelTests {
      *
      */
     @Test
-    public void buildRoadWithSeveralSubRoads(){
+    void buildRoadWithSeveralSubRoads(){
         PointCalculator calculator = new PointCalculator(gameBoard);
 
         // Large junction to the left of start tile
@@ -156,7 +156,71 @@ public class PointCalculatorModelTests {
     }
 
     @Test
-    public void testMeepleRecognition(){
+    void buildRoadWithSeveralSubRoadsAndMultipleJunctions() {
+        PointCalculator calculator = new PointCalculator(gameBoard);
+
+        // Large junction to the left of start tile --> [11][12]
+        gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
+        calculator.setGameBoard(gameBoard);
+        RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][12]);
+        // Road yet not completed
+        assertFalse(result.isRoadCompleted());
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][12]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[12][12]));
+        assertEquals(2, result.getAllPartsOfRoad().size());
+
+
+        // small junction to the top of the large junction --> [11][11]
+        // completes the road from the large junction at [11][12] to the small junction at [11][11]
+        gameBoard.placeTile(gameBoard.getAllTiles().get(68), new Coordinates(11,11));
+        calculator.setGameBoard(gameBoard);
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][11]);
+        assertTrue(result.isRoadCompleted());
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][12]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][11]));
+        assertEquals(2, result.getAllPartsOfRoad().size());
+
+
+        // small junction to the right of the start tile --> [13][12]
+        // completes the road from large junction at [11][12] to the small junction at [13][12] via the start tile at [12][12]
+        gameBoard.placeTile(gameBoard.getAllTiles().get(69), new Coordinates(13, 12));
+        calculator.setGameBoard(gameBoard);
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][12]);
+        assertTrue(result.isRoadCompleted());
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][12]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[12][12]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][12]));
+        assertEquals(3, result.getAllPartsOfRoad().size());
+
+        // curved road above the small junction at [13][12] --> curved road at [13][11] with rotation 0
+        // road is incomplete!
+        gameBoard.placeTile(gameBoard.getAllTiles().get(59), new Coordinates(13, 11));
+        calculator.setGameBoard(gameBoard);
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][11]);
+        assertFalse(result.isRoadCompleted());
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][12]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][11]));
+        assertEquals(2, result.getAllPartsOfRoad().size());
+
+        // TODO: this test fails!
+        // straight road above the start tile --> straight road at [12][11] with rotation 1
+        // completes the road from the small junction at [13][12] to the small junction at [11][11] via the curved and straight road
+        gameBoard.getAllTiles().get(51).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(51), new Coordinates(12, 11));
+        calculator.setGameBoard(gameBoard);
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[12][11]);
+        assertTrue(result.isRoadCompleted());
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[12][11]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][11]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][11]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][12]));
+        assertEquals(4, result.getAllPartsOfRoad().size());
+
+
+    }
+
+    @Test
+    void testMeepleRecognition(){
         PointCalculator calculator = new PointCalculator(gameBoard);
 
         // Large junction to the left of start tile
@@ -180,7 +244,7 @@ public class PointCalculatorModelTests {
 
 
     @Test
-    public void testMeepleNotOnRoadRecognition(){
+    void testMeepleNotOnRoadRecognition(){
         PointCalculator calculator = new PointCalculator(gameBoard);
 
         // Large junction to the left of start tile
@@ -204,7 +268,7 @@ public class PointCalculatorModelTests {
 
 
     @Test
-    public void testMeepleNotOnSameSubRoadRecognition(){
+    void testMeepleNotOnSameSubRoadRecognition(){
         PointCalculator calculator = new PointCalculator(gameBoard);
 
         // Large junction to the left of start tile
