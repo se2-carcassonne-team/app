@@ -202,7 +202,7 @@ public class PointCalculatorModelTests {
         assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][11]));
         assertEquals(2, result.getAllPartsOfRoad().size());
 
-        // TODO: this test fails!
+        // TODO: this test fails! https://drive.google.com/file/d/1-DXQxyPkJHNkFrVKb_fQLfD4WV_7x0ag/view?usp=share_link
         // straight road above the start tile --> straight road at [12][11] with rotation 1
         // completes the road from the small junction at [13][12] to the small junction at [11][11] via the curved and straight road
         gameBoard.getAllTiles().get(51).setRotation(1);
