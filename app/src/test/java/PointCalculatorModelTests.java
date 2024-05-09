@@ -181,8 +181,9 @@ public class PointCalculatorModelTests {
         assertEquals(2, result.getAllPartsOfRoad().size());
 
 
-        // small junction to the right of the start tile --> [13][12]
+        // small junction to the right of the start tile --> [13][12] with rotation 1
         // completes the road from large junction at [11][12] to the small junction at [13][12] via the start tile at [12][12]
+        gameBoard.getAllTiles().get(69).setRotation(1);
         gameBoard.placeTile(gameBoard.getAllTiles().get(69), new Coordinates(13, 12));
         calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][12]);
