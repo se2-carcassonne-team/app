@@ -11,7 +11,10 @@ import se2.carcassonne.model.RoadResult;
 import se2.carcassonne.model.Tile;
 import se2.carcassonne.model.TileInitializer;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 public class PointCalculatorModelTests {
@@ -100,7 +103,6 @@ public class PointCalculatorModelTests {
 
         // Large junction to the left of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
-        calculator.setGameBoard(gameBoard);
         RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][12]);
         // Road yet not completed
         assertFalse(result.isRoadCompleted());
@@ -109,34 +111,28 @@ public class PointCalculatorModelTests {
         Tile upwardCurve = gameBoard.getAllTiles().get(59);
         upwardCurve.setRotation(1);
         gameBoard.placeTile(upwardCurve, new Coordinates(13, 12));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][12]);
         // Road still not completed
         assertFalse(result.isRoadCompleted());
 
         // Castle entry above road - road should be finished now
         gameBoard.placeTile(gameBoard.getAllTiles().get(3), new Coordinates(13,11));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][11]);
         assertTrue(result.isRoadCompleted());
 
         // Road to the left of large junction to the left of start tile - new sub road shall not be completed and not be part of the other road
+        gameBoard.getAllTiles().get(55).setRotation(1);
         gameBoard.placeTile(gameBoard.getAllTiles().get(55), new Coordinates(10,12));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[10][12]);
         assertFalse(result.isRoadCompleted());
 
         // Small Road Junction to the left of the road above - new sub road shall be completed
         gameBoard.placeTile(gameBoard.getAllTiles().get(68), new Coordinates(9,12));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[9][12]);
         assertTrue(result.isRoadCompleted());
 
         // Road underneath Small Junction
-        Tile road = gameBoard.getAllTiles().get(54);
-        road.setRotation(1);
-        gameBoard.placeTile(road, new Coordinates(9,13));
-        calculator.setGameBoard(gameBoard);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(54), new Coordinates(9,13));
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[9][13]);
         assertFalse(result.isRoadCompleted());
 
@@ -144,13 +140,11 @@ public class PointCalculatorModelTests {
         Tile monasteryRoad = gameBoard.getAllTiles().get(49);
         monasteryRoad.setRotation(2);
         gameBoard.placeTile(monasteryRoad, new Coordinates(9,14));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[9][14]);
         assertTrue(result.isRoadCompleted());
 
 
         gameBoard.placeTile(gameBoard.getAllTiles().get(70), new Coordinates(11,11));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][11]);
         assertTrue(result.isRoadCompleted());
     }
@@ -161,7 +155,6 @@ public class PointCalculatorModelTests {
 
         // Large junction to the left of start tile --> [11][12]
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
-        calculator.setGameBoard(gameBoard);
         RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][12]);
         // Road yet not completed
         assertFalse(result.isRoadCompleted());
@@ -173,7 +166,6 @@ public class PointCalculatorModelTests {
         // small junction to the top of the large junction --> [11][11]
         // completes the road from the large junction at [11][12] to the small junction at [11][11]
         gameBoard.placeTile(gameBoard.getAllTiles().get(68), new Coordinates(11,11));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][11]);
         assertTrue(result.isRoadCompleted());
         assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][12]));
@@ -185,7 +177,6 @@ public class PointCalculatorModelTests {
         // completes the road from large junction at [11][12] to the small junction at [13][12] via the start tile at [12][12]
         gameBoard.getAllTiles().get(69).setRotation(1);
         gameBoard.placeTile(gameBoard.getAllTiles().get(69), new Coordinates(13, 12));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][12]);
         assertTrue(result.isRoadCompleted());
         assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][12]));
@@ -196,19 +187,16 @@ public class PointCalculatorModelTests {
         // curved road above the small junction at [13][12] --> curved road at [13][11] with rotation 0
         // road is incomplete!
         gameBoard.placeTile(gameBoard.getAllTiles().get(59), new Coordinates(13, 11));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][11]);
         assertFalse(result.isRoadCompleted());
         assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][12]));
         assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][11]));
         assertEquals(2, result.getAllPartsOfRoad().size());
 
-        // TODO: this test fails! https://drive.google.com/file/d/1-DXQxyPkJHNkFrVKb_fQLfD4WV_7x0ag/view?usp=share_link
         // straight road above the start tile --> straight road at [12][11] with rotation 1
         // completes the road from the small junction at [13][12] to the small junction at [11][11] via the curved and straight road
         gameBoard.getAllTiles().get(51).setRotation(1);
         gameBoard.placeTile(gameBoard.getAllTiles().get(51), new Coordinates(12, 11));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[12][11]);
         assertTrue(result.isRoadCompleted());
         assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[12][11]));
@@ -216,8 +204,6 @@ public class PointCalculatorModelTests {
         assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][11]));
         assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[13][12]));
         assertEquals(4, result.getAllPartsOfRoad().size());
-
-
     }
 
     @Test
@@ -226,7 +212,6 @@ public class PointCalculatorModelTests {
 
         // Large junction to the left of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
-        calculator.setGameBoard(gameBoard);
         RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][12]);
         // Road yet not completed
         assertFalse(result.isRoadCompleted());
@@ -237,7 +222,6 @@ public class PointCalculatorModelTests {
 
         // Place small junction above large junction
         gameBoard.placeTile(gameBoard.getAllTiles().get(70), new Coordinates(11,11));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][11]);
         assertTrue(result.isRoadCompleted());
         assertTrue(result.hasMeepleOnRoad());
@@ -250,7 +234,6 @@ public class PointCalculatorModelTests {
 
         // Large junction to the left of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
-        calculator.setGameBoard(gameBoard);
         RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][12]);
         // Road yet not completed
         assertFalse(result.isRoadCompleted());
@@ -261,7 +244,6 @@ public class PointCalculatorModelTests {
 
         // Place small junction above large junction
         gameBoard.placeTile(gameBoard.getAllTiles().get(70), new Coordinates(11,11));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][11]);
         assertTrue(result.isRoadCompleted());
         assertFalse(result.hasMeepleOnRoad());
@@ -274,7 +256,6 @@ public class PointCalculatorModelTests {
 
         // Large junction to the left of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
-        calculator.setGameBoard(gameBoard);
         RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][12]);
         // Road yet not completed
         assertFalse(result.isRoadCompleted());
@@ -285,15 +266,144 @@ public class PointCalculatorModelTests {
 
         // Place small junction above large junction
         gameBoard.placeTile(gameBoard.getAllTiles().get(70), new Coordinates(11,11));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][11]);
         assertTrue(result.isRoadCompleted());
         assertFalse(result.hasMeepleOnRoad());
 
         // Road to the left of large junction to the left of start tile - new sub road shall not be completed and not be part of the other road
         gameBoard.placeTile(gameBoard.getAllTiles().get(55), new Coordinates(10,12));
-        calculator.setGameBoard(gameBoard);
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[10][12]);
         assertFalse(result.isRoadCompleted());
+    }
+
+    @Test
+    public void quadrupleJunction(){
+        PointCalculator calculator = new PointCalculator(gameBoard);
+
+        // Large junction to the left of start tile
+        gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
+        RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][12]);
+        // Road yet not completed
+        assertFalse(result.isRoadCompleted());
+
+        gameBoard.placeTile(gameBoard.getAllTiles().get(68), new Coordinates(11,11));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][11]);
+        assertTrue(result.isRoadCompleted());
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][12]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][11]));
+
+
+        gameBoard.placeTile(gameBoard.getAllTiles().get(69), new Coordinates(10, 11));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[10][11]);
+        assertTrue(result.isRoadCompleted());
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[11][11]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[10][11]));
+
+        gameBoard.getAllTiles().get(70).setRotation(2);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(70), new Coordinates(10, 12));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[10][12]);
+        assertTrue(result.isRoadCompleted());
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[10][12]));
+        assertTrue(result.getAllPartsOfRoad().contains(gameBoardMatrix[10][11]));
+
+        Set<Tile> completedQuadrupleJunction = new HashSet<>();
+        completedQuadrupleJunction.add(gameBoardMatrix[10][12]);
+        completedQuadrupleJunction.add(gameBoardMatrix[11][12]);
+        completedQuadrupleJunction.add(gameBoardMatrix[10][11]);
+        completedQuadrupleJunction.add(gameBoardMatrix[11][11]);
+        assertTrue(calculator.getCompletedRoads().contains(completedQuadrupleJunction));
+
+        gameBoard.placeTile(gameBoard.getAllTiles().get(51), new Coordinates(11, 13));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][13]);
+        assertFalse(result.isRoadCompleted());
+
+        gameBoard.getAllTiles().get(71).setRotation(2);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(71), new Coordinates(11,14));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][14]);
+        assertTrue(result.isRoadCompleted());
+    }
+
+    @Test
+    public void parallelStreets(){
+        PointCalculator calculator = new PointCalculator(gameBoard);
+
+        // Large junction to the left of start tile
+        gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(13, 12));
+        RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][12]);
+        // Road yet not completed
+        assertFalse(result.isRoadCompleted());
+
+        gameBoard.placeTile(gameBoard.getAllTiles().get(59), new Coordinates(13, 11));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][11]);
+        assertFalse(result.isRoadCompleted());
+
+        gameBoard.getAllTiles().get(51).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(51), new Coordinates(12, 11));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[12][11]);
+        assertFalse(result.isRoadCompleted());
+        assertFalse(result.getAllPartsOfRoad().contains(gameBoardMatrix[12][12]));
+        assertEquals(3,result.getAllPartsOfRoad().size());
+    }
+
+    //https://aauklagenfurt-my.sharepoint.com/:b:/g/personal/philippar_edu_aau_at
+    // /EXHyN-Is1ytFs1ipZ_Yy884BWovwT5BOO17p5RwFjX3nyw?e=V90GBp
+    @Test
+    public void hugeJunctionConnectedWithJunctionFromEachSide(){
+        PointCalculator calculator = new PointCalculator(gameBoard);
+
+        gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(13, 12));
+        RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][12]);
+        assertFalse(result.isRoadCompleted());
+
+        gameBoard.placeTile(gameBoard.getAllTiles().get(59), new Coordinates(13, 11));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][11]);
+        assertFalse(result.isRoadCompleted());
+
+        gameBoard.getAllTiles().get(51).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(51), new Coordinates(12, 11));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[12][11]);
+        assertFalse(result.isRoadCompleted());
+        assertFalse(result.getAllPartsOfRoad().contains(gameBoardMatrix[12][12]));
+        assertEquals(3,result.getAllPartsOfRoad().size());
+
+        gameBoard.getAllTiles().get(61).setRotation(3);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(61), new Coordinates(11, 11));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][11]);
+        assertFalse(result.isRoadCompleted());
+
+        gameBoard.getAllTiles().get(68).setRotation(3);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(68), new Coordinates(11, 12));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][12]);
+        assertTrue(result.isRoadCompleted());
+
+        gameBoard.getAllTiles().get(69).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(69), new Coordinates(14, 12));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[14][12]);
+        assertTrue(result.isRoadCompleted());
+
+        gameBoard.placeTile(gameBoard.getAllTiles().get(49), new Coordinates(14, 11));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[14][11]);
+        assertTrue(result.isRoadCompleted());
+
+        gameBoard.getAllTiles().get(70).setRotation(2);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(70), new Coordinates(13, 13));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][13]);
+        assertTrue(result.isRoadCompleted());
+
+        gameBoard.getAllTiles().get(60).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(60), new Coordinates(14, 13));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[14][13]);
+        assertTrue(result.isRoadCompleted());
+
+        gameBoard.getAllTiles().get(52).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(52), new Coordinates(12, 13));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[12][13]);
+        assertFalse(result.isRoadCompleted());
+
+
+        gameBoard.getAllTiles().get(67).setRotation(2);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(67), new Coordinates(11, 13));
+        result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][13]);
+        assertTrue(result.isRoadCompleted());
     }
 }

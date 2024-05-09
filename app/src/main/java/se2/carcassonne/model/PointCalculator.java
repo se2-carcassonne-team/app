@@ -2,7 +2,9 @@ package se2.carcassonne.model;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +18,7 @@ import lombok.Setter;
 @Setter
 public class PointCalculator {
     private GameBoard gameBoard;
-    private Tile[][] gameBoardMatrix;
+    // private Tile[][] gameBoardMatrix;
     private List<Set<Tile>> completedRoads = new ArrayList<>();
 
     // Points per tile type
@@ -27,12 +29,12 @@ public class PointCalculator {
 
     public PointCalculator(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
-        this.gameBoardMatrix = gameBoard.getGameBoardMatrix();
+        // this.gameBoardMatrix = gameBoard.getGameBoardMatrix();
     }
 
     public void setGameBoard(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
-        this.gameBoardMatrix = gameBoard.getGameBoardMatrix();
+        // this.gameBoardMatrix = gameBoard.getGameBoardMatrix();
     }
 
     public RoadResult getAllTilesThatArePartOfRoad(Tile tile) {
@@ -47,41 +49,41 @@ public class PointCalculator {
         visited.add(tile);
         junctionsVisited.add(tile);
 
-
-        // depth-first-search to find all tiles that are part of the road
+        // Depth-first search to find all tiles that are part of the road
         boolean isRoadCompleted = dfsCheckRoadCompleted(tile, roadTiles, visited, junctionsVisited,
                 completedRoadsCount, tile.getCoordinates().getXPosition(), tile.getCoordinates().getYPosition());
 
+        Set<Tile> completedRoadSet = new HashSet<>(roadTiles);
         if (isRoadCompleted) {
-            // Check if the completed road is a superset of any existing subroad
-            for (Set<Tile> road : completedRoads) {
-                if (roadTiles.containsAll(road)) {
-                    // The completed road is a superset of an existing road
-                    isRoadCompleted = false; // Invalid road
+            // Check for merging with existing roads
+            Set<Tile> mergedRoad = new HashSet<>();
+            boolean isSubset = false;
+
+            for (Iterator<Set<Tile>> iterator = completedRoads.iterator(); iterator.hasNext(); ) {
+                Set<Tile> existingRoad = iterator.next();
+                if (!Collections.disjoint(completedRoadSet, existingRoad)) {
+                    // They share at least one common tile, merge them
+                    mergedRoad.addAll(existingRoad);
+                    iterator.remove();
+                } else if (existingRoad.containsAll(completedRoadSet)) {
+                    // The newly completed road is a subset of an existing road
+                    isSubset = true;
                     break;
                 }
             }
 
-            // Check if the completed road forms a subset of any existing subroad
-            if (isRoadCompleted) {
-                Set<Tile> completedRoadSet = new HashSet<>(roadTiles);
-                for (Set<Tile> road : completedRoads) {
-                    if (road.containsAll(completedRoadSet)) {
-                        // The completed road is a subset of an existing road
-                        isRoadCompleted = false; // Invalid road
-                        break;
-                    }
+            if (!isSubset) {
+                if (!mergedRoad.isEmpty()) {
+                    // Add all tiles from the new road to the merged road and add it back to completedRoads
+                    mergedRoad.addAll(completedRoadSet);
+                    completedRoads.add(mergedRoad);
+                } else {
+                    // If no merging is required, add the new completed road directly
+                    completedRoads.add(completedRoadSet);
                 }
             }
 
-            // If the completed road is valid, add it to the list of completed subroads
-            if (isRoadCompleted) {
-                completedRoads.add(new HashSet<>(roadTiles));
-            }
-        }
-
-        // Mark the tiles as road completed
-        if (isRoadCompleted) {
+            // Mark the tiles as road completed, except junctions
             for (Tile roadTile : roadTiles) {
                 if (!roadTile.getImageName().contains("junction")) {
                     roadTile.setRoadCompleted(true);
@@ -92,10 +94,13 @@ public class PointCalculator {
         return new RoadResult(isRoadCompleted, roadTiles);
     }
 
+
     private boolean dfsCheckRoadCompleted(Tile tile, List<Tile> roadTiles, Set<Tile> visited, Set<Tile> junctionsVisited,
                                           int completedRoadsCount, int fromX, int fromY) {
         int x = tile.getCoordinates().getXPosition();
         int y = tile.getCoordinates().getYPosition();
+
+        boolean foundCompletedRoad = false;
 
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
@@ -103,6 +108,17 @@ public class PointCalculator {
                 if ((dx == 0 && dy == 0) || Math.abs(dx) == Math.abs(dy)) {
                     continue;
                 }
+
+                if (dx == 1){
+                    if(tile.rotatedEdges(tile.getRotation())[1] != 2) continue;
+                } else if (dy == 1) {
+                    if (tile.rotatedEdges(tile.getRotation())[2] != 2) continue;
+                } else if (dx == -1) {
+                    if (tile.rotatedEdges(tile.getRotation())[3] != 2) continue;
+                } else if (dy == -1) {
+                    if (tile.rotatedEdges(tile.getRotation())[0] != 2) continue;
+                }
+
                 int newX = x + dx;
                 int newY = y + dy;
 
@@ -111,9 +127,9 @@ public class PointCalculator {
                         continue;
                     }
 
-                    Tile neighboringTile = gameBoardMatrix[newX][newY];
+                    Tile neighboringTile = gameBoard.getGameBoardMatrix()[newX][newY];
 
-                    // If the neighboring tile is part of the road and has not been visited or is a junction revisited for the second time
+                    // Check for valid road tile that hasn't been visited yet or is a junction that needs revisiting
                     if (neighboringTile != null && hasRoad(neighboringTile) && (!visited.contains(neighboringTile)
                             || (junctionsVisited.contains(neighboringTile) && roadTiles.contains(neighboringTile)))) {
 
@@ -122,7 +138,6 @@ public class PointCalculator {
                         roadTiles.add(neighboringTile);
                         visited.add(neighboringTile);
 
-                        // If the neighboring tile completes roads, increment the count
                         if (neighboringTile.isCompletesRoads()) {
                             completedRoadsCount++;
                             if (completedRoadsCount == 2) {
@@ -130,23 +145,22 @@ public class PointCalculator {
                             }
                         }
 
-                        // Check if the neighboring tile is some sort of junction so roads can come from several directions
                         if (neighboringTile.getImageName().contains("junction")) {
-                            // If it's a junction and it's already been visited once, mark it as visited again
                             if (visited.contains(neighboringTile) && !junctionsVisited.contains(neighboringTile)) {
                                 junctionsVisited.add(neighboringTile);
                             }
+                            // If it's a junction, skip the recursive call for this direction
+                            continue;
                         }
 
                         // Recursively explore the neighboring tile
-                        if (dfsCheckRoadCompleted(neighboringTile, roadTiles, visited, junctionsVisited, completedRoadsCount, x, y)) {
-                            return true;
-                        }
+                        foundCompletedRoad = dfsCheckRoadCompleted(neighboringTile, roadTiles, visited, junctionsVisited, completedRoadsCount, x, y) || foundCompletedRoad;
                     }
                 }
             }
         }
-        return false;
+
+        return foundCompletedRoad;
     }
 
     private boolean hasRoad(Tile neighboringTile) {

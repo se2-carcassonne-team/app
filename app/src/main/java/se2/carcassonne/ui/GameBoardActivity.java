@@ -27,6 +27,7 @@ import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Player;
+import se2.carcassonne.model.PointCalculator;
 import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
@@ -50,6 +51,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private Intent intent;
     private Button zoomInBtn;
     private Button zoomOutBtn;
+    private PointCalculator roadCalculator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +63,15 @@ public class GameBoardActivity extends AppCompatActivity {
         //Bind all UI elements
         bindGameBoardUiElements();
 
+
         objectMapper = new ObjectMapper();
         currentPlayer = PlayerRepository.getInstance().getCurrentPlayer();
 
 //        Create a new game board and place a random tile on it
         gameBoard = new GameBoard();
+        // TODO: CHECK THIS FURTHER, JUST AN IDEA AS OF RIGHT NOW
+        roadCalculator = new PointCalculator(gameBoard);
+
 
 //        Set up the grid view
         gridView.setScaleX(3.0f);

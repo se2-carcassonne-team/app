@@ -69,7 +69,6 @@ public class Tile {
      * <p>3 = castle</p>
      * @param id the same id that the tile has on the server
      * @param imageName name of image in app
-     * @param
      */
     public Tile(Long id, String imageName, int[] edges, int[] features, boolean[] allowedMeeplePositions, boolean completesRoads) {
         this.id = id;
