@@ -16,6 +16,7 @@ import lombok.Setter;
 public class RoadResult {
     private boolean isRoadCompleted;
     private List<Tile> allPartsOfRoad;
+    private int points;
 
     public boolean hasMeepleOnRoad() {
         for (Tile tile : allPartsOfRoad) {

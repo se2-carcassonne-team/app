@@ -23,11 +23,13 @@ public class MeepleAdapter extends BaseAdapter {
     private ImageView meepleSelected = null;
     private Tile tileToPlace;
     private boolean[] allowedMeeplePositions;
+    private boolean isRoadFreeForMeeple;
 
-    public MeepleAdapter(Context context, Tile tileToPlace) {
+    public MeepleAdapter(Context context, Tile tileToPlace, boolean isRoadFreeForMeeple) {
         this.context = context;
         this.tileToPlace = tileToPlace;
         this.allowedMeeplePositions = tileToPlace.getAllowedMeeplePositions();
+        this.isRoadFreeForMeeple = isRoadFreeForMeeple;
         rotateAllowedMeeplePositions();
     }
 
@@ -68,45 +70,64 @@ public class MeepleAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
-        if (convertView == null) {
-            imageView = new ImageView(context);
-            int dpSize = (int) (60 * context.getResources().getDisplayMetrics().density); // Convert 60 pixels to dp
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(dpSize, dpSize));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            int padding = (int) (5 * context.getResources().getDisplayMetrics().density); // Adjust padding as needed
-            imageView.setPadding(padding, padding, padding, padding);
+        ImageView imageView = setupImageView(convertView);
+
+        // Determine the feature at the current subgrid position after considering tile rotation
+        int featureType = tileToPlace.rotatedFeatures(tileToPlace.getRotation())[position];
+
+        // Check if the position is allowed for placing a meeple
+        if (allowedMeeplePositions[position]) {
+            if (featureType == 2) {  // Feature is a road
+                setupRoadFeature(imageView, position);
+            } else {  // Feature is not a road
+                setupOtherFeature(imageView, position);
+            }
         } else {
-            imageView = (ImageView) convertView;
+            imageView.setImageResource(android.R.color.transparent); // Or any placeholder
+            imageView.setClickable(false);
         }
-
-        // TODO : Check if image is relevant for the meeple placement
-        if(this.allowedMeeplePositions[position]) {
-            imageView.setClickable(true);
-            //imageView.setImageResource(R.drawable.meeple_road);
-
-            int currentRow = position / 3;
-            int currentCol = position % 3;
-
-            boolean isMeeplePlacement = placeMeepleCoordinates != null && placeMeepleCoordinates.getXPosition() == currentRow &&
-                    placeMeepleCoordinates.getYPosition() == currentCol;
-
-            String resourceName = "meeple_" + PlayerRepository.getInstance().getCurrentPlayer().getPlayerColour().name().toLowerCase();
-            imageView.setImageResource(isMeeplePlacement ? context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName()) : R.drawable.meeple_road);
-
-            imageView.setOnClickListener(v -> {
-                if(placeMeepleCoordinates!= null && placeMeepleCoordinates.getXPosition() == currentRow && placeMeepleCoordinates.getYPosition() == currentCol) {
-                    placeMeepleCoordinates = null;
-                } else {
-                    placeMeepleCoordinates = new Coordinates(currentRow, currentCol);
-                }
-                // placeMeepleCoordinates = new Coordinates(currentRow, currentCol);
-                notifyDataSetChanged();
-            });
-        }
-
-        // TODO : Set meeple dynamically based on color and if the place is relevant
 
         return imageView;
+    }
+
+    private ImageView setupImageView(View convertView) {
+        ImageView imageView = (convertView instanceof ImageView) ? (ImageView) convertView : new ImageView(context);
+        int dpSize = (int) (60 * context.getResources().getDisplayMetrics().density);
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(dpSize, dpSize));
+        imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        int padding = (int) (5 * context.getResources().getDisplayMetrics().density);
+        imageView.setPadding(padding, padding, padding, padding);
+        return imageView;
+    }
+
+    private void setupRoadFeature(ImageView imageView, int position) {
+        if (isRoadFreeForMeeple) { // Road is free of other meeples
+            makeImageViewClickable(imageView, position);
+        } else {
+            imageView.setImageResource(R.drawable.road_occupied); // Display an indication that the road is blocked
+            imageView.setClickable(false);
+        }
+    }
+
+    private void setupOtherFeature(ImageView imageView, int position) {
+        makeImageViewClickable(imageView, position);
+    }
+
+    private void makeImageViewClickable(ImageView imageView, int position) {
+        imageView.setClickable(true);
+
+        int currentRow = position / 3;
+        int currentCol = position % 3;
+        boolean isMeeplePlacement = placeMeepleCoordinates != null &&
+                placeMeepleCoordinates.getXPosition() == currentRow &&
+                placeMeepleCoordinates.getYPosition() == currentCol;
+
+        String resourceName = "meeple_" + PlayerRepository.getInstance().getCurrentPlayer().getPlayerColour().name().toLowerCase();
+        imageView.setImageResource(isMeeplePlacement ? context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName()) : R.drawable.meeple_road);
+
+        imageView.setOnClickListener(v -> {
+            placeMeepleCoordinates = isMeeplePlacement ? null : new Coordinates(currentRow, currentCol);
+            notifyDataSetChanged();
+        });
     }
 }

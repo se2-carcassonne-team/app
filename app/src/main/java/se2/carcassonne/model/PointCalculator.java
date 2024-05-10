@@ -18,7 +18,6 @@ import lombok.Setter;
 @Setter
 public class PointCalculator {
     private GameBoard gameBoard;
-    // private Tile[][] gameBoardMatrix;
     private List<Set<Tile>> completedRoads = new ArrayList<>();
 
     // Points per tile type
@@ -29,12 +28,6 @@ public class PointCalculator {
 
     public PointCalculator(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
-        // this.gameBoardMatrix = gameBoard.getGameBoardMatrix();
-    }
-
-    public void setGameBoard(GameBoard gameBoard) {
-        this.gameBoard = gameBoard;
-        // this.gameBoardMatrix = gameBoard.getGameBoardMatrix();
     }
 
     public RoadResult getAllTilesThatArePartOfRoad(Tile tile) {
@@ -42,6 +35,7 @@ public class PointCalculator {
         Set<Tile> visited = new HashSet<>();
         Set<Tile> junctionsVisited = new HashSet<>();
         int completedRoadsCount = 0;
+        int pointsForRoad = 0;
 
         if (tile.isCompletesRoads()) completedRoadsCount++;
 
@@ -55,6 +49,8 @@ public class PointCalculator {
 
         Set<Tile> completedRoadSet = new HashSet<>(roadTiles);
         if (isRoadCompleted) {
+            pointsForRoad = calculatePointsForCompletedRoad(roadTiles);
+
             // Check for merging with existing roads
             Set<Tile> mergedRoad = new HashSet<>();
             boolean isSubset = false;
@@ -91,7 +87,7 @@ public class PointCalculator {
             }
         }
 
-        return new RoadResult(isRoadCompleted, roadTiles);
+        return new RoadResult(isRoadCompleted, roadTiles, pointsForRoad);
     }
 
 
@@ -174,4 +170,13 @@ public class PointCalculator {
     private boolean isValidPosition(int x, int y) {
         return x >= 0 && x < 25 && y >= 0 && y < 25;
     }
+
+    private int calculatePointsForCompletedRoad(List<Tile> roadTiles) {
+        if (roadTiles == null || roadTiles.isEmpty()) {
+            return 0;
+        }
+        // Points are awarded per tile in the completed road
+        return roadTiles.size() * POINTS_ROAD;
+    }
+
 }

@@ -345,8 +345,7 @@ public class PointCalculatorModelTests {
         assertEquals(3,result.getAllPartsOfRoad().size());
     }
 
-    //https://aauklagenfurt-my.sharepoint.com/:b:/g/personal/philippar_edu_aau_at
-    // /EXHyN-Is1ytFs1ipZ_Yy884BWovwT5BOO17p5RwFjX3nyw?e=V90GBp
+    //https://aauklagenfurt-my.sharepoint.com/:b:/g/personal/philippar_edu_aau_at/EXHyN-Is1ytFs1ipZ_Yy884BWovwT5BOO17p5RwFjX3nyw?e=V90GBp
     @Test
     public void hugeJunctionConnectedWithJunctionFromEachSide(){
         PointCalculator calculator = new PointCalculator(gameBoard);
