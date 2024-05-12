@@ -36,5 +36,6 @@
     <string name="meeple_with_color_of_your_player">Meeple with color of your player</string>
     <string name="r">R</string>
     <string name="meepleCount">%d x</string>
+    <string name="rules">Rules</string>
 
 </resources>
