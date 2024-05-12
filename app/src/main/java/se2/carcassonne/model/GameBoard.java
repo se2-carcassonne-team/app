@@ -156,4 +156,5 @@ public class GameBoard {
 
         return northEdgeMatches && eastEdgeMatches && southEdgeMatches && westEdgeMatches;
     }
+
 }

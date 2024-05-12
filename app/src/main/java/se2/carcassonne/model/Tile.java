@@ -1,8 +1,12 @@
 package se2.carcassonne.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
+@Getter
+@Setter
 public class Tile {
     /**
      * use same ids as tiles have in backend!
@@ -46,6 +50,18 @@ public class Tile {
 
     private Meeple placedMeeple;
 
+    private boolean completesRoads;
+
+    private boolean isRoadCompleted;
+
+    private boolean isJunctionNorthCompleted;
+
+    private boolean isJunctionEastCompleted;
+
+    private boolean isJunctionSouthCompleted;
+
+    private boolean isJunctionWestCompleted;
+
     /**
      * Edge Types:
      * <p>1 = field</p>
@@ -53,9 +69,8 @@ public class Tile {
      * <p>3 = castle</p>
      * @param id the same id that the tile has on the server
      * @param imageName name of image in app
-     * @param
      */
-    public Tile(Long id, String imageName, int[] edges, int[] features, boolean[] allowedMeeplePositions) {
+    public Tile(Long id, String imageName, int[] edges, int[] features, boolean[] allowedMeeplePositions, boolean completesRoads) {
         this.id = id;
         this.imageName = imageName;
         this.rotation = 0;
@@ -83,6 +98,12 @@ public class Tile {
         this.allowedMeeplePositions[8] = allowedMeeplePositions[8];
         this.coordinates = null;
         this.placedMeeple = null;
+        this.completesRoads = completesRoads;
+        this.isRoadCompleted = false;
+        this.isJunctionNorthCompleted = false;
+        this.isJunctionEastCompleted = false;
+        this.isJunctionSouthCompleted = false;
+        this.isJunctionWestCompleted = false;
     }
 
     public void rotate(boolean right){

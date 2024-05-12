@@ -3,7 +3,6 @@ package se2.carcassonne.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -29,12 +28,13 @@ import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Player;
+import se2.carcassonne.model.PointCalculator;
+import se2.carcassonne.model.RoadResult;
 import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
 
 public class GameBoardActivity extends AppCompatActivity {
-    JoystickView joystickView;
     GameboardActivityBinding binding;
     ObjectMapper objectMapper;
     Player currentPlayer;
@@ -53,6 +53,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private Intent intent;
     private Button zoomInBtn;
     private Button zoomOutBtn;
+    private PointCalculator roadCalculator;
 
     Animation scaleAnimation = null;
 
@@ -69,11 +70,15 @@ public class GameBoardActivity extends AppCompatActivity {
         //Bind all UI elements
         bindGameBoardUiElements();
 
+
         objectMapper = new ObjectMapper();
         currentPlayer = PlayerRepository.getInstance().getCurrentPlayer();
 
 //        Create a new game board and place a random tile on it
         gameBoard = new GameBoard();
+        // TODO: CHECK THIS FURTHER, JUST AN IDEA AS OF RIGHT NOW
+        roadCalculator = new PointCalculator(gameBoard);
+
 
 //        Set up the grid view
         gridView.setScaleX(3.0f);
@@ -254,6 +259,8 @@ public class GameBoardActivity extends AppCompatActivity {
                 int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                 int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
 
+                tileToPlace.setCoordinates(gameboardAdapter.getToPlaceCoordinates());
+
                 // place the Tile on the gameBoard
                 PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), null);
                 gameSessionViewModel.sendPlacedTile(placedTileDto);
@@ -318,7 +325,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private void showMeepleGrid() {
         if (gameboardAdapter.getMeepleCount() > 0) {
             binding.overlayGridview.setVisibility(GridView.VISIBLE);
-            meepleAdapter = new MeepleAdapter(this, tileToPlace);
+            RoadResult roadResult = roadCalculator.getAllTilesThatArePartOfRoad(tileToPlace);
+            meepleAdapter = new MeepleAdapter(this, tileToPlace, !roadResult.hasMeepleOnRoad());
             binding.overlayGridview.setAdapter(meepleAdapter);
             binding.buttonConfirmMeeplePlacement.setVisibility(View.VISIBLE);
         } else {
