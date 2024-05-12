@@ -56,11 +56,11 @@ public class TileInitializer {
         tiles.add(new Tile(27L,"castle_tube", new int[]{1,3,1,3}, new int[]{3,1,3, 3,3,3, 3,1,3}, new boolean[]{false, true, false, true, true, false, false, false, false}, false));
 
         //5x castle_wall
-        tiles.add(new Tile(28L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}, false));
-        tiles.add(new Tile(29L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}, false));
-        tiles.add(new Tile(30L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}, false));
-        tiles.add(new Tile(31L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}, false));
-        tiles.add(new Tile(32L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, true, true, true, true, true, true}, false));
+        tiles.add(new Tile(28L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, false, false, false, false, true, false}, false));
+        tiles.add(new Tile(29L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, false, false, false, false, true, false}, false));
+        tiles.add(new Tile(30L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, false, false, false, false, true, false}, false));
+        tiles.add(new Tile(31L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, false, false, false, false, true, false}, false));
+        tiles.add(new Tile(32L,"castle_wall", new int[]{3,1,1,1}, new int[]{3,3,3, 1,1,1, 1,1,1}, new boolean[]{false, true, false, false, false, false, false, true, false}, false));
 
         //3x castle_wall_curve_left
         tiles.add(new Tile(33L,"castle_wall_curve_left", new int[]{3,1,2,2}, new int[]{3,3,3, 2,2,1, 1,2,1}, new boolean[]{false, true, false, false, false, true, false, true, false}, false));
