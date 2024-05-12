@@ -2,6 +2,7 @@ package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -78,7 +79,6 @@ public class GameBoardActivity extends AppCompatActivity {
         gridView.setScaleX(3.0f);
         gridView.setScaleY(3.0f);
         gridView.setStretchMode(GridView.NO_STRETCH);
-        Log.d("Grid", "Grid translation: " + "X: " + gridView.getTranslationX() + " Y:" + gridView.getTranslationY());
 
 //        Instantiate gameBoardActivityViewModel
         gameSessionViewModel = new GameSessionViewModel();
@@ -111,7 +111,12 @@ public class GameBoardActivity extends AppCompatActivity {
          */
         gameSessionViewModel.getNextTurnMessageLiveData().observe(this, nextTurn -> {
             if (Objects.equals(nextTurn.getPlayerId(), currentPlayer.getId())) {
-                // TODO : Vibration logic here!
+                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
+                // Vibrate for 500 milliseconds to inform user that ii is his/her turn
+                if (vibrator.hasVibrator()) {
+                    vibrator.vibrate(500); // for 500 ms
+                }
                 tileToPlace = gameBoard.getAllTiles().get(Math.toIntExact(nextTurn.getTileId()));
                 previewTileToPlace.setRotation(0);
                 gameboardAdapter.setCanPlaceTile(true);
