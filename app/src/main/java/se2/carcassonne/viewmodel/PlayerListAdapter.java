@@ -124,6 +124,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
         public void bind(Player player, Lobby updatedLobby) {
             playerNameTextView.setText(player.getUsername());
             this.currentLobby = updatedLobby;
+            System.out.println("Current Lobby: " + currentLobby.getName() + " " + currentLobby.getLobbyAdminId() + " " + player.getId());
             if (Objects.equals(player.getId(), currentLobby.getLobbyAdminId())){
                 itemView.findViewById(R.id.ivCrownIcon).setVisibility(View.VISIBLE);
             } else {

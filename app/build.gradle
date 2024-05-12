@@ -122,4 +122,5 @@ dependencies {
     implementation libs.stompProtocolAndroid
     implementation libs.rxjava
     implementation libs.material.v150
+    implementation group: 'io.github.controlwear', name: 'virtualjoystick', version: '1.10.1'
 }
