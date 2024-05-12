@@ -23,7 +23,7 @@
         app:layout_constraintDimensionRatio="2:1.1"
         app:layout_constraintEnd_toEndOf="@id/guideline6"
         app:layout_constraintTop_toTopOf="@id/guideline4"
-        app:layout_constraintVertical_bias="0.499" />
+        app:layout_constraintVertical_bias="0.498" />
 
     <TextView
         android:id="@+id/tvMeepleCount"
@@ -53,48 +53,49 @@
 
     <Button
         android:id="@+id/button_rotate_clockwise"
-        android:layout_width="52dp"
-        android:layout_height="53dp"
+        android:layout_width="70dp"
+        android:layout_height="20dp"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="27dp"
         android:layout_marginBottom="163dp"
         android:fontFamily="@font/almendra_sc"
-        android:text="@string/r"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_rotate_counter_clockwise"
-        app:layout_constraintTop_toBottomOf="@+id/preview_tile_to_place" />
+        app:layout_constraintTop_toBottomOf="@+id/preview_tile_to_place"
+        android:background="@drawable/arrow_right"/>
 
     <Button
         android:id="@+id/button_rotate_counter_clockwise"
-        android:layout_width="55dp"
-        android:layout_height="53dp"
+        android:layout_width="70dp"
+        android:layout_height="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="163dp"
         android:fontFamily="@font/almendra_sc"
-        android:text="L"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_rotate_clockwise"
         app:layout_constraintStart_toEndOf="@+id/gridview"
-        app:layout_constraintTop_toBottomOf="@+id/preview_tile_to_place" />
+        app:layout_constraintTop_toBottomOf="@+id/preview_tile_to_place"
+        android:background="@drawable/arrow_left"/>
 
     <Button
         android:id="@+id/button_confirm_tile_placement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="25dp"
         android:fontFamily="@font/almendra_sc"
-        android:text="@string/confirm"
         android:textSize="20sp"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/gridview"
-        app:layout_constraintTop_toBottomOf="@+id/button_rotate_clockwise" />
+        app:layout_constraintTop_toBottomOf="@+id/button_rotate_clockwise"
+        android:background="@drawable/confirm_button"
+        />
 
     <Button
         android:id="@+id/button_confirm_meeple_placement"
@@ -127,7 +128,9 @@
         android:layout_height="50dp"
         app:layout_constraintBottom_toTopOf="@+id/btnZoomOut"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        android:background="@drawable/zoom_plus"/>
+        android:background="@drawable/zoom_plus"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"/>
 
     <Button
         android:id="@+id/btnZoomOut"
@@ -136,7 +139,8 @@
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline7"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        android:background="@drawable/zoom_minus"/>
+        android:background="@drawable/zoom_minus"
+        android:layout_marginEnd="10dp"/>
 
     <ImageView
         android:id="@+id/preview_tile_to_place"

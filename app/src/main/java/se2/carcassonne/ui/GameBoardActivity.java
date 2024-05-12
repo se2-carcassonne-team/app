@@ -244,6 +244,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void confirmTilePlacement() {
         buttonConfirm.setOnClickListener(v -> {
             if (gameboardAdapter.getToPlaceCoordinates() != null && gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
+                v.startAnimation(scaleAnimation);
                 // get the x and y coordinates of the field where the tile should be placed
                 int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                 int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
@@ -255,6 +256,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 buttonConfirm.setVisibility(View.GONE);
                 binding.buttonRotateClockwise.setVisibility(View.GONE);
                 binding.buttonRotateCounterClockwise.setVisibility(View.GONE);
+
 
                 gameboardAdapter.setCanPlaceTile(false);
                 gameboardAdapter.setCanPlaceMeeple(true);
@@ -330,6 +332,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void zoomOut() {
         zoomOutBtn.setOnClickListener(v -> {
+            v.startAnimation(scaleAnimation);
             float currentScaleX = gridView.getScaleX();
             float currentScaleY = gridView.getScaleY();
             if (gridView != null && currentScaleX > 1.0f && currentScaleY > 1.0f) {
@@ -343,6 +346,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void zoomIn() {
         zoomInBtn.setOnClickListener(v -> {
+            v.startAnimation(scaleAnimation);
             float currentScaleX = gridView.getScaleX();
             float currentScaleY = gridView.getScaleY();
             if (gridView != null && currentScaleX < 5.0f && currentScaleY < 5.0f) {
@@ -403,6 +407,7 @@ public class GameBoardActivity extends AppCompatActivity {
         final ImageRotator imageRotator = new ImageRotator(previewTileToPlace);
         binding.buttonRotateClockwise.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
+                v.startAnimation(scaleAnimation);
                 imageRotator.rotateRight();
                 tileToPlace.rotate(true);
                 gameboardAdapter.setCurrentTileRotation(tileToPlace);
@@ -411,6 +416,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         binding.buttonRotateCounterClockwise.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
+                v.startAnimation(scaleAnimation);
                 imageRotator.rotateLeft();
                 tileToPlace.rotate(false);
                 gameboardAdapter.setCurrentTileRotation(tileToPlace);
