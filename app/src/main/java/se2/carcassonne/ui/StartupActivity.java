@@ -21,6 +21,7 @@ public class StartupActivity extends AppCompatActivity {
     StartupActivityBinding binding;
     PlayerRepository repository = PlayerRepository.getInstance();
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,5 +56,4 @@ public class StartupActivity extends AppCompatActivity {
         Player player = PlayerRepository.getInstance().getCurrentPlayer();
         if(player != null) repository.deletePlayer(player);
     }
-
 }
