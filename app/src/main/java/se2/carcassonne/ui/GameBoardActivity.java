@@ -1,10 +1,11 @@
 package se2.carcassonne.ui;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -13,12 +14,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Objects;
 
+import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
@@ -32,6 +33,7 @@ import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
 
 public class GameBoardActivity extends AppCompatActivity {
+    JoystickView joystickView;
     GameboardActivityBinding binding;
     ObjectMapper objectMapper;
     Player currentPlayer;
@@ -51,12 +53,17 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button zoomInBtn;
     private Button zoomOutBtn;
 
+    Animation scaleAnimation = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = GameboardActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
+
+//        Animation for scaling the buttons
+        scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
 
         //Bind all UI elements
         bindGameBoardUiElements();
@@ -71,6 +78,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gridView.setScaleX(3.0f);
         gridView.setScaleY(3.0f);
         gridView.setStretchMode(GridView.NO_STRETCH);
+        Log.d("Grid", "Grid translation: " + "X: " + gridView.getTranslationX() + " Y:" + gridView.getTranslationY());
 
 //        Instantiate gameBoardActivityViewModel
         gameSessionViewModel = new GameSessionViewModel();
@@ -84,8 +92,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
         String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
         binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
-
-
 
 
         /**
@@ -149,7 +155,32 @@ public class GameBoardActivity extends AppCompatActivity {
         confirmMeeplePlacement();
         setupRotationButtons();
 
-        // Navigating across the game board
+        JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
+        joystick.setOnMoveListener((angle, strength) -> {
+//            TODO: Future adjust strength based on the scale of the gridView
+//               Move across the gridView
+            // Convert angle to radians
+            double rad = Math.toRadians(angle);
+
+            // Calculate change in X and Y coordinates
+            float deltaX = (float) (-strength * Math.cos(rad)); // Negate this to reverse the direction
+            float deltaY = (float) (strength * Math.sin(rad));
+
+            // Check if gridView is not null
+            if (gridView != null) {
+                // Get current translations
+                float currentTranslationX = gridView.getTranslationX();
+                float currentTranslationY = gridView.getTranslationY();
+
+                // Update translations
+                float newX = currentTranslationX + deltaX;
+                float newY = currentTranslationY + deltaY;
+                gridView.setTranslationX(newX);
+                gridView.setTranslationY(newY);
+            }
+        });
+
+        // Navigating across the game board with buttons
         moveRight();
         moveLeft();
         moveUp();
@@ -163,6 +194,8 @@ public class GameBoardActivity extends AppCompatActivity {
         //binding.tvMeepleCount.setTextColor(getResources().getColor(R.color.btn_gold, null));
         //String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
+
+
     }
 
     private void moveButtonsRight() {
@@ -182,6 +215,7 @@ public class GameBoardActivity extends AppCompatActivity {
         constraintSet.connect(zoomOutBtn.getId(), ConstraintSet.END, binding.backgroundRight.getId(), ConstraintSet.START, 0);
         constraintSet.applyTo(constraintLayout);
     }
+
 
     private void confirmNextTurnToStart() {
         gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
@@ -210,6 +244,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void confirmTilePlacement() {
         buttonConfirm.setOnClickListener(v -> {
             if (gameboardAdapter.getToPlaceCoordinates() != null && gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
+                v.startAnimation(scaleAnimation);
                 // get the x and y coordinates of the field where the tile should be placed
                 int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                 int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
@@ -222,13 +257,14 @@ public class GameBoardActivity extends AppCompatActivity {
                 binding.buttonRotateClockwise.setVisibility(View.GONE);
                 binding.buttonRotateCounterClockwise.setVisibility(View.GONE);
 
+
                 gameboardAdapter.setCanPlaceTile(false);
                 gameboardAdapter.setCanPlaceMeeple(true);
                 gameboardAdapter.notifyDataSetChanged();
                 showMeepleGrid();
 
             } else {
-                if (!gameboardAdapter.isYourTurn()){
+                if (!gameboardAdapter.isYourTurn()) {
                     Toast.makeText(this, "It's not your turn. Please wait.", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -241,7 +277,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void confirmMeeplePlacement() {
         binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn() && gameboardAdapter.getMeepleCount() > 0) {
-                if(meepleAdapter.getPlaceMeepleCoordinates() != null){
+                if (meepleAdapter.getPlaceMeepleCoordinates() != null) {
                     // TODO: Dynamically adjust player color - done?
                     Meeple placedMeeple = new Meeple();
                     placedMeeple.setColor(currentPlayer.getPlayerColour());
@@ -296,6 +332,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void zoomOut() {
         zoomOutBtn.setOnClickListener(v -> {
+            v.startAnimation(scaleAnimation);
             float currentScaleX = gridView.getScaleX();
             float currentScaleY = gridView.getScaleY();
             if (gridView != null && currentScaleX > 1.0f && currentScaleY > 1.0f) {
@@ -309,6 +346,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void zoomIn() {
         zoomInBtn.setOnClickListener(v -> {
+            v.startAnimation(scaleAnimation);
             float currentScaleX = gridView.getScaleX();
             float currentScaleY = gridView.getScaleY();
             if (gridView != null && currentScaleX < 5.0f && currentScaleY < 5.0f) {
@@ -320,9 +358,11 @@ public class GameBoardActivity extends AppCompatActivity {
         });
     }
 
+
     private void moveDown() {
         buttonDown.setOnClickListener(v -> {
             if (gridView != null) {
+                v.startAnimation(scaleAnimation);
                 float currentTranslationY = gridView.getTranslationY();
                 float newY = currentTranslationY - 300;
                 gridView.setTranslationY(newY);
@@ -333,6 +373,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void moveUp() {
         buttonUp.setOnClickListener(v -> {
             if (gridView != null) {
+                v.startAnimation(scaleAnimation);
                 float currentTranslationY = gridView.getTranslationY();
                 float newY = currentTranslationY + 300;
                 gridView.setTranslationY(newY);
@@ -343,6 +384,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void moveLeft() {
         buttonLeft.setOnClickListener(v -> {
             if (gridView != null) {
+                v.startAnimation(scaleAnimation);
                 float currentTranslationX = gridView.getTranslationX();
                 float newX = currentTranslationX + 300;
                 gridView.setTranslationX(newX);
@@ -353,6 +395,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void moveRight() {
         buttonRight.setOnClickListener(v -> {
             if (gridView != null) {
+                v.startAnimation(scaleAnimation);
                 float currentTranslationX = gridView.getTranslationX();
                 float newX = currentTranslationX - 300;
                 gridView.setTranslationX(newX);
@@ -364,6 +407,7 @@ public class GameBoardActivity extends AppCompatActivity {
         final ImageRotator imageRotator = new ImageRotator(previewTileToPlace);
         binding.buttonRotateClockwise.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
+                v.startAnimation(scaleAnimation);
                 imageRotator.rotateRight();
                 tileToPlace.rotate(true);
                 gameboardAdapter.setCurrentTileRotation(tileToPlace);
@@ -372,6 +416,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         binding.buttonRotateCounterClockwise.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn() && gameboardAdapter.isCanPlaceTile()) {
+                v.startAnimation(scaleAnimation);
                 imageRotator.rotateLeft();
                 tileToPlace.rotate(false);
                 gameboardAdapter.setCurrentTileRotation(tileToPlace);
