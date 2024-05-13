@@ -163,6 +163,8 @@ public class GameboardAdapter extends BaseAdapter {
                                     overlayParams.setMargins(50, 50, 0, 0);
                                     overlayImageView.setLayoutParams(overlayParams);
                                     break;
+                                default:
+                                    break;
                             }
                         }
 
@@ -203,11 +205,6 @@ public class GameboardAdapter extends BaseAdapter {
                     imageView.setAlpha(0.4f);
 
                 }
-//                // set transparent imageView
-//                imageView.setImageResource(
-//                        context.getResources().getIdentifier(tileToPlace.getImageName() + "_0",
-//                                "drawable", context.getPackageName())
-//                );
 
                 imageView.setRotation(tileToPlace.getRotation() * 90f);
                 imageView.setOnClickListener(v -> {
