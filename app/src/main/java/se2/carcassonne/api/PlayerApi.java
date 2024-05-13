@@ -1,6 +1,8 @@
 package se2.carcassonne.api;
 
 
+import android.util.Log;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,7 +22,7 @@ public class PlayerApi {
         try {
             webSocketClient.sendMessage("/app/player-create", objectMapper.writeValueAsString(player));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            Log.e("PlayerApi", "Error sending create player message", e);
         }
     }
 
@@ -28,7 +30,7 @@ public class PlayerApi {
         try {
             webSocketClient.sendMessage("/app/player-delete", objectMapper.writeValueAsString(player));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            Log.e("PlayerApi", "Error sending delete player message", e);
         }
     }
 }
