@@ -8,10 +8,12 @@ import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.model.Player;
 
 public class PlayerApi {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    private final ObjectMapper objectMapper;
+    private final WebSocketClient webSocketClient;
 
     public PlayerApi(){
+        objectMapper = new ObjectMapper();
+        webSocketClient = WebSocketClient.getInstance();
     }
 
     public void createUser(Player player) {
