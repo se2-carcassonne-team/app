@@ -7,9 +7,10 @@ import se2.carcassonne.model.Player;
 import se2.carcassonne.repository.PlayerRepository;
 
 public class PlayerViewModel extends ViewModel {
-    private final PlayerRepository playerRepository = PlayerRepository.getInstance();
+    private final PlayerRepository playerRepository;
 
     public PlayerViewModel() {
+        playerRepository = PlayerRepository.getInstance();
     }
 
     public void createPlayer(Player player) {
