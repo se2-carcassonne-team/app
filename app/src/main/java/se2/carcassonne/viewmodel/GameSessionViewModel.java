@@ -9,9 +9,10 @@ import se2.carcassonne.repository.GameSessionRepository;
 
 public class GameSessionViewModel extends ViewModel {
 
-    private final GameSessionRepository gameSessionRepository = GameSessionRepository.getInstance();
+    private final GameSessionRepository gameSessionRepository;
 
     public GameSessionViewModel() {
+        gameSessionRepository = GameSessionRepository.getInstance();
     }
 
     public void getNextTurn(Long gameSessionId) {
