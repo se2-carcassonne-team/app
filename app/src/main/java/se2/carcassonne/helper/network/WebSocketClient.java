@@ -17,6 +17,9 @@ public class WebSocketClient {
     private final Map<String, Disposable> disposablesMap = new HashMap<>();
     private StompClient client;
 
+    private static final String CONNECT = "Connect";
+    private static final String SEND_MESSAGE = "Send Message";
+
     private WebSocketClient() {
     }
 
@@ -34,22 +37,24 @@ public class WebSocketClient {
         disposable.add(client.lifecycle().subscribe(event -> {
             switch (event.getType()){
                 case OPENED:
-                    Log.d("Connect", "Connection success");
+                    Log.d(CONNECT, "Connection success");
                     break;
                 case ERROR:
-                    Log.d("Connect", "Connection error: "+event.getException().getMessage());
+                    Log.d(CONNECT, "Connection error: "+event.getException().getMessage());
                     break;
                 case CLOSED:
-                    Log.d("Connect", "Connection closed");
+                    Log.d(CONNECT, "Connection closed");
                     break;
+                default:
+                    Log.d(CONNECT, "Connection event occurred: "+event.getType());
             }
         }));
         client.connect();
     }
 
     public void sendMessage(String destination, String message){
-        if (!client.isConnected()) Log.d("Send Message", "Not connected");
-        disposable.add(client.send(destination, message).subscribe(() -> Log.d("Send Message", "Sending Message ... "+message), error -> Log.d("Send Message", "ERROR while sending Message: "+error)));
+        if (!client.isConnected()) Log.d(SEND_MESSAGE, "Not connected");
+        disposable.add(client.send(destination, message).subscribe(() -> Log.d(SEND_MESSAGE, "Sending Message ... "+message), error -> Log.d(SEND_MESSAGE, "ERROR while sending Message: "+error)));
     }
 
     public void subscribeToTopic(String topic, WebSocketMessageHandler<String> messageHandler){
