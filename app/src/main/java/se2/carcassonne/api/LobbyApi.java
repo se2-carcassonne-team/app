@@ -8,10 +8,11 @@ import se2.carcassonne.model.Lobby;
 import se2.carcassonne.model.Player;
 
 public class LobbyApi {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    private final ObjectMapper objectMapper;
+    private final WebSocketClient webSocketClient;
     public LobbyApi() {
-
+        this.objectMapper = new ObjectMapper();
+        this.webSocketClient = WebSocketClient.getInstance();
     }
 
     public void createLobby(Lobby lobby, Player currentPlayer){
