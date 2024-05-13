@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,16 +27,26 @@ import se2.carcassonne.model.Lobby;
 
 public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.LobbyViewHolder> {
     private List<Lobby> lobbyList;
+
     public LobbyListAdapter(List<Lobby> lobbyList) {
         this.lobbyList = lobbyList;
     }
 
     public void updateData(String newLobbyList) {
         ObjectMapper objectMapper = new ObjectMapper();
+//        Show only the lobbies in the LOBBY GameState
         try {
-            lobbyList = objectMapper.readValue(newLobbyList, new TypeReference<List<Lobby>>() {});
+            List<Lobby> allLobbies = objectMapper.readValue(newLobbyList, new TypeReference<List<Lobby>>() {
+            });
+            lobbyList = new ArrayList<>();
+            for (Lobby lobby : allLobbies) {
+                if (Objects.equals(lobby.getGameState(), GameState.LOBBY.getDisplayName())) {
+                    lobbyList.add(lobby);
+                }
+            }
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
+//            TODO handle exception logging
             e.printStackTrace();
             // Handle parsing exception if needed
         }
@@ -63,7 +74,7 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
     @Override
     public void onBindViewHolder(@NonNull LobbyViewHolder holder, int position) {
         Lobby lobby = lobbyList.get(position);
-        if (Objects.equals(lobby.getGameState(), GameState.LOBBY.getDisplayName())){
+        if (Objects.equals(lobby.getGameState(), GameState.LOBBY.getDisplayName())) {
             holder.bind(lobby);
         }
     }
@@ -87,7 +98,7 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
             lobbyNameTextView = itemView.findViewById(R.id.lobbyNameTextView);
             currentPlayersTextView = itemView.findViewById(R.id.currentPlayersTextView);
 
-            if (currentLobby != null && currentLobby.getNumPlayers() == 5){
+            if (currentLobby != null && currentLobby.getNumPlayers() == 5) {
                 cardView.setClickable(false);
             }
 
