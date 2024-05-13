@@ -12,6 +12,10 @@ import se2.carcassonne.model.Player;
 import se2.carcassonne.model.PlayerColour;
 
 public class MapperHelper {
+
+    // constants for logging:
+    private static final String MAPPING_EXCEPTION = "Mapping Exception";
+    private static final String JSON_ERROR_GETIDFROMLOBBYSTRING ="Error processing JSON in getIdFromLobbyString: ";
     public Player getPlayer(String playerStringAsJson) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode player = null;
@@ -19,7 +23,7 @@ public class MapperHelper {
             player = mapper.readTree(playerStringAsJson);
             return mapper.treeToValue(player, Player.class);
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getPlayer: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, "Error processing JSON in getPlayer: " + e.getMessage());
             return null;
         }
     }
@@ -30,7 +34,7 @@ public class MapperHelper {
         try {
             playerColour = mapper.readTree(playerStringAsJson).get("playerColour");
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in playerColour: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, "Error processing JSON in playerColour: " + e.getMessage());
             return null;
         }
         return PlayerColour.valueOf(playerColour.asText());
@@ -42,7 +46,7 @@ public class MapperHelper {
         try {
             playerId = mapper.readTree(playerStringAsJson).get("id");
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getPlayerId: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, "Error processing JSON in getPlayerId: " + e.getMessage());
             return -1L;
         }
         return playerId.asLong();
@@ -55,7 +59,7 @@ public class MapperHelper {
             lobbyNode = mapper.readTree(playerStringAsJson).get("gameLobbyDto");
             return mapper.treeToValue(lobbyNode, Lobby.class);
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getPlayerId: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, "Error processing JSON in getPlayerId: " + e.getMessage());
             return null;
         }
     }
@@ -79,7 +83,7 @@ public class MapperHelper {
         try {
             lobbyName = mapper.readTree(lobbyStringAsJson).get("name");
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getLobbyName: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, "Error processing JSON in getLobbyName: " + e.getMessage());
             return null;
         }
         return lobbyName.asText();
@@ -98,7 +102,7 @@ public class MapperHelper {
         try {
             return mapper.readValue(lobbyStringAsJson, Lobby.class);
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getLobbyFromJsonString: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, "Error processing JSON in getLobbyFromJsonString: " + e.getMessage());
             return null;
         }
     }
@@ -109,7 +113,7 @@ public class MapperHelper {
         try {
             lobbyId = mapper.readTree(lobbyStringAsJson).get("id");
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getIdFromLobbyString: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, JSON_ERROR_GETIDFROMLOBBYSTRING + e.getMessage());
             return null;
         }
         return lobbyId.asText();
@@ -121,7 +125,7 @@ public class MapperHelper {
         try {
             lobbyId = mapper.readTree(playerAsJsonString).get("gameLobbyId");
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getIdFromLobbyString: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, JSON_ERROR_GETIDFROMLOBBYSTRING + e.getMessage());
             return null;
         }
         return lobbyId.asLong();
@@ -133,7 +137,7 @@ public class MapperHelper {
         try {
             lobbyId = mapper.readTree(lobbyStringAsJson).get("id");
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getIdFromLobbyString: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, JSON_ERROR_GETIDFROMLOBBYSTRING + e.getMessage());
             return null;
         }
         return lobbyId.asLong();
@@ -145,7 +149,7 @@ public class MapperHelper {
         try {
             lobbyAdminId = mapper.readTree(newGameLobbyStringAsJson).get("lobbyAdminId");
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getIdFromLobbyString: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, JSON_ERROR_GETIDFROMLOBBYSTRING + e.getMessage());
             return null;
         }
         return lobbyAdminId.asLong();
@@ -157,7 +161,7 @@ public class MapperHelper {
         try {
             numOfPlayers = mapper.readTree(message).get("numPlayers");
         } catch (JsonProcessingException e) {
-            Log.e("Mapping Exception", "Error processing JSON in getIdFromLobbyString: " + e.getMessage());
+            Log.e(MAPPING_EXCEPTION, JSON_ERROR_GETIDFROMLOBBYSTRING + e.getMessage());
             return null;
         }
         return numOfPlayers.asInt();
