@@ -30,7 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     private final MapperHelper mapperHelper = new MapperHelper();
     private WebView webView;
     private LinearLayout buttonLayout;
-    private ImageView logo_animated;
+    private ImageView logo;
     private TextView textView2;
     private ProgressBar progressBar;
 
@@ -42,10 +42,10 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
         
-        logo_animated = findViewById(R.id.logo_animation);
-        logo_animated.setVisibility(View.INVISIBLE);
+        logo = findViewById(R.id.logo_animation);
+        logo.setVisibility(View.INVISIBLE);
 
-        AnimationHelper.fadeIn(logo_animated,2000,null);
+        AnimationHelper.fadeIn(logo,2000,null);
 
         playerViewModel = new PlayerViewModel();
 
@@ -83,13 +83,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         webView.setWebChromeClient(new WebChromeClient() {
+            @Override
             public void onProgressChanged(WebView view, int progress) {
-                if (progress < 100 && progressBar.getVisibility() == ProgressBar.GONE) {
-                    progressBar.setVisibility(ProgressBar.VISIBLE);
+                if (progress < 100 && progressBar.getVisibility() == View.GONE) {
+                    progressBar.setVisibility(View.VISIBLE);
                 }
                 progressBar.setProgress(progress);
                 if (progress == 100) {
-                    progressBar.setVisibility(ProgressBar.GONE);
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -107,7 +108,7 @@ public class HomeActivity extends AppCompatActivity {
             webView.loadUrl(url);
             webView.setVisibility(View.VISIBLE); // Show the WebView
             buttonLayout.setVisibility(View.GONE); // Hide the buttons
-            logo_animated.setVisibility(View.GONE); // Hide the logo
+            logo.setVisibility(View.GONE); // Hide the logo
             textView2.setVisibility(View.GONE); // Hide the welcome message
         });
     }
@@ -118,7 +119,7 @@ public class HomeActivity extends AppCompatActivity {
         runOnUiThread(() -> {
             webView.setVisibility(View.GONE); // Hide the WebView
             buttonLayout.setVisibility(View.VISIBLE); // Show the buttons
-            logo_animated.setVisibility(View.VISIBLE); // Show the logo
+            logo.setVisibility(View.VISIBLE); // Show the logo
             textView2.setVisibility(View.VISIBLE); // Show the welcome message
         });
     }

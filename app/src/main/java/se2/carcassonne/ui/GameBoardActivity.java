@@ -99,7 +99,7 @@ public class GameBoardActivity extends AppCompatActivity {
         binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
 
 
-        /**
+        /*
          * placed tile observable
          */
         gameSessionViewModel.getPlacedTileLiveData().observe(this, tilePlaced -> {
@@ -111,7 +111,7 @@ public class GameBoardActivity extends AppCompatActivity {
         });
 
 
-        /**
+        /*
          * next turn observable
          */
         gameSessionViewModel.getNextTurnMessageLiveData().observe(this, nextTurn -> {
@@ -200,9 +200,6 @@ public class GameBoardActivity extends AppCompatActivity {
         zoomIn();
         zoomOut();
 
-
-        //binding.tvMeepleCount.setTextColor(getResources().getColor(R.color.btn_gold, null));
-        //String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
 
 
@@ -324,7 +321,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void showMeepleGrid() {
         if (gameboardAdapter.getMeepleCount() > 0) {
-            binding.overlayGridview.setVisibility(GridView.VISIBLE);
+            binding.overlayGridview.setVisibility(View.VISIBLE);
             RoadResult roadResult = roadCalculator.getAllTilesThatArePartOfRoad(tileToPlace);
             meepleAdapter = new MeepleAdapter(this, tileToPlace, !roadResult.hasMeepleOnRoad());
             binding.overlayGridview.setAdapter(meepleAdapter);
@@ -339,7 +336,7 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void hideMeepleGrid() {
-        binding.overlayGridview.setVisibility(GridView.GONE);
+        binding.overlayGridview.setVisibility(View.GONE);
         // gameboardAdapter.notifyDataSetChanged();
     }
 

@@ -7,9 +7,10 @@ import se2.carcassonne.model.Lobby;
 import se2.carcassonne.repository.LobbyRepository;
 
 public class LobbyViewModel extends ViewModel {
-    private final LobbyRepository lobbyRepository = LobbyRepository.getInstance();
+    private final LobbyRepository lobbyRepository;
 
     public LobbyViewModel() {
+        lobbyRepository = LobbyRepository.getInstance();
     }
 
     public MutableLiveData<String> getListOfAllLobbiesLiveData() {
