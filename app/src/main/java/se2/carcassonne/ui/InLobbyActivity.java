@@ -69,7 +69,7 @@ public class InLobbyActivity extends AppCompatActivity {
                 // Load the animation
                 pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
                 // Set the animation to repeat indefinitely
-                pulseAnimation.setRepeatCount(Animation.INFINITE);
+//                pulseAnimation.setRepeatCount(Animation.INFINITE);
                 binding.gameLobbyStartGameBtn.startAnimation(pulseAnimation);
                 adapter.updateGameLobby(newGameLobby);
             } else if (newGameLobby != null) {

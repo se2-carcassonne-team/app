@@ -1,8 +1,10 @@
 package se2.carcassonne.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -116,7 +118,13 @@ public class GameBoardActivity extends AppCompatActivity {
          */
         gameSessionViewModel.getNextTurnMessageLiveData().observe(this, nextTurn -> {
             if (Objects.equals(nextTurn.getPlayerId(), currentPlayer.getId())) {
-                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                Vibrator vibrator;
+                if (android.os.Build.VERSION.SDK_INT >= 31) {
+                    VibratorManager vibratorManager = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+                    vibrator = vibratorManager.getDefaultVibrator();
+                } else {
+                    vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                }
 
                 // Vibrate for 500 milliseconds to inform user that ii is his/her turn
                 if (vibrator.hasVibrator()) {
