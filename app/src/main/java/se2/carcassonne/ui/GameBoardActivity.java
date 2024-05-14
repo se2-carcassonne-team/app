@@ -25,6 +25,7 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
+import se2.carcassonne.helper.utils.ImageRotator;
 import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Meeple;

@@ -1,4 +1,4 @@
-package se2.carcassonne.ui;
+package se2.carcassonne.helper.utils;
 import android.widget.ImageView;
 
 
