@@ -58,6 +58,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button zoomOutBtn;
     private PointCalculator roadCalculator;
 
+    private int score = 0;
+
     Animation scaleAnimation = null;
 
     @Override
@@ -214,6 +216,12 @@ public class GameBoardActivity extends AppCompatActivity {
 
     }
 
+//    Only monastery points -> for now!
+    private void calculatePoints() {
+        score = roadCalculator.calculatePointsForMonastery();
+        binding.tvScore.setText(String.valueOf(score));
+    }
+
     private void moveButtonsRight() {
         ConstraintLayout constraintLayout = binding.main;
         ConstraintSet constraintSet = new ConstraintSet();
@@ -234,6 +242,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
     private void confirmNextTurnToStart() {
+//        After the meeple is placed
+        calculatePoints();
         gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
         gameboardAdapter.setYourTurn(false);
     }
@@ -296,7 +306,6 @@ public class GameBoardActivity extends AppCompatActivity {
         binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn() && gameboardAdapter.getMeepleCount() > 0) {
                 if (meepleAdapter.getPlaceMeepleCoordinates() != null) {
-                    // TODO: Dynamically adjust player color - done?
                     Meeple placedMeeple = new Meeple();
                     placedMeeple.setColor(currentPlayer.getPlayerColour());
                     placedMeeple.setPlayerId(currentPlayer.getId());

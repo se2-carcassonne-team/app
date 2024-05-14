@@ -1,6 +1,8 @@
 package se2.carcassonne.model;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -105,8 +107,8 @@ public class PointCalculator {
                     continue;
                 }
 
-                if (dx == 1){
-                    if(tile.rotatedEdges(tile.getRotation())[1] != 2) continue;
+                if (dx == 1) {
+                    if (tile.rotatedEdges(tile.getRotation())[1] != 2) continue;
                 } else if (dy == 1) {
                     if (tile.rotatedEdges(tile.getRotation())[2] != 2) continue;
                 } else if (dx == -1) {
@@ -178,5 +180,88 @@ public class PointCalculator {
         // Points are awarded per tile in the completed road
         return roadTiles.size() * POINTS_ROAD;
     }
+
+//    TODO calculate points for monastery tile
+//    Check if is the monastery tile
+
+    private boolean isMonastery(Tile tile) {
+        Log.d("Monastery", "isMonastery: " + tile.getImageName().contains("monastery"));
+        return tile.getImageName().contains("monastery");
+    }
+
+    //iterate through all the placed tiles and return the monastery tile
+    private Tile getMonasteryTile() {
+        for (Tile tile : gameBoard.getPlacedTiles()){
+            Log.d("Monastery", "getMonasteryTile: " + tile.toString());
+            if (isMonastery(tile)) {
+                return tile;
+            }
+        }
+
+        return null;
+    }
+
+    //check if the monastery tile has meeple on it
+    private boolean hasMeepleOnMonastery(Tile monasteryTile) {
+        Meeple potentialMeepleOnMonastery = monasteryTile.getPlacedMeeple();
+        if (potentialMeepleOnMonastery != null) {
+//            check if the meeple is in the center of the monastery tile
+            Coordinates meepleCoordinates = potentialMeepleOnMonastery.getCoordinates();
+            int meeplePosition = meepleCoordinates.getXPosition() * 3 + meepleCoordinates.getYPosition();
+            Log.d("Monastery", "hasMeepleOnMonastery: " + meeplePosition);
+            return meeplePosition == 4;
+        }
+        return false;
+    }
+
+    //    check by how many tiles is a monastery tile with the meeple on it surrounded
+    private int getSurroundingTilesCount(Tile monasteryTile) {
+        int x = monasteryTile.getCoordinates().getXPosition();
+        int y = monasteryTile.getCoordinates().getYPosition();
+        int surroundingTilesCount = 0;
+
+        // Check right, left, above, and below
+        if (x + 1 < 25 && gameBoard.getGameBoardMatrix()[x + 1][y] != null) {
+            surroundingTilesCount++;
+        }
+        if (y - 1 >= 0 && gameBoard.getGameBoardMatrix()[x][y - 1] != null) {
+            surroundingTilesCount++;
+        }
+        if (x - 1 >= 0 && gameBoard.getGameBoardMatrix()[x - 1][y] != null) {
+            surroundingTilesCount++;
+        }
+        if (y + 1 < 25 && gameBoard.getGameBoardMatrix()[x][y + 1] != null) {
+            surroundingTilesCount++;
+        }
+
+        // Check top-left, top-right, bottom-left, and bottom-right
+        if (x - 1 >= 0 && y - 1 >= 0 && gameBoard.getGameBoardMatrix()[x - 1][y - 1] != null) {
+            surroundingTilesCount++;
+        }
+        if (x - 1 >= 0 && y + 1 < 25 && gameBoard.getGameBoardMatrix()[x - 1][y + 1] != null) {
+            surroundingTilesCount++;
+        }
+        if (x + 1 < 25 && y - 1 >= 0 && gameBoard.getGameBoardMatrix()[x + 1][y - 1] != null) {
+            surroundingTilesCount++;
+        }
+        if (x + 1 < 25 && y + 1 < 25 && gameBoard.getGameBoardMatrix()[x + 1][y + 1] != null) {
+            surroundingTilesCount++;
+        }
+
+        return surroundingTilesCount;
+    }
+
+    //calculate points for monastery tile
+    public int calculatePointsForMonastery() {
+        Tile monasteryTile = getMonasteryTile();
+        if (monasteryTile == null) {
+            return 0;
+        }
+        if (!hasMeepleOnMonastery(monasteryTile)) {
+            return 0;
+        }
+        return getSurroundingTilesCount(monasteryTile);
+    }
+
 
 }

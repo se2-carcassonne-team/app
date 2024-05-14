@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="@id/guideline27" />
 
     <TextView
-        android:id="@+id/tvPlayerScore"
+        android:id="@+id/tvScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/almendra_sc"
