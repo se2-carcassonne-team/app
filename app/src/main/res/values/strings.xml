@@ -37,5 +37,6 @@
     <string name="r">R</string>
     <string name="meepleCount">%d x</string>
     <string name="rules">Rules</string>
+    <string name="score">score</string>
 
 </resources>

@@ -39,6 +39,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline27" />
 
+    <TextView
+        android:id="@+id/tvPlayerScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/almendra_sc"
+        android:gravity="center"
+        android:text="@string/score"
+        android:textColor="@color/btn_gold"
+        android:textSize="40sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="@id/guideline27"/>
+
     <ImageView
         android:id="@+id/ivMeepleWithPlayerColor"
         android:layout_width="0dp"
