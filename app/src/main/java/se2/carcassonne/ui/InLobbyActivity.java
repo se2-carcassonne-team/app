@@ -74,6 +74,7 @@ public class InLobbyActivity extends AppCompatActivity {
                 adapter.updateGameLobby(newGameLobby);
             } else if (newGameLobby != null) {
                 adapter.updateGameLobby(newGameLobby.split("\\|")[1]);
+                binding.gameLobbyStartGameBtn.clearAnimation();
                 binding.gameLobbyStartGameBtn.setVisibility(View.GONE);
             }
         });
