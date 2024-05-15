@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,8 @@ import lombok.Setter;
 public class PointCalculator {
     private GameBoard gameBoard;
     private List<Set<Tile>> completedRoads = new ArrayList<>();
+    private List<Tile> completedMonasteries = new ArrayList<>();
+    HashMap<Long, Integer> scores = new HashMap<>();
 
     // Points per tile type
     private static final int POINTS_CITY = 2;
@@ -190,15 +193,15 @@ public class PointCalculator {
     }
 
     //iterate through all the placed tiles and return the monastery tile
-    private Tile getMonasteryTile() {
-        for (Tile tile : gameBoard.getPlacedTiles()){
+    private List<Tile> getMonasteryTiles() {
+        List<Tile> monasteryTiles = new ArrayList<>();
+        for (Tile tile : gameBoard.getPlacedTiles()) {
             Log.d("Monastery", "getMonasteryTile: " + tile.toString());
             if (isMonastery(tile)) {
-                return tile;
+                monasteryTiles.add(tile);
             }
         }
-
-        return null;
+        return monasteryTiles;
     }
 
     //check if the monastery tile has meeple on it
@@ -214,11 +217,16 @@ public class PointCalculator {
         return false;
     }
 
+    /**
+     * @param monasteryTile
+     * @return the number of tiles surrounding the monastery tile
+     */
     //    check by how many tiles is a monastery tile with the meeple on it surrounded
     private int getSurroundingTilesCount(Tile monasteryTile) {
         int x = monasteryTile.getCoordinates().getXPosition();
         int y = monasteryTile.getCoordinates().getYPosition();
-        int surroundingTilesCount = 0;
+//        Player gets a point for the monastery tile itself
+        int surroundingTilesCount = 1;
 
         // Check right, left, above, and below
         if (x + 1 < 25 && gameBoard.getGameBoardMatrix()[x + 1][y] != null) {
@@ -251,16 +259,26 @@ public class PointCalculator {
         return surroundingTilesCount;
     }
 
-    //calculate points for monastery tile
-    public int calculatePointsForMonastery() {
-        Tile monasteryTile = getMonasteryTile();
-        if (monasteryTile == null) {
-            return 0;
+
+    /**
+     * Calculate the number of points the player gets for the monastery tile
+     * if the monastery is already fully surrounded, the player gets 9 points and the calculation will not be repeated
+     *
+     * @return the number of points the player gets for the monastery tile
+     */
+    public HashMap<Long, Integer> calculatePointsForMonastery() {
+        List<Tile> listOFMonasteryTiles = getMonasteryTiles();
+        for (Tile monasteryTile : listOFMonasteryTiles) {
+            if (monasteryTile != null && !completedMonasteries.contains(monasteryTile) && hasMeepleOnMonastery(monasteryTile)) {
+                int score = getSurroundingTilesCount(monasteryTile);
+                if (score == 9) {
+                    completedMonasteries.add(monasteryTile);
+                }
+                scores.put(monasteryTile.getId(), score);
+            }
         }
-        if (!hasMeepleOnMonastery(monasteryTile)) {
-            return 0;
-        }
-        return getSurroundingTilesCount(monasteryTile);
+        Log.d("Monastery", "HashMap: " + scores.toString());
+        return scores;
     }
 
 

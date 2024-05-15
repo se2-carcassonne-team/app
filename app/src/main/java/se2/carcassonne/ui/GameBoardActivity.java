@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.os.VibratorManager;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -19,7 +20,13 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
@@ -58,7 +65,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button zoomOutBtn;
     private PointCalculator roadCalculator;
 
-    private int score = 0;
+
 
     Animation scaleAnimation = null;
 
@@ -111,7 +118,12 @@ public class GameBoardActivity extends AppCompatActivity {
             Tile tilePlacedByOtherPlayer = gameboardAdapter.getGameBoard().getAllTiles().get(Math.toIntExact(tilePlaced.getTileId()));
             tilePlacedByOtherPlayer.setRotation(tilePlaced.getRotation());
             tilePlacedByOtherPlayer.setPlacedMeeple(tilePlaced.getPlacedMeeple());
-            gameboardAdapter.getGameBoard().placeTile(tilePlacedByOtherPlayer, tilePlaced.getCoordinates());
+//            UGLY FIX FOR NOW!!!
+//            Check if the card is already in the placedTiles list
+            if (!gameboardAdapter.getGameBoard().getPlacedTiles().contains(tilePlacedByOtherPlayer)) {
+                gameboardAdapter.getGameBoard().placeTile(tilePlacedByOtherPlayer, tilePlaced.getCoordinates());
+            }
+//            gameboardAdapter.getGameBoard().placeTile(tilePlacedByOtherPlayer, tilePlaced.getCoordinates());
             gameboardAdapter.notifyDataSetChanged();
         });
 
@@ -178,7 +190,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
         joystick.setOnMoveListener((angle, strength) -> {
-//            TODO: Future adjust strength based on the scale of the gridView
+//            TODO: (Future) adjust strength based on the scale of the gridView
 //               Move across the gridView
             // Convert angle to radians
             double rad = Math.toRadians(angle);
@@ -216,10 +228,47 @@ public class GameBoardActivity extends AppCompatActivity {
 
     }
 
-//    Only monastery points -> for now!
+    //    Only monastery points -> for now!
     private void calculatePoints() {
-        score = roadCalculator.calculatePointsForMonastery();
-        binding.tvScore.setText(String.valueOf(score));
+        List<Integer> scoreMonastery = new ArrayList<>();
+        HashMap<Long, Integer> scores;
+
+        scores = roadCalculator.calculatePointsForMonastery();
+//        Search the placedTiles in the from the gameboard in hashmap
+        List<Tile> placedTiles = gameBoard.getPlacedTiles();
+        Log.d("Tiles", "PlacedTilesSize: " + placedTiles.size());
+        Log.d("Tiles", "PlacedTilesList: " + placedTiles);
+
+//        Get only ids of the placed tiles -> DEBUGGING
+        List<Long> placedTileIds = new ArrayList<>();
+        for (Tile tile: placedTiles) {
+            placedTileIds.add(tile.getId());
+        }
+        Log.d("Tiles", "PlacedTileIds: " + placedTileIds);
+//        end of debugging
+
+
+        Set<Long> keys = scores.keySet();
+        Collection<Integer> values = scores.values();
+
+        for(Integer value : values) {
+            Log.d("Tiles", "HashMapValues: " + value);
+        }
+
+        for(Long key : keys) {
+            Log.d("Tiles", "HashMapKeys: " + key);
+        }
+
+//        I know it's ugly, but it's just for debugging
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Long i : keys) {
+            stringBuilder.append("ID: ").append(i).append(" ").append("\n");
+        }
+        for (int i : values) {
+            stringBuilder.append("Points: ").append(i).append(" ");
+        }
+
+        binding.tvScore.setText(stringBuilder.toString());
     }
 
     private void moveButtonsRight() {
