@@ -17,6 +17,7 @@ public class RoadResult {
     private boolean isRoadCompleted;
     private List<Tile> allPartsOfRoad;
     private int points;
+    private List<Long> playersWithMeeplesOnRoad;
 
     public boolean hasMeepleOnRoad() {
         for (Tile tile : allPartsOfRoad) {

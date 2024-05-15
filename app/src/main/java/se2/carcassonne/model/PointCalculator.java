@@ -34,10 +34,12 @@ public class PointCalculator {
         List<Tile> roadTiles = new ArrayList<>();
         Set<Tile> visited = new HashSet<>();
         Set<Tile> junctionsVisited = new HashSet<>();
-        int completedRoadsCount = 0;
-        int pointsForRoad = 0;
+        List<Long> playerIds = new ArrayList<>();
 
-        if (tile.isCompletesRoads()) completedRoadsCount++;
+        int[] completedRoadsCount = new int[1]; // Use an array to manage completed roads count state across recursive calls
+        if (tile.isCompletesRoads()) completedRoadsCount[0]++;
+
+        int pointsForRoad = -1;
 
         roadTiles.add(tile);
         visited.add(tile);
@@ -48,7 +50,9 @@ public class PointCalculator {
                 completedRoadsCount, tile.getCoordinates().getXPosition(), tile.getCoordinates().getYPosition());
 
         Set<Tile> completedRoadSet = new HashSet<>(roadTiles);
+
         if (isRoadCompleted) {
+            playerIds = findPlayersWithMeeplesOnRoad(roadTiles);
             pointsForRoad = calculatePointsForCompletedRoad(roadTiles);
 
             // Check for merging with existing roads
@@ -87,12 +91,12 @@ public class PointCalculator {
             }
         }
 
-        return new RoadResult(isRoadCompleted, roadTiles, pointsForRoad);
+        return new RoadResult(isRoadCompleted, roadTiles, pointsForRoad, playerIds);
     }
 
 
     private boolean dfsCheckRoadCompleted(Tile tile, List<Tile> roadTiles, Set<Tile> visited, Set<Tile> junctionsVisited,
-                                          int completedRoadsCount, int fromX, int fromY) {
+                                          int[] completedRoadsCount, int fromX, int fromY) {
         int x = tile.getCoordinates().getXPosition();
         int y = tile.getCoordinates().getYPosition();
 
@@ -105,15 +109,10 @@ public class PointCalculator {
                     continue;
                 }
 
-                if (dx == 1){
-                    if(tile.rotatedEdges(tile.getRotation())[1] != 2) continue;
-                } else if (dy == 1) {
-                    if (tile.rotatedEdges(tile.getRotation())[2] != 2) continue;
-                } else if (dx == -1) {
-                    if (tile.rotatedEdges(tile.getRotation())[3] != 2) continue;
-                } else if (dy == -1) {
-                    if (tile.rotatedEdges(tile.getRotation())[0] != 2) continue;
-                }
+                if (dx == 1 && tile.rotatedEdges(tile.getRotation())[1] != 2) continue;
+                if (dy == 1 && tile.rotatedEdges(tile.getRotation())[2] != 2) continue;
+                if (dx == -1 && tile.rotatedEdges(tile.getRotation())[3] != 2) continue;
+                if (dy == -1 && tile.rotatedEdges(tile.getRotation())[0] != 2) continue;
 
                 int newX = x + dx;
                 int newY = y + dy;
@@ -135,18 +134,15 @@ public class PointCalculator {
                         visited.add(neighboringTile);
 
                         if (neighboringTile.isCompletesRoads()) {
-                            completedRoadsCount++;
-                            if (completedRoadsCount == 2) {
+                            completedRoadsCount[0]++;
+                            if (completedRoadsCount[0] == 2) {
                                 return true; // Road completed
                             }
                         }
 
                         if (neighboringTile.getImageName().contains("junction")) {
-                            if (visited.contains(neighboringTile)) {
-                                junctionsVisited.add(neighboringTile);
-                            }
-                            // If it's a junction, skip the recursive call for this direction
-                            continue;
+                            junctionsVisited.add(neighboringTile);
+                            continue; // Skip the recursive call for this direction if it's a junction
                         }
 
                         // Recursively explore the neighboring tile
@@ -158,6 +154,7 @@ public class PointCalculator {
 
         return foundCompletedRoad;
     }
+
 
     private boolean hasRoad(Tile neighboringTile) {
         boolean hasRoad = false;
@@ -175,8 +172,26 @@ public class PointCalculator {
         if (roadTiles == null || roadTiles.isEmpty()) {
             return 0;
         }
+        // Remove duplicates from roadTiles
+        Set<Tile> uniqueTiles = new HashSet<>(roadTiles);
+
         // Points are awarded per tile in the completed road
-        return roadTiles.size() * POINTS_ROAD;
+        return uniqueTiles.size() * POINTS_ROAD;
     }
+
+    private List<Long> findPlayersWithMeeplesOnRoad(List<Tile> roadTiles) {
+        List<Long> playersWithMeeples = new ArrayList<>();
+        for (Tile tile : roadTiles) {
+            Meeple meeple = tile.getPlacedMeeple();
+            if (meeple != null) {
+                Long playerId = meeple.getPlayerId();
+                if (!playersWithMeeples.contains(playerId)) {
+                    playersWithMeeples.add(playerId);
+                }
+            }
+        }
+        return playersWithMeeples;
+    }
+
 
 }

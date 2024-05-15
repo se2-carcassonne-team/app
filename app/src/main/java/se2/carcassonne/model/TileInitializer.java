@@ -39,7 +39,7 @@ public class TileInitializer {
         tiles.add(new Tile(0L,CASTLE_WALL_ROAD, new int[]{3,2,1,2}, new int[]{3,3,3, 2,2,2, 1,1,1}, new boolean[]{false, false, false, false, false, false, false, false, false}, false));
 
         //1x road_junction_large
-        tiles.add(new Tile(1L, ROAD_JUNCTION_LARGE, new int[]{2,2,2,2}, new int[]{1,2,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, false, true, false}, true));
+        tiles.add(new Tile(1L, ROAD_JUNCTION_LARGE, new int[]{2,2,2,2}, new int[]{1,2,1, 2,4,2, 1,2,1}, new boolean[]{false, false, false, false, false, false, false, false, false}, true));
 
         //1x castle_center
         tiles.add(new Tile(2L, CASTLE_CENTER, new int[]{3,3,3,3}, new int[]{3,3,3, 3,3,3, 3,3,3}, new boolean[]{false, false, false, false, true, false, false, false, false}, false));
@@ -101,9 +101,9 @@ public class TileInitializer {
         tiles.add(new Tile(38L,CASTLE_WALL_CURVE_RIGHT, new int[]{3,2,2,1}, new int[]{3,3,3, 1,2,2, 1,2,1}, new boolean[]{false, true, false, true, false, false, false, true, false}, false));
 
         //3x castle_wall_junction
-        tiles.add(new Tile(39L,CASTLE_WALL_JUNCTION, new int[]{3,2,2,2}, new int[]{3,3,3, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, true, true, true}, true));
-        tiles.add(new Tile(40L,CASTLE_WALL_JUNCTION, new int[]{3,2,2,2}, new int[]{3,3,3, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, true, true, true}, true));
-        tiles.add(new Tile(41L,CASTLE_WALL_JUNCTION, new int[]{3,2,2,2}, new int[]{3,3,3, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, true, true, true}, true));
+        tiles.add(new Tile(39L,CASTLE_WALL_JUNCTION, new int[]{3,2,2,2}, new int[]{3,3,3, 2,4,2, 1,2,1}, new boolean[]{false, true, false, false, false, false, true, false, true}, true));
+        tiles.add(new Tile(40L,CASTLE_WALL_JUNCTION, new int[]{3,2,2,2}, new int[]{3,3,3, 2,4,2, 1,2,1}, new boolean[]{false, true, false, false, false, false, true, false, true}, true));
+        tiles.add(new Tile(41L,CASTLE_WALL_JUNCTION, new int[]{3,2,2,2}, new int[]{3,3,3, 2,4,2, 1,2,1}, new boolean[]{false, true, false, false, false, false, true, false, true}, true));
 
         //3x castle_wall_road (1 more but that's the start tile)
         tiles.add(new Tile(42L,CASTLE_WALL_ROAD, new int[]{3,2,1,2}, new int[]{3,3,3, 2,2,2, 1,1,1}, new boolean[]{false, true, false, false, true, false, false, true, false}, false));
@@ -142,10 +142,10 @@ public class TileInitializer {
         tiles.add(new Tile(67L,ROAD_CURVE, new int[]{1,1,2,2}, new int[]{1,1,1, 2,2,1, 1,2,1}, new boolean[]{false, true, false, false, true, false, true, false, false}, false));
 
         //4x road_junction_small (cross)
-        tiles.add(new Tile(68L,ROAD_JUNCTION_SMALL, new int[]{1,2,2,2}, new int[]{1,1,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, true, true, true}, true));
-        tiles.add(new Tile(69L,ROAD_JUNCTION_SMALL, new int[]{1,2,2,2}, new int[]{1,1,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, true, true, true}, true));
-        tiles.add(new Tile(70L,ROAD_JUNCTION_SMALL, new int[]{1,2,2,2}, new int[]{1,1,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, true, true, true}, true));
-        tiles.add(new Tile(71L,ROAD_JUNCTION_SMALL, new int[]{1,2,2,2}, new int[]{1,1,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, true, false, true, true, true, true}, true));
+        tiles.add(new Tile(68L,ROAD_JUNCTION_SMALL, new int[]{1,2,2,2}, new int[]{1,1,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, false, false, false, true, false, true}, true));
+        tiles.add(new Tile(69L,ROAD_JUNCTION_SMALL, new int[]{1,2,2,2}, new int[]{1,1,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, false, false, false, true, false, true}, true));
+        tiles.add(new Tile(70L,ROAD_JUNCTION_SMALL, new int[]{1,2,2,2}, new int[]{1,1,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, false, false, false, true, false, true}, true));
+        tiles.add(new Tile(71L,ROAD_JUNCTION_SMALL, new int[]{1,2,2,2}, new int[]{1,1,1, 2,4,2, 1,2,1}, new boolean[]{false, true, false, false, false, false, true, false, true}, true));
 
         return tiles;
     }
