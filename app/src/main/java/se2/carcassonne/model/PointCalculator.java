@@ -23,7 +23,7 @@ public class PointCalculator {
     private GameBoard gameBoard;
     private List<Set<Tile>> completedRoads = new ArrayList<>();
     private List<Tile> completedMonasteries = new ArrayList<>();
-    HashMap<Long, Integer> scores = new HashMap<>();
+    HashMap<Tile, Integer> monasteryScores = new HashMap<>();
 
     // Points per tile type
     private static final int POINTS_CITY = 2;
@@ -263,22 +263,29 @@ public class PointCalculator {
     /**
      * Calculate the number of points the player gets for the monastery tile
      * if the monastery is already fully surrounded, the player gets 9 points and the calculation will not be repeated
-     *
-     * @return the number of points the player gets for the monastery tile
+     * the number of points the player gets for the monastery tile
      */
-    public HashMap<Long, Integer> calculatePointsForMonastery() {
-        List<Tile> listOFMonasteryTiles = getMonasteryTiles();
-        for (Tile monasteryTile : listOFMonasteryTiles) {
-            if (monasteryTile != null && !completedMonasteries.contains(monasteryTile) && hasMeepleOnMonastery(monasteryTile)) {
-                int score = getSurroundingTilesCount(monasteryTile);
-                if (score == 9) {
-                    completedMonasteries.add(monasteryTile);
+    public void calculatePointsForMonastery(ScoreBoard scoreBoard) {
+        List<Tile> listOfMonasteryTiles = getMonasteryTiles();
+
+        for (Tile monasteryTile : listOfMonasteryTiles) {
+            if (monasteryTile != null && hasMeepleOnMonastery(monasteryTile)) {
+                int newScore = getSurroundingTilesCount(monasteryTile);
+                Long playerId = monasteryTile.getPlacedMeeple().getPlayerId();
+                Integer oldScore = monasteryScores.get(monasteryTile);
+                if (oldScore == null) {
+                    oldScore = 0;
                 }
-                scores.put(monasteryTile.getId(), score);
+                int scoreDifference = newScore - oldScore;
+                Log.d("Score", "newscore: " + newScore);
+                Log.d("Score", "oldscore: " + oldScore);
+                if (scoreDifference > 0) {
+                    Integer currentScore = scoreBoard.getScore(playerId);
+                    scoreBoard.addScore(playerId, currentScore != null ? currentScore + scoreDifference : scoreDifference);
+                }
+                monasteryScores.put(monasteryTile, newScore);
             }
         }
-        Log.d("Monastery", "HashMap: " + scores.toString());
-        return scores;
     }
 
 

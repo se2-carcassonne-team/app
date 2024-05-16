@@ -58,7 +58,7 @@ public class PlayerRepository {
                 ObjectMapper mapper = new ObjectMapper();
                 currentPlayer = mapper.readValue(message, Player.class);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("Exception", "createPlayerMessageReceived: ", e);
             }
             createPlayerLiveData.postValue(message);
         }
@@ -103,5 +103,10 @@ public class PlayerRepository {
 
     public MutableLiveData<String> getInvalidUsernameErrorMessage() {
         return invalidUsernameErrorMessage;
+    }
+
+
+    public String getUsernameFromId(Long currentPlayerId) {
+        return currentPlayer.getUsername();
     }
 }

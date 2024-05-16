@@ -20,13 +20,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
@@ -40,6 +34,7 @@ import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Player;
 import se2.carcassonne.model.PointCalculator;
 import se2.carcassonne.model.RoadResult;
+import se2.carcassonne.model.ScoreBoard;
 import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
@@ -64,7 +59,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button zoomInBtn;
     private Button zoomOutBtn;
     private PointCalculator roadCalculator;
-
+    private ScoreBoard scoreBoard;
 
 
     Animation scaleAnimation = null;
@@ -90,6 +85,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gameBoard = new GameBoard();
         // TODO: CHECK THIS FURTHER, JUST AN IDEA AS OF RIGHT NOW
         roadCalculator = new PointCalculator(gameBoard);
+        scoreBoard = new ScoreBoard();
 
 
 //        Set up the grid view
@@ -229,46 +225,10 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     //    Only monastery points -> for now!
-    private void calculatePoints() {
-        List<Integer> scoreMonastery = new ArrayList<>();
-        HashMap<Long, Integer> scores;
-
-        scores = roadCalculator.calculatePointsForMonastery();
-//        Search the placedTiles in the from the gameboard in hashmap
-        List<Tile> placedTiles = gameBoard.getPlacedTiles();
-        Log.d("Tiles", "PlacedTilesSize: " + placedTiles.size());
-        Log.d("Tiles", "PlacedTilesList: " + placedTiles);
-
-//        Get only ids of the placed tiles -> DEBUGGING
-        List<Long> placedTileIds = new ArrayList<>();
-        for (Tile tile: placedTiles) {
-            placedTileIds.add(tile.getId());
-        }
-        Log.d("Tiles", "PlacedTileIds: " + placedTileIds);
-//        end of debugging
-
-
-        Set<Long> keys = scores.keySet();
-        Collection<Integer> values = scores.values();
-
-        for(Integer value : values) {
-            Log.d("Tiles", "HashMapValues: " + value);
-        }
-
-        for(Long key : keys) {
-            Log.d("Tiles", "HashMapKeys: " + key);
-        }
-
-//        I know it's ugly, but it's just for debugging
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Long i : keys) {
-            stringBuilder.append("ID: ").append(i).append(" ").append("\n");
-        }
-        for (int i : values) {
-            stringBuilder.append("Points: ").append(i).append(" ");
-        }
-
-        binding.tvScore.setText(stringBuilder.toString());
+    private void calculatePoints(ScoreBoard scoreBoard) {
+        roadCalculator.calculatePointsForMonastery(scoreBoard);
+        binding.tvScore.setText(displayScoreBoard());
+        Log.d("ScoreBoard", "Scoreboard: " + scoreBoard);
     }
 
     private void moveButtonsRight() {
@@ -292,7 +252,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void confirmNextTurnToStart() {
 //        After the meeple is placed
-        calculatePoints();
+        calculatePoints(scoreBoard);
         gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
         gameboardAdapter.setYourTurn(false);
     }
@@ -499,5 +459,12 @@ public class GameBoardActivity extends AppCompatActivity {
                 gameboardAdapter.setCurrentTileRotation(tileToPlace);
             }
         });
+    }
+
+    public String displayScoreBoard() {
+        Long currentPlayerId = PlayerRepository.getInstance().getCurrentPlayer().getId();
+        Integer score = scoreBoard.getScore(currentPlayerId);
+        String username = PlayerRepository.getInstance().getUsernameFromId(currentPlayerId);
+        return "Username: " + username + ", Score: " + score;
     }
 }
