@@ -36,6 +36,7 @@ import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
 
+// fixme avoid a god class here (eg, meeple and tile placement, turn logic etc)
 public class GameBoardActivity extends AppCompatActivity {
     GameboardActivityBinding binding;
     ObjectMapper objectMapper;
@@ -59,6 +60,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     Animation scaleAnimation = null;
 
+    // fixme extract methods!
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -30,6 +30,7 @@ public class PointCalculator {
         this.gameBoard = gameBoard;
     }
 
+    // fixme could you store a reference ot the road in the tile to know if its a subset?
     public RoadResult getAllTilesThatArePartOfRoad(Tile tile) {
         List<Tile> roadTiles = new ArrayList<>();
         Set<Tile> visited = new HashSet<>();
@@ -90,7 +91,7 @@ public class PointCalculator {
         return new RoadResult(isRoadCompleted, roadTiles, pointsForRoad);
     }
 
-
+    // fixme from the method's name: iterating a doubly linked list of connected road parts from end to end would return true if both leaves are a road end tile
     private boolean dfsCheckRoadCompleted(Tile tile, List<Tile> roadTiles, Set<Tile> visited, Set<Tile> junctionsVisited,
                                           int completedRoadsCount, int fromX, int fromY) {
         int x = tile.getCoordinates().getXPosition();

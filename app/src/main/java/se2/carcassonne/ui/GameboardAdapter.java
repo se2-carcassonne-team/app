@@ -64,6 +64,7 @@ public class GameboardAdapter extends BaseAdapter {
         return 0;
     }
 
+    // fixme extract methods
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         FrameLayout frameLayout;
@@ -101,6 +102,7 @@ public class GameboardAdapter extends BaseAdapter {
         if (isMiddleField) {
             imageView.setImageResource(R.drawable.castle_wall_road_0);
         } else {
+            // fixme introduce variables instead of chaining getters (rule of three)
             if (gameBoard.getGameBoardMatrix()[currentCol][currentRow] != null) {
                 // something was placed in this field
                 for (Tile placedTile : gameBoard.getPlacedTiles()) {

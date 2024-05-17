@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import lombok.Data;
 
+// fixme the class contains low-level operations, is there a way to introduce objects and oop instead?
+//  eg, checkIfSurroundingFieldsAreEmpty sounds like it would make sense to compare placed objects (and callers might expect a bool)
 @Data
 public class GameBoard {
 
