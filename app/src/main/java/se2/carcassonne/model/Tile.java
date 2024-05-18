@@ -62,6 +62,7 @@ public class Tile {
 
     private boolean isJunctionWestCompleted;
 
+    // fixme never assign the arrays like this. either assign the ref, use a loop, or use Arrays.copyof or .copyofrange respectively
     /**
      * Edge Types:
      * <p>1 = field</p>
@@ -170,6 +171,7 @@ public class Tile {
 
     // 0 1 2 3
 
+    // fixme why do you need this? if really necessary extract methods
     /**
      * <p>1 2 3 —> 7 4 1</p>
      * <p>4 5 6 —> 8 5 2</p>

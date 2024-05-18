@@ -18,6 +18,8 @@ public class RoadResult {
     private List<Tile> allPartsOfRoad;
     private int points;
 
+    // fixme what are the magic constants for
+    //  can you store this information in the tile directly, only once when placing it?
     public boolean hasMeepleOnRoad() {
         for (Tile tile : allPartsOfRoad) {
             Meeple potentialMeepleOnRoad = tile.getPlacedMeeple();

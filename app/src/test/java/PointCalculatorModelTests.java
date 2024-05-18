@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+// fixme extract long tests into multiple unit tests (also for precondition checks)
 public class PointCalculatorModelTests {
     private GameBoard gameBoard;
     private Tile[][] gameBoardMatrix;

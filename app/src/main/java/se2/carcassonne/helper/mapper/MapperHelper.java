@@ -11,6 +11,7 @@ import se2.carcassonne.model.Lobby;
 import se2.carcassonne.model.Player;
 import se2.carcassonne.model.PlayerColour;
 
+// fixme why is this manual mapping needed? use automatic serialization with oop
 public class MapperHelper {
 
     // constants for logging:

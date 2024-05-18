@@ -9,6 +9,8 @@ public class TileInitializer {
         throw new IllegalStateException("Utility class");
     }
 
+    // fixme use subtypes in oop as the other default values also change per type
+    //  in any case prefer enums over string constants
     // constants for tile imageNames that occur multiple times
     private static final String CASTLE_WALL_ROAD = "castle_wall_road";
     private static final String CASTLE_CENTER_ENTRY = "castle_center_entry";
@@ -31,6 +33,7 @@ public class TileInitializer {
     private static final String CASTLE_WALL_CURVE_RIGHT = "castle_wall_curve_right";
     private static final String CASTLE_WALL_JUNCTION = "castle_wall_junction";
 
+    // fixme create a factory for the tiles
     public static ArrayList<Tile> initializeTiles() {
 
         ArrayList<Tile> tiles = new ArrayList<>(72);
