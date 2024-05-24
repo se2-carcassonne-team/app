@@ -83,4 +83,19 @@ public class GameBoardModelTests {
         assertTrue(gameBoard.getPlaceablePositions().contains(new Coordinates(12, 13))); // south of new tile
         assertTrue(gameBoard.getPlaceablePositions().contains(new Coordinates(11, 12))); // west of new tile
     }
+
+    @Test
+    public void noValidTilePlacementForAnyRotation() {
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(13, 12)); // place the tile east from start tile
+        gameBoard.placeTile(gameBoard.getAllTiles().get(39), new Coordinates(11, 12)); // place the tile west from start tile
+        gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(12, 13)); // place the tile south from start tile
+        assertFalse(gameBoard.hasValidPositionForAnyRotation(gameBoard.getAllTiles().get(45))); // check if there is a valid position for any rotation
+    }
+
+    @Test
+    public void validTilePlacementsForAnyRotation() {
+        GameBoard gameBoard = new GameBoard();
+        assertTrue(gameBoard.hasValidPositionForAnyRotation(gameBoard.getAllTiles().get(1))); // check if there is a valid position for any rotation
+    }
 }
