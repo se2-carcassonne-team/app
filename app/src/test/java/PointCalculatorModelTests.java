@@ -11,6 +11,7 @@ import se2.carcassonne.model.RoadResult;
 import se2.carcassonne.model.Tile;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -407,7 +408,8 @@ public class PointCalculatorModelTests {
     public void testRoadMeepleRecognitionForOneMeepleOnRoad(){
         PointCalculator calculator = new PointCalculator(gameBoard);
         // Meeple on start tile
-        gameBoardMatrix[12][12].setPlacedMeeple(new Meeple(1L, PlayerColour.RED, 1L, true, new Coordinates(1,1)));
+        Meeple meeple = new Meeple(1L, PlayerColour.RED, 1L, true, new Coordinates(1,1));
+        gameBoardMatrix[12][12].setPlacedMeeple(meeple);
 
         // Large junction to the left of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
@@ -421,16 +423,17 @@ public class PointCalculatorModelTests {
         result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][12]);
         assertTrue(result.isRoadCompleted());
         assertTrue(result.hasMeepleOnRoad());
-        assertEquals(1, result.getPlayersWithMeeplesOnRoad().size());
-        assertEquals(1L, result.getPlayersWithMeeplesOnRoad().get(0));
-        assertEquals(3, result.getPoints());
+        assertTrue(result.getPlayersWithMeeplesOnRoad().containsKey(1L));
+        assertTrue(Objects.requireNonNull(result.getPlayersWithMeeplesOnRoad().get(1L)).contains(meeple));
+        assertEquals(1, Objects.requireNonNull(result.getPlayersWithMeeplesOnRoad().get(1L)).size());
     }
 
     @Test
     public void testRoadMeepleRecognitionForTwoMeeplesOnSameRoad(){
         PointCalculator pointCalculator = new PointCalculator(gameBoard);
         // Meeple on start tile for Player 1
-        gameBoardMatrix[12][12].setPlacedMeeple(new Meeple(1L, PlayerColour.RED, 1L, true, new Coordinates(1,1)));
+        Meeple meeple1 = new Meeple(1L, PlayerColour.RED, 1L, true, new Coordinates(1,1));
+        gameBoardMatrix[12][12].setPlacedMeeple(meeple1);
 
         // Large junction to the left of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(11, 12));
@@ -441,7 +444,8 @@ public class PointCalculatorModelTests {
         gameBoard.placeTile(downwardCurve, new Coordinates(11, 11));
 
         // Meeple on the downward going road for Player 2
-        gameBoardMatrix[11][11].setPlacedMeeple(new Meeple(2L, PlayerColour.BLUE, 2L, true, new Coordinates(1,1)));
+        Meeple meeple2 = new Meeple(2L, PlayerColour.BLUE, 2L, true, new Coordinates(1,1));
+        gameBoardMatrix[11][11].setPlacedMeeple(meeple2);
 
         // Upwards going road curve to the right of the starting tile
         Tile upwardCurve = gameBoard.getAllTiles().get(59);
@@ -461,13 +465,16 @@ public class PointCalculatorModelTests {
         assertTrue(roadResult.hasMeepleOnRoad());
         assertEquals(2, roadResult.getPlayersWithMeeplesOnRoad().size());
 
-        // Check if both players are in the list of players with meeples on the road
-        assertTrue(roadResult.getPlayersWithMeeplesOnRoad().contains(1L));
-        assertTrue(roadResult.getPlayersWithMeeplesOnRoad().contains(2L));
+        assertTrue(roadResult.getPlayersWithMeeplesOnRoad().containsKey(1L));
+        assertTrue(roadResult.getPlayersWithMeeplesOnRoad().containsKey(2L));
+        assertTrue(Objects.requireNonNull(roadResult.getPlayersWithMeeplesOnRoad().get(1L)).contains(meeple1));
+        assertTrue(Objects.requireNonNull(roadResult.getPlayersWithMeeplesOnRoad().get(2L)).contains(meeple2));
 
-        // Check if the points are calculated correctly
-        assertEquals(6, roadResult.getPoints());
+        // Ensure both players are recognized and have received points
+        assertTrue(roadResult.getPoints().containsKey(1L));
+        assertTrue(roadResult.getPoints().containsKey(2L));
+
+        assertEquals(6, (int) roadResult.getPoints().get(1L));
+        assertEquals(6, (int) roadResult.getPoints().get(2L));
     }
-
-
 }

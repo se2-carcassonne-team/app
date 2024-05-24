@@ -1,6 +1,7 @@
 package se2.carcassonne.model;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +17,8 @@ import lombok.Setter;
 public class RoadResult {
     private boolean isRoadCompleted;
     private List<Tile> allPartsOfRoad;
-    private int points;
-    private List<Long> playersWithMeeplesOnRoad;
+    private Map<Long, Integer> points;
+    private Map<Long, List<Meeple>> playersWithMeeplesOnRoad;
 
     public boolean hasMeepleOnRoad() {
         for (Tile tile : allPartsOfRoad) {

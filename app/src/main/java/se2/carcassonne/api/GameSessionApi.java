@@ -2,9 +2,16 @@ package se2.carcassonne.api;
 
 import android.util.Log;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import se2.carcassonne.helper.network.WebSocketClient;
+import se2.carcassonne.model.FinishedTurnDto;
+import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
 
 public class GameSessionApi {
@@ -30,6 +37,14 @@ public class GameSessionApi {
             webSocketClient.sendMessage("/app/place-tile", objectMapper.writeValueAsString(placedTileDto));
         } catch (Exception e) {
             Log.e("GameSessionApi", "Error sending placed tile message", e);
+        }
+    }
+
+    public void sendPointsForCompletedRoad(FinishedTurnDto finishedTurnDto) {
+        try {
+            webSocketClient.sendMessage("/app/points-for-completed-road", objectMapper.writeValueAsString(finishedTurnDto));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
     }
 }

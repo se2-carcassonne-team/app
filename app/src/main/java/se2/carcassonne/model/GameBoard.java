@@ -1,6 +1,8 @@
 package se2.carcassonne.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import lombok.Data;
 
@@ -21,6 +23,7 @@ public class GameBoard {
 
     private ArrayList<Tile> allTiles = new ArrayList<>();
 
+    private HashMap<Long, Integer> playerWithPoints = new HashMap<>();
 
     public GameBoard() {
         initializeGameBoard();
@@ -157,4 +160,9 @@ public class GameBoard {
         return northEdgeMatches && eastEdgeMatches && southEdgeMatches && westEdgeMatches;
     }
 
+    public void initGamePoints(List<Long> allPlayerIds){
+        for (Long playerId : allPlayerIds) {
+            playerWithPoints.put(playerId, 0);
+        }
+    }
 }

@@ -19,11 +19,13 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.Objects;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
+import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.GameBoard;
@@ -56,7 +58,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button zoomInBtn;
     private Button zoomOutBtn;
     private PointCalculator roadCalculator;
-
+    private MapperHelper mapperHelper;
     Animation scaleAnimation = null;
 
     @Override
@@ -72,7 +74,7 @@ public class GameBoardActivity extends AppCompatActivity {
         //Bind all UI elements
         bindGameBoardUiElements();
 
-
+        mapperHelper = new MapperHelper();
         objectMapper = new ObjectMapper();
         currentPlayer = PlayerRepository.getInstance().getCurrentPlayer();
 
@@ -80,7 +82,6 @@ public class GameBoardActivity extends AppCompatActivity {
         gameBoard = new GameBoard();
         // TODO: CHECK THIS FURTHER, JUST AN IDEA AS OF RIGHT NOW
         roadCalculator = new PointCalculator(gameBoard);
-
 
 //        Set up the grid view
         gridView.setScaleX(3.0f);
@@ -93,12 +94,20 @@ public class GameBoardActivity extends AppCompatActivity {
 //        Get the next turn message from the previous activity
         intent = getIntent();
         String currentLobbyAdmin = intent.getStringExtra("LOBBY_ADMIN_ID");
+        Long currentLobbyId = Long.parseLong(Objects.requireNonNull(intent.getStringExtra("LOBBY_ID")));
+        List<Long> allPlayersInLobby = mapperHelper.getListFromJsonString(intent.getStringExtra("ALL_PLAYERS"));
+
+        gameBoard.initGamePoints(allPlayersInLobby);
+
 
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
 
         String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
         binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
+
+        binding.tvPlayerPoints.setText(String.valueOf(currentPlayer.getPoints()));
+
 
 
         /*

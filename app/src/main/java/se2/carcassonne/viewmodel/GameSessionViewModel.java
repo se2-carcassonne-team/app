@@ -1,8 +1,14 @@
 package se2.carcassonne.viewmodel;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.List;
+import java.util.Map;
+
+import se2.carcassonne.model.FinishedTurnDto;
+import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.NextTurn;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.repository.GameSessionRepository;
@@ -31,4 +37,19 @@ public class GameSessionViewModel extends ViewModel {
         gameSessionRepository.sendPlacedTile(placedTileDto);
     }
 
+    public void sendGetAllPlayersInLobby(Long gameLobbyId){
+        gameSessionRepository.subscribeToGetAllPlayersInLobby(gameLobbyId);
+    }
+
+    public MutableLiveData<List<Long>> allPlayersInLobbyLiveData(){
+        return gameSessionRepository.getAllPlayersLiveData();
+    }
+
+    public MutableLiveData<FinishedTurnDto> finishedTurnLiveData(){
+        return gameSessionRepository.getFinishedTurnLiveData();
+    }
+
+    public void sendPointsForCompletedRoad(FinishedTurnDto finishedTurnDto) {
+        gameSessionRepository.sendPointsForCompletedRoad(finishedTurnDto);
+    }
 }

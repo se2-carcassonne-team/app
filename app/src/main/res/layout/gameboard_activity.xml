@@ -39,6 +39,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline27" />
 
+    <TextView
+        android:id="@+id/tvPlayerPoints"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="@font/almendra_sc"
+        android:text="@string/points"
+        android:gravity="center"
+        android:textColor="@color/btn_gold"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@id/guideline25"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
+        app:layout_constraintStart_toStartOf="@id/guideline5"
+        app:layout_constraintTop_toTopOf="@id/guideline27" />
+
     <ImageView
         android:id="@+id/ivMeepleWithPlayerColor"
         android:layout_width="0dp"

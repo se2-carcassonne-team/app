@@ -3,9 +3,12 @@ package se2.carcassonne.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import lombok.Data;
@@ -34,12 +37,11 @@ public class PointCalculator {
         List<Tile> roadTiles = new ArrayList<>();
         Set<Tile> visited = new HashSet<>();
         Set<Tile> junctionsVisited = new HashSet<>();
-        List<Long> playerIds = new ArrayList<>();
+        Map<Long, List<Meeple>> playersWithMeeplesOnRoadMeeples = null;
 
         int[] completedRoadsCount = new int[1]; // Use an array to manage completed roads count state across recursive calls
         if (tile.isCompletesRoads()) completedRoadsCount[0]++;
 
-        int pointsForRoad = -1;
 
         roadTiles.add(tile);
         visited.add(tile);
@@ -50,10 +52,11 @@ public class PointCalculator {
                 completedRoadsCount, tile.getCoordinates().getXPosition(), tile.getCoordinates().getYPosition());
 
         Set<Tile> completedRoadSet = new HashSet<>(roadTiles);
+        Map<Long, Integer> pointsForPlayers = new HashMap<>();
 
         if (isRoadCompleted) {
-            playerIds = findPlayersWithMeeplesOnRoad(roadTiles);
-            pointsForRoad = calculatePointsForCompletedRoad(roadTiles);
+            playersWithMeeplesOnRoadMeeples = findPlayersWithMeeplesOnRoad(roadTiles);
+            pointsForPlayers = calculatePointsForCompletedRoad(roadTiles, playersWithMeeplesOnRoadMeeples);
 
             // Check for merging with existing roads
             Set<Tile> mergedRoad = new HashSet<>();
@@ -91,7 +94,7 @@ public class PointCalculator {
             }
         }
 
-        return new RoadResult(isRoadCompleted, roadTiles, pointsForRoad, playerIds);
+        return new RoadResult(isRoadCompleted, roadTiles, pointsForPlayers, playersWithMeeplesOnRoadMeeples);
     }
 
 
@@ -168,30 +171,39 @@ public class PointCalculator {
         return x >= 0 && x < 25 && y >= 0 && y < 25;
     }
 
-    private int calculatePointsForCompletedRoad(List<Tile> roadTiles) {
+    private Map<Long, Integer> calculatePointsForCompletedRoad(List<Tile> roadTiles, Map<Long, List<Meeple>> playersWithMeeples) {
+        Map<Long, Integer> playerPoints = new HashMap<>();
         if (roadTiles == null || roadTiles.isEmpty()) {
-            return 0;
+            return playerPoints;
         }
+
         // Remove duplicates from roadTiles
         Set<Tile> uniqueTiles = new HashSet<>(roadTiles);
 
-        // Points are awarded per tile in the completed road
-        return uniqueTiles.size() * POINTS_ROAD;
+        int totalPoints = uniqueTiles.size() * POINTS_ROAD;
+
+        // Distribute points to each player based on their meeples on the road
+        playersWithMeeples.forEach((playerId, meeples) -> {
+            playerPoints.put(playerId, totalPoints);
+        });
+
+        return playerPoints;
     }
 
-    private List<Long> findPlayersWithMeeplesOnRoad(List<Tile> roadTiles) {
-        List<Long> playersWithMeeples = new ArrayList<>();
+
+    private Map<Long, List<Meeple>> findPlayersWithMeeplesOnRoad(List<Tile> roadTiles) {
+        Map<Long, List<Meeple>> playersWithMeeples = new HashMap<>();
         for (Tile tile : roadTiles) {
             Meeple meeple = tile.getPlacedMeeple();
             if (meeple != null) {
                 Long playerId = meeple.getPlayerId();
-                if (!playersWithMeeples.contains(playerId)) {
-                    playersWithMeeples.add(playerId);
-                }
+                playersWithMeeples.putIfAbsent(playerId, new ArrayList<>());
+                Objects.requireNonNull(playersWithMeeples.get(playerId)).add(meeple);
             }
         }
         return playersWithMeeples;
     }
+
 
 
 }
