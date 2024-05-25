@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+<!--    Add this permission to allow vibration-->
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -23,7 +25,7 @@
             android:name=".ui.InLobbyActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.LobbyListsActivity"
+            android:name=".ui.LobbyListActivity"
             android:exported="false"
             android:label="@string/title_activity_lobby_lists"
             android:theme="@style/Carcassonne" />

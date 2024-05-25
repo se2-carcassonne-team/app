@@ -8,6 +8,21 @@
     android:background="@drawable/startup_background"
     tools:context=".ui.HomeActivity">
 
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/logo_animation"
         android:layout_width="0dp"
@@ -16,7 +31,7 @@
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="0:1"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/home_activity_logo" />
@@ -89,6 +104,7 @@
         tools:targetApi="o" />
 
     <LinearLayout
+        android:id="@+id/linearLayoutButtons"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -100,10 +116,16 @@
         app:layout_constraintVertical_chainStyle="packed">
 
         <Button
-            android:id="@+id/newGameBtn"
+            android:id="@+id/buttonPlayGame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/play" />
+
+        <Button
+            android:id="@+id/buttonShowGameRules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rules" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

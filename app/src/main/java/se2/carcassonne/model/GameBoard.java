@@ -117,6 +117,20 @@ public class GameBoard {
         return validPositions;
     }
 
+    public boolean hasValidPositionForAnyRotation(Tile tile) {
+        // Check for all rotations if there is a valid position
+        for (int rotation = 0; rotation < 4; rotation++) {
+            tile.setRotation(rotation);
+            ArrayList<Coordinates> validPositions = highlightValidPositions(tile);
+            if (!validPositions.isEmpty()) {
+                tile.setRotation(0);
+                return true;
+            }
+        }
+        tile.setRotation(0);
+        return false;
+    }
+
     private boolean validPlacementForTileWithCurrentRotation(Tile tileToPlace, Coordinates position) {
         int x = position.getXPosition();
         int y = position.getYPosition();
@@ -156,4 +170,5 @@ public class GameBoard {
 
         return northEdgeMatches && eastEdgeMatches && southEdgeMatches && westEdgeMatches;
     }
+
 }

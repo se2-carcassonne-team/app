@@ -19,7 +19,7 @@ public class GameLobbyActivity extends AppCompatActivity {
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
         binding.createLobbyBtn.setOnClickListener(view -> showCreateLobbyDialog());
         binding.showListOfLobbies.setOnClickListener(view -> {
-            Intent intent = new Intent(GameLobbyActivity.this, LobbyListsActivity.class);
+            Intent intent = new Intent(GameLobbyActivity.this, LobbyListActivity.class);
             startActivity(intent);
         });
         binding.gameLobbyLeaveBtn.setOnClickListener(view -> finish());

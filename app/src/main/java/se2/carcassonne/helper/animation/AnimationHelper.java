@@ -7,6 +7,10 @@ import android.widget.Button;
 
 public class AnimationHelper {
 
+    private AnimationHelper() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static void fadeIn(final View view, int duration, final Runnable onAnimationEnd) {
         Animation fadeInAnimation = new AlphaAnimation(0, 1);
         fadeInAnimation.setDuration(duration);
@@ -17,7 +21,9 @@ public class AnimationHelper {
         if (onAnimationEnd != null) {
             fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {}
+                public void onAnimationStart(Animation animation) {
+                    // no implementation needed (yet)
+                }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
@@ -25,7 +31,9 @@ public class AnimationHelper {
                 }
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationRepeat(Animation animation) {
+                    // no implementation needed (yet)
+                }
             });
         }
     }

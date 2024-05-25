@@ -15,7 +15,7 @@ import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.viewmodel.LobbyListAdapter;
 import se2.carcassonne.viewmodel.LobbyViewModel;
 
-public class LobbyListsActivity extends AppCompatActivity {
+public class LobbyListActivity extends AppCompatActivity {
     LobbyListActivityBinding binding;
     private LobbyListAdapter adapter;
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();

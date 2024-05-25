@@ -3,6 +3,8 @@ package se2.carcassonne.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +31,8 @@ public class InLobbyActivity extends AppCompatActivity {
     private final MapperHelper mapperHelper = new MapperHelper();
     private GameSessionRepository gameSessionRepository;
 
+    Animation pulseAnimation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,7 @@ public class InLobbyActivity extends AppCompatActivity {
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
 
         Lobby currentLobby = mapperHelper.getLobbyFromJsonString(Objects.requireNonNull(intent.getStringExtra(GameState.LOBBY.getDisplayName())));
-        if (!Objects.equals(currentLobby.getLobbyAdminId(), PlayerRepository.getInstance().getCurrentPlayer().getId())){
+        if (!Objects.equals(currentLobby.getLobbyAdminId(), PlayerRepository.getInstance().getCurrentPlayer().getId())) {
             binding.gameLobbyStartGameBtn.setVisibility(View.GONE);
         }
 
@@ -53,18 +57,24 @@ public class InLobbyActivity extends AppCompatActivity {
         binding.textViewLobbyName.setText(mapperHelper.getLobbyName(intent.getStringExtra("LOBBY")));
 
         lobbyViewmodel.getPlayerLeavesLobbyLiveData().observe(this, playerWhoLeft -> {
-            if (playerWhoLeft != null){
+            if (playerWhoLeft != null) {
                 finish();
             }
         });
         lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> adapter.updateDataWithLobby(playerList, intent.getStringExtra("LOBBY")));
         lobbyViewmodel.getPlayerJoinsOrLeavesLobbyLiveData().observe(this, playerList -> adapter.updateData(playerList));
         lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().observe(this, newGameLobby -> {
-            if (newGameLobby != null && !newGameLobby.startsWith("RESET")){
+            if (newGameLobby != null && !newGameLobby.startsWith("RESET")) {
                 binding.gameLobbyStartGameBtn.setVisibility(View.VISIBLE);
+                // Load the animation
+                pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
+                // Set the animation to repeat indefinitely
+//                pulseAnimation.setRepeatCount(Animation.INFINITE);
+                binding.gameLobbyStartGameBtn.startAnimation(pulseAnimation);
                 adapter.updateGameLobby(newGameLobby);
             } else if (newGameLobby != null) {
                 adapter.updateGameLobby(newGameLobby.split("\\|")[1]);
+                binding.gameLobbyStartGameBtn.clearAnimation();
                 binding.gameLobbyStartGameBtn.setVisibility(View.GONE);
             }
         });
@@ -75,10 +85,13 @@ public class InLobbyActivity extends AppCompatActivity {
             PlayerRepository.getInstance().getCurrentPlayer().setGameSessionId(gameSessionIdLong);
             gameSessionRepository.subscribeToNextTurn(gameSessionIdLong);
             gameSessionRepository.subscribeToPlacedTile(gameSessionIdLong);
-            startGameIntent.putExtra("LOBBY_ADMIN_ID", currentLobby.getLobbyAdminId()+"");
+            startGameIntent.putExtra("LOBBY_ADMIN_ID", currentLobby.getLobbyAdminId() + "");
             startActivity(startGameIntent);
         });
-        binding.gameLobbyStartGameBtn.setOnClickListener(view -> lobbyViewmodel.startGame(currentLobby.getId()));
+        binding.gameLobbyStartGameBtn.setOnClickListener(view -> {
+                binding.gameLobbyStartGameBtn.clearAnimation();
+                lobbyViewmodel.startGame(currentLobby.getId());
+        });
         binding.gameLobbyLeaveBtn.setOnClickListener(view -> lobbyViewmodel.leaveLobby());
 
         lobbyViewmodel.getAllPlayers(currentLobby);

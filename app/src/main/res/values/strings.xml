@@ -14,14 +14,14 @@
     <string name="create">Create</string>
     <string name="lobby_list">List of Lobbies</string>
     <string name="title_activity_lobby_lists">LobbyListsActivity</string>
-    <string name="show_all_lobbies">Show all lobbies</string>
+    <string name="show_all_lobbies">Lobbies</string>
     <string name="play">Play</string>
     <string name="start_playing">Start Playing</string>
     <string name="back">Back</string>
     <string name="door_icon">Door Icon</string>
     <string name="leave_lobby">Leave</string>
     <string name="playGame">Play</string>
-    <string name="goToGameboard">Gameboard</string>
+    <string name="goToGameboard">Start</string>
     <string name="tile">Tile\n</string>
     <string name="nextturn">NextTurn</string>
     <string name="left">Left</string>
@@ -30,5 +30,12 @@
     <string name="down">Down</string>
     <string name="PlusSign">+</string>
     <string name="MinusSign">-</string>
+    <string name="choose_meeple_placement">Choose Meeple Placement</string>
+    <string name="confirm">Confirm</string>
+    <string name="skip">Skip</string>
+    <string name="meeple_with_color_of_your_player">Meeple with color of your player</string>
+    <string name="r">R</string>
+    <string name="meepleCount">%d x</string>
+    <string name="rules">Rules</string>
 
 </resources>

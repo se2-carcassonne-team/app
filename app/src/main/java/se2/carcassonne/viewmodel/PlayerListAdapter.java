@@ -113,7 +113,6 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
     public static class PlayerViewHolder extends RecyclerView.ViewHolder {
         private final TextView playerNameTextView;
         private final ConstraintLayout layout;
-        private Lobby currentLobby;
 
         public PlayerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -123,8 +122,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
 
         public void bind(Player player, Lobby updatedLobby) {
             playerNameTextView.setText(player.getUsername());
-            this.currentLobby = updatedLobby;
-            if (Objects.equals(player.getId(), currentLobby.getLobbyAdminId())){
+            if (updatedLobby != null && Objects.equals(player.getId(), updatedLobby.getLobbyAdminId())){
                 itemView.findViewById(R.id.ivCrownIcon).setVisibility(View.VISIBLE);
             } else {
                 itemView.findViewById(R.id.ivCrownIcon).setVisibility(View.GONE);
