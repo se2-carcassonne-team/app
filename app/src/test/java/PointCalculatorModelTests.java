@@ -325,7 +325,7 @@ public class PointCalculatorModelTests {
     public void parallelStreets(){
         PointCalculator calculator = new PointCalculator(gameBoard);
 
-        // Large junction to the left of start tile
+        // Large junction to the right of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(13, 12));
         RoadResult result = calculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][12]);
         // Road yet not completed
@@ -476,5 +476,27 @@ public class PointCalculatorModelTests {
 
         assertEquals(6, (int) roadResult.getPoints().get(1L));
         assertEquals(6, (int) roadResult.getPoints().get(2L));
+    }
+
+    @Test
+    public void recognizeCycleThatCompletesRoad(){
+        PointCalculator pointCalculator = new PointCalculator(gameBoard);
+        // Downward going curve to the right of start tile
+        gameBoard.placeTile(gameBoard.getAllTiles().get(59), new Coordinates(13, 12));
+
+        // Downward going curve to the left of start tile
+        gameBoard.placeTile(gameBoard.getAllTiles().get(36), new Coordinates(11, 12));
+
+        gameBoard.getAllTiles().get(60).setRotation(2);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(60), new Coordinates(11, 13));
+
+        gameBoard.getAllTiles().get(61).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(61), new Coordinates(13, 13));
+
+        gameBoard.getAllTiles().get(51).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(51), new Coordinates(12, 13));
+
+        RoadResult roadResult = pointCalculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[12][13]);
+        assertTrue(roadResult.isRoadCompleted());
     }
 }

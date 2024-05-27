@@ -166,6 +166,8 @@ public class GameboardAdapter extends BaseAdapter {
                                 default:
                                     break;
                             }
+                        } else {
+                            overlayImageView.setImageResource(android.R.color.transparent); // Make transparent if no meeple
                         }
 
                     }

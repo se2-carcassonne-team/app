@@ -6,10 +6,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import java.util.List;
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 import se2.carcassonne.R;
 import se2.carcassonne.model.Coordinates;
+import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.PlayerRepository;
 
@@ -128,4 +132,18 @@ public class MeepleAdapter extends BaseAdapter {
             notifyDataSetChanged();
         });
     }
+
+    public void removeMeeples(List<Meeple> meeplesToRemove) {
+        for (Meeple meeple : meeplesToRemove) {
+            if (meeple != null && meeple.getCoordinates() != null) {
+                int positionIndex = meeple.getCoordinates().getXPosition() * 3 + meeple.getCoordinates().getYPosition();
+                if (positionIndex >= 0 && positionIndex < allowedMeeplePositions.length) {
+                    allowedMeeplePositions[positionIndex] = false;
+                }
+            }
+        }
+        notifyDataSetChanged(); // Refresh the GridView
+    }
+
+
 }

@@ -42,7 +42,7 @@ public class GameSessionApi {
 
     public void sendPointsForCompletedRoad(FinishedTurnDto finishedTurnDto) {
         try {
-            webSocketClient.sendMessage("/app/points-for-completed-road", objectMapper.writeValueAsString(finishedTurnDto));
+            webSocketClient.sendMessage("/app/update-points-meeples", objectMapper.writeValueAsString(finishedTurnDto));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

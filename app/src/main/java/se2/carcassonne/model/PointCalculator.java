@@ -49,7 +49,8 @@ public class PointCalculator {
 
         // Depth-first search to find all tiles that are part of the road
         boolean isRoadCompleted = dfsCheckRoadCompleted(tile, roadTiles, visited, junctionsVisited,
-                completedRoadsCount, tile.getCoordinates().getXPosition(), tile.getCoordinates().getYPosition());
+                completedRoadsCount, tile.getCoordinates().getXPosition(), tile.getCoordinates().getYPosition()) ||
+                cycleCompletesRoad(tile);
 
         Set<Tile> completedRoadSet = new HashSet<>(roadTiles);
         Map<Long, Integer> pointsForPlayers = new HashMap<>();
@@ -97,6 +98,80 @@ public class PointCalculator {
         return new RoadResult(isRoadCompleted, roadTiles, pointsForPlayers, playersWithMeeplesOnRoadMeeples);
     }
 
+    private boolean cycleCompletesRoad(Tile startTile) {
+        Set<Tile> visited = new HashSet<>();
+        return checkCycleDFS(startTile, startTile, visited, null, 0, 0);
+    }
+
+    private boolean checkCycleDFS(Tile currentTile, Tile startTile, Set<Tile> visited, Tile fromTile, int fromX, int fromY) {
+        visited.add(currentTile);
+        int x = currentTile.getCoordinates().getXPosition();
+        int y = currentTile.getCoordinates().getYPosition();
+
+        // Directions to explore: right, left, down, up
+        int[] dx = {1, -1, 0, 0};
+        int[] dy = {0, 0, 1, -1};
+
+        for (int i = 0; i < dx.length; i++) {
+            int newX = x + dx[i];
+            int newY = y + dy[i];
+
+            // Check boundaries and avoid stepping back to the tile we came from
+            if (!isValidPosition(newX, newY) || (newX == fromX && newY == fromY)) {
+                continue;
+            }
+
+            Tile nextTile = gameBoard.getGameBoardMatrix()[newX][newY];
+
+            // Cycle check: verify if next tile is the start and there's a valid road connection
+            if (nextTile == startTile && visited.size() > 1 && hasRoadConnection(currentTile, nextTile, dx[i], dy[i])) {
+                return true; // Valid cycle completion
+            }
+
+            // Continue if next tile is a road and not where we came from, and it hasn't been visited
+            if (nextTile != null && nextTile != fromTile && !visited.contains(nextTile) && hasRoad(nextTile) && hasRoadConnection(currentTile, nextTile, dx[i], dy[i])) {
+                if (checkCycleDFS(nextTile, startTile, visited, currentTile, x, y)) {
+                    return true; // Cycle found in deeper recursion
+                }
+            }
+        }
+
+        visited.remove(currentTile); // Clean up before backtracking
+        return false;
+    }
+
+    private boolean hasRoadConnection(Tile fromTile, Tile toTile, int dx, int dy) {
+        // Determine the edges that should be connected
+        int fromEdge = -1;
+        int toEdge = -1;
+
+        if (dx == 1 && dy == 0) { // Moving right
+            fromEdge = 1; // Right edge of fromTile
+            toEdge = 3;   // Left edge of toTile
+        } else if (dx == -1 && dy == 0) { // Moving left
+            fromEdge = 3; // Left edge of fromTile
+            toEdge = 1;   // Right edge of toTile
+        } else if (dx == 0 && dy == 1) { // Moving down
+            fromEdge = 2; // Bottom edge of fromTile
+            toEdge = 0;   // Top edge of toTile
+        } else if (dx == 0 && dy == -1) { // Moving up
+            fromEdge = 0; // Top edge of fromTile
+            toEdge = 2;   // Bottom edge of toTile
+        }
+
+        // Check if both tiles have roads on the connecting edges
+        if (fromEdge != -1 && toEdge != -1) {
+            return (fromTile.rotatedEdges(fromTile.getRotation())[fromEdge] == 2 &&
+                    toTile.rotatedEdges(toTile.getRotation())[toEdge] == 2);
+        }
+
+        return false;
+    }
+
+
+
+
+
 
     private boolean dfsCheckRoadCompleted(Tile tile, List<Tile> roadTiles, Set<Tile> visited, Set<Tile> junctionsVisited,
                                           int[] completedRoadsCount, int fromX, int fromY) {
@@ -131,7 +206,7 @@ public class PointCalculator {
                     if (neighboringTile != null && hasRoad(neighboringTile) && (!visited.contains(neighboringTile)
                             || (junctionsVisited.contains(neighboringTile) && roadTiles.contains(neighboringTile)))) {
 
-                        if (neighboringTile.isRoadCompleted()) continue;
+                        //if (neighboringTile.isRoadCompleted()) continue;
 
                         roadTiles.add(neighboringTile);
                         visited.add(neighboringTile);

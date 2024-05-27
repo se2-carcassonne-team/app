@@ -3,6 +3,7 @@ package se2.carcassonne.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -165,4 +166,47 @@ public class GameBoard {
             playerWithPoints.put(playerId, 0);
         }
     }
+
+    public void updatePoints(FinishedTurnDto finishedTurnDto) {
+        // Check if the DTO contains any points data
+        if (finishedTurnDto.getPoints() != null) {
+            for (Map.Entry<Long, Integer> entry : finishedTurnDto.getPoints().entrySet()) {
+                Long playerId = entry.getKey();
+                Integer pointsToAdd = entry.getValue();
+
+                // Check if the player already exists in the playerWithPoints map
+                if (playerWithPoints.containsKey(playerId)) {
+                    // If the player exists, add the new points to the existing ones
+                    playerWithPoints.put(playerId, (playerWithPoints.get(playerId) + pointsToAdd));
+                }
+            }
+        }
+    }
+
+    public Map<Long, Integer> finishedTurnRemoveMeeples(Map<Long, List<Meeple>> playersWithMeeples) {
+        Map<Long, Integer> removedMeeplesCount = new HashMap<>();
+        if (playersWithMeeples == null) {
+            return removedMeeplesCount;
+        }
+
+        for (Map.Entry<Long, List<Meeple>> entry : playersWithMeeples.entrySet()) {
+            Long playerId = entry.getKey();
+            List<Meeple> meeplesToRemove = entry.getValue();
+            int count = 0;
+
+            for (Tile tile : placedTiles) {
+                Meeple meeple = tile.getPlacedMeeple();
+                if (meeple != null && meeple.getPlayerId().equals(playerId) && meeplesToRemove.contains(meeple)) {
+                    tile.removeMeeple();  // Remove the meeple from the tile
+                    count++;
+                }
+            }
+            if (count > 0) {
+                removedMeeplesCount.put(playerId, count);
+            }
+        }
+
+        return removedMeeplesCount;
+    }
+
 }

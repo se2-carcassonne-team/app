@@ -95,7 +95,7 @@ public class InLobbyActivity extends AppCompatActivity {
             PlayerRepository.getInstance().getCurrentPlayer().setGameSessionId(gameSessionIdLong);
             gameSessionRepository.subscribeToNextTurn(gameSessionIdLong);
             gameSessionRepository.subscribeToPlacedTile(gameSessionIdLong);
-
+            gameSessionRepository.subscribeToPointsForCompletedRoad(gameSessionIdLong);
             /*
              * All Players In Lobby Observable
              */

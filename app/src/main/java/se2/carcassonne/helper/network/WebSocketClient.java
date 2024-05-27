@@ -63,7 +63,7 @@ public class WebSocketClient {
                     Log.d("SubscribeToTopic", "Response from "+topic+": " + response.getPayload());
                     messageHandler.onMessageReceived(response.getPayload());
                 },
-                error -> Log.d("SubscribeToTopic", "Error subscribing to list-lobbies topic: " + error)
+                error -> Log.d("SubscribeToTopic", "Error subscribing to topic: " + error)
         );
         disposablesMap.put(topic, subscription);
         disposable.add(subscription);

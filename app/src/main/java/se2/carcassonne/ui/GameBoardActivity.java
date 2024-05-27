@@ -19,7 +19,10 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
@@ -28,6 +31,7 @@ import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Coordinates;
+import se2.carcassonne.model.FinishedTurnDto;
 import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
@@ -109,7 +113,6 @@ public class GameBoardActivity extends AppCompatActivity {
         binding.tvPlayerPoints.setText(String.valueOf(currentPlayer.getPoints()));
 
 
-
         /*
          * placed tile observable
          */
@@ -120,6 +123,34 @@ public class GameBoardActivity extends AppCompatActivity {
             gameboardAdapter.getGameBoard().placeTile(tilePlacedByOtherPlayer, tilePlaced.getCoordinates());
             gameboardAdapter.notifyDataSetChanged();
         });
+
+        /*
+         * finished turn observable (to update points)
+         */
+        gameSessionViewModel.finishedTurnLiveData().observe(this, finishedTurnDto -> {
+            if (finishedTurnDto != null) {
+                gameBoard.updatePoints(finishedTurnDto);
+                updatePlayerPoints();
+
+                // Remove meeples and get the count of removed meeples
+                Map<Long, Integer> removedMeeplesMap = gameBoard.finishedTurnRemoveMeeples(finishedTurnDto.getPlayersWithMeeples());
+
+                // TODO: MEEPLE COUNT SHALL ONLY BE UPDATED FOR THE PERSON WHOSE MEEPLES HAVE BEEN REMOVED FROM THE BOARD
+
+                // Update the meeple count only if the current player's meeples were removed
+                if (removedMeeplesMap.containsKey(currentPlayer.getId())) {
+                    Integer meeplesRemovedForCurrentPlayer = removedMeeplesMap.get(currentPlayer.getId());
+                    if (meeplesRemovedForCurrentPlayer != null) {
+                        // Subtract the removed meeples from the total count
+                        gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount() + meeplesRemovedForCurrentPlayer);
+                        binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
+                    }
+                }
+
+                gameboardAdapter.notifyDataSetChanged();
+            }
+        });
+
 
 
         /*
@@ -220,6 +251,14 @@ public class GameBoardActivity extends AppCompatActivity {
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
 
 
+    }
+
+    private void updatePlayerPoints() {
+        Integer points = gameBoard.getPlayerWithPoints().get(currentPlayer.getId());
+        if (points == null) {
+            points = 0;  // Assume 0 points if none are found
+        }
+        binding.tvPlayerPoints.setText(String.valueOf(points));
     }
 
     private void moveButtonsRight() {
@@ -331,6 +370,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 hideMeepleGrid();
                 gameboardAdapter.setToPlaceCoordinates(null);
 
+                calculatePointsForCurrentTurn();
                 confirmNextTurnToStart();
             }
         });
@@ -347,8 +387,28 @@ public class GameBoardActivity extends AppCompatActivity {
             gameboardAdapter.setCanPlaceMeeple(false);
             gameboardAdapter.setToPlaceCoordinates(null);
             hideMeepleGrid();
+            calculatePointsForCurrentTurn();
             confirmNextTurnToStart();
             gameboardAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void calculatePointsForCurrentTurn() {
+        if (tileToPlace == null) return;
+
+        // Calculate the potential changes resulting from placing this tile
+        RoadResult roadResult = roadCalculator.getAllTilesThatArePartOfRoad(tileToPlace);
+
+        if (roadResult.isRoadCompleted()) {
+            // Create the FinishedTurnDto with the results of the point calculation
+            FinishedTurnDto finishedTurnDto = new FinishedTurnDto(
+                    currentPlayer.getGameSessionId(),
+                    roadResult.getPoints(),
+                    roadResult.getPlayersWithMeeplesOnRoad()
+            );
+
+            // Send the FinishedTurnDto through the WebSocket to handle the results server-side
+            gameSessionViewModel.sendPointsForCompletedRoad(finishedTurnDto);
         }
     }
 

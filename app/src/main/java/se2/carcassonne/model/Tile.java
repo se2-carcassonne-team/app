@@ -230,4 +230,8 @@ public class Tile {
             }
         }
     }
+
+    public void removeMeeple() {
+        this.placedMeeple = null;
+    }
 }
