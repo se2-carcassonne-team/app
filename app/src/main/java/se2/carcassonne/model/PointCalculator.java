@@ -270,15 +270,26 @@ public class PointCalculator {
         Map<Long, List<Meeple>> playersWithMeeples = new HashMap<>();
         for (Tile tile : roadTiles) {
             Meeple meeple = tile.getPlacedMeeple();
-            if (meeple != null) {
-                Long playerId = meeple.getPlayerId();
-                playersWithMeeples.putIfAbsent(playerId, new ArrayList<>());
-                Objects.requireNonNull(playersWithMeeples.get(playerId)).add(meeple);
+            if (meeple != null && meeple.getCoordinates() != null) {
+                int positionIndex = getPositionIndexFromCoordinates(meeple.getCoordinates());
+
+                // Check if the position index is valid and if the meeple is placed on a road feature
+                if (positionIndex >= 0 &&  tile.getFeatures()[positionIndex] == 2) {
+                    Long playerId = meeple.getPlayerId();
+                    playersWithMeeples.putIfAbsent(playerId, new ArrayList<>());
+                    Objects.requireNonNull(playersWithMeeples.get(playerId)).add(meeple);
+                }
             }
         }
         return playersWithMeeples;
     }
-
-
+    private int getPositionIndexFromCoordinates(Coordinates coordinates) {
+        // Assuming coordinates are structured in a 3x3 grid, from (0,0) to (2,2)
+        if (coordinates != null && coordinates.getXPosition() >= 0 && coordinates.getXPosition() < 3
+                && coordinates.getYPosition() >= 0 && coordinates.getYPosition() < 3) {
+            return coordinates.getYPosition() * 3 + coordinates.getXPosition();
+        }
+        return -1; // Returns -1 if coordinates are invalid
+    }
 
 }

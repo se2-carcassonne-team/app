@@ -133,7 +133,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 updatePlayerPoints();
 
                 // Remove meeples and get the count of removed meeples
-                Map<Long, Integer> removedMeeplesMap = gameBoard.finishedTurnRemoveMeeples(finishedTurnDto.getPlayersWithMeeples());
+                Map<Long, Integer> removedMeeplesMap = gameBoard.finishedTurnRemoveMeeplesOnRoad(finishedTurnDto.getPlayersWithMeeples());
 
                 // TODO: MEEPLE COUNT SHALL ONLY BE UPDATED FOR THE PERSON WHOSE MEEPLES HAVE BEEN REMOVED FROM THE BOARD
 
@@ -393,6 +393,7 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 
+    // TODO : REMOVE MEEPLES FROM ROAD RESULT THAT ARE NOT ON A ROAD
     private void calculatePointsForCurrentTurn() {
         if (tileToPlace == null) return;
 

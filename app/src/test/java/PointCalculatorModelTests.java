@@ -499,4 +499,31 @@ public class PointCalculatorModelTests {
         RoadResult roadResult = pointCalculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[12][13]);
         assertTrue(roadResult.isRoadCompleted());
     }
+
+    @Test
+    public void meepleNotActuallyOnRoadButOnCompletedRoad(){
+        PointCalculator pointCalculator = new PointCalculator(gameBoard);
+
+        // Junction to the left of start tile
+        gameBoard.placeTile(gameBoard.getAllTiles().get(39), new Coordinates(11, 12));
+        Meeple meeple1 = new Meeple(1L, PlayerColour.RED, 1L, true, new Coordinates(1,0));
+        gameBoardMatrix[11][12].setPlacedMeeple(meeple1);
+
+        gameBoard.getAllTiles().get(42).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(42), new Coordinates(11, 13));
+        Meeple meeple2 = new Meeple(2L, PlayerColour.RED, 2L, true, new Coordinates(2,1));
+        gameBoardMatrix[11][13].setPlacedMeeple(meeple2);
+
+        gameBoard.placeTile(gameBoard.getAllTiles().get(51), new Coordinates(11, 14));
+
+        gameBoard.getAllTiles().get(49).setRotation(2);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(49), new Coordinates(11, 15));
+
+        RoadResult roadResult = pointCalculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[11][15]);
+        assertTrue(roadResult.isRoadCompleted());
+
+        assertFalse(roadResult.getPlayersWithMeeplesOnRoad().containsKey(1L));
+        assertFalse(roadResult.getPlayersWithMeeplesOnRoad().containsKey(2L));
+
+    }
 }

@@ -44,7 +44,7 @@ public class Tile {
      * <p>5 = monastery</p>
      * TODO: more detailed?
      */
-    private final int[] features = new int[9];
+    private int[] features = new int[9];
 
     private final boolean[] allowedMeeplePositions = new boolean[9];
 

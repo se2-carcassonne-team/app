@@ -26,7 +26,7 @@ public class RoadResult {
             if (potentialMeepleOnRoad != null) {
                 int meeplePosition = (potentialMeepleOnRoad.getCoordinates().getYPosition() * 3) + potentialMeepleOnRoad.getCoordinates().getXPosition();
                 // Meeple is on a road
-                if (tile.getFeatures()[meeplePosition] == 2) {
+                if (tile.rotatedFeatures(tile.getRotation())[meeplePosition] == 2) {
                     return true;
                 }
             }

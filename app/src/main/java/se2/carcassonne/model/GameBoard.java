@@ -46,6 +46,12 @@ public class GameBoard {
 
         tile.setCoordinates(coordinates);
 
+        /*
+        // place the tile on the gameBoardMatrix with respect to rotation
+         */
+
+        tile.setFeatures(tile.rotatedFeatures(tile.getRotation()));
+
         // place the tile on the gameBoardMatrix
         gameBoardMatrix[x][y] = tile;
 
@@ -183,7 +189,7 @@ public class GameBoard {
         }
     }
 
-    public Map<Long, Integer> finishedTurnRemoveMeeples(Map<Long, List<Meeple>> playersWithMeeples) {
+    public Map<Long, Integer> finishedTurnRemoveMeeplesOnRoad(Map<Long, List<Meeple>> playersWithMeeples) {
         Map<Long, Integer> removedMeeplesCount = new HashMap<>();
         if (playersWithMeeples == null) {
             return removedMeeplesCount;
@@ -196,7 +202,7 @@ public class GameBoard {
 
             for (Tile tile : placedTiles) {
                 Meeple meeple = tile.getPlacedMeeple();
-                if (meeple != null && meeple.getPlayerId().equals(playerId) && meeplesToRemove.contains(meeple)) {
+                if (meeple != null && meeplesToRemove.contains(meeple)){
                     tile.removeMeeple();  // Remove the meeple from the tile
                     count++;
                 }
@@ -207,6 +213,16 @@ public class GameBoard {
         }
 
         return removedMeeplesCount;
+    }
+
+    public boolean hasRoadMeeple(Tile tile) {
+            Meeple potentialMeepleOnRoad = tile.getPlacedMeeple();
+            if (potentialMeepleOnRoad != null) {
+                int meeplePosition = (potentialMeepleOnRoad.getCoordinates().getYPosition() * 3) + potentialMeepleOnRoad.getCoordinates().getXPosition();
+                // Meeple is on a road
+                return tile.getFeatures()[meeplePosition] == 2;
+            }
+        return false;
     }
 
 }
