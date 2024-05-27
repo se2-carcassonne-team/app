@@ -25,12 +25,4 @@ public class PlayerApi {
             Log.e("PlayerApi", "Error sending create player message", e);
         }
     }
-
-    public void deleteUser(Player player) {
-        try {
-            webSocketClient.sendMessage("/app/player-delete", objectMapper.writeValueAsString(player));
-        } catch (JsonProcessingException e) {
-            Log.e("PlayerApi", "Error sending delete player message", e);
-        }
-    }
 }
