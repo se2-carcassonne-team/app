@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.os.VibratorManager;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -19,12 +20,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Objects;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
+import se2.carcassonne.api.GameSessionApi;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Coordinates;
@@ -32,16 +35,20 @@ import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Player;
+import se2.carcassonne.model.Lobby;
 import se2.carcassonne.model.PointCalculator;
 import se2.carcassonne.model.RoadResult;
 import se2.carcassonne.model.Tile;
+import se2.carcassonne.repository.GameSessionRepository;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
+import se2.carcassonne.viewmodel.LobbyViewModel;
 
 public class GameBoardActivity extends AppCompatActivity {
     GameboardActivityBinding binding;
     ObjectMapper objectMapper;
     Player currentPlayer;
+    Lobby currentLobby;
     private GridView gridView;
     private GameboardAdapter gameboardAdapter;
     private MeepleAdapter meepleAdapter;
@@ -54,6 +61,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private GameBoard gameBoard;
     private ImageView previewTileToPlace;
     private GameSessionViewModel gameSessionViewModel;
+    private LobbyViewModel lobbyViewModel;
     private Intent intent;
     private Button zoomInBtn;
     private Button zoomOutBtn;
@@ -68,31 +76,28 @@ public class GameBoardActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
 
-//        Animation for scaling the buttons
+        //Animation für das Skalieren der Buttons laden
         scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
 
-        //Bind all UI elements
+        //UI-Elemente binden
         bindGameBoardUiElements();
-
 
         objectMapper = new ObjectMapper();
         currentPlayer = PlayerRepository.getInstance().getCurrentPlayer();
 
-//        Create a new game board and place a random tile on it
+        //Ein neues Spielfeld erstellen und ein zufälliges Kachel darauf platzieren
         gameBoard = new GameBoard();
-        // TODO: CHECK THIS FURTHER, JUST AN IDEA AS OF RIGHT NOW
         roadCalculator = new PointCalculator(gameBoard);
 
-
-//        Set up the grid view
+        //GridView einrichten
         gridView.setScaleX(3.0f);
         gridView.setScaleY(3.0f);
         gridView.setStretchMode(GridView.NO_STRETCH);
 
-//        Instantiate gameBoardActivityViewModel
+        //ViewModel initialisieren
         gameSessionViewModel = new GameSessionViewModel();
 
-//        Get the next turn message from the previous activity
+        //Nächste Runde-Nachricht aus der vorherigen Aktivität erhalten
         intent = getIntent();
         String currentLobbyAdmin = intent.getStringExtra("LOBBY_ADMIN_ID");
 
@@ -102,10 +107,7 @@ public class GameBoardActivity extends AppCompatActivity {
         String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
         binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
 
-
-        /*
-         * placed tile observable
-         */
+        //Beobachter für platzierte Kachel
         gameSessionViewModel.getPlacedTileLiveData().observe(this, tilePlaced -> {
             Tile tilePlacedByOtherPlayer = gameboardAdapter.getGameBoard().getAllTiles().get(Math.toIntExact(tilePlaced.getTileId()));
             tilePlacedByOtherPlayer.setRotation(tilePlaced.getRotation());
@@ -114,10 +116,7 @@ public class GameBoardActivity extends AppCompatActivity {
             gameboardAdapter.notifyDataSetChanged();
         });
 
-
-        /*
-         * next turn observable
-         */
+        //Beobachter für nächste Runde-Nachricht
         gameSessionViewModel.getNextTurnMessageLiveData().observe(this, nextTurn -> {
             if (Objects.equals(nextTurn.getPlayerId(), currentPlayer.getId())) {
                 Vibrator vibrator;
@@ -128,20 +127,17 @@ public class GameBoardActivity extends AppCompatActivity {
                     vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                 }
 
-                // Vibrate for 500 milliseconds to inform user that ii is his/her turn
                 if (vibrator.hasVibrator()) {
-                    vibrator.vibrate(500); // for 500 ms
+                    vibrator.vibrate(500); // für 500 Millisekunden vibrieren
                 }
                 tileToPlace = gameBoard.getAllTiles().get(Math.toIntExact(nextTurn.getTileId()));
                 if (!gameBoard.hasValidPositionForAnyRotation(tileToPlace)) {
                     previewTileToPlace.setImageResource(
                             getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
 
-                    // Display a Toast or some notification to the user
-                    Toast.makeText(this, "No valid positions to place tile. Next turn will start shortly.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Keine gültigen Positionen zum Platzieren der Kachel. Die nächste Runde beginnt in Kürze.", Toast.LENGTH_SHORT).show();
 
-                    // Handler to add a delay before the next turn starts
-                    new Handler(Looper.getMainLooper()).postDelayed(this::confirmNextTurnToStart, 3000); // 3000 milliseconds == 3 seconds
+                    new Handler(Looper.getMainLooper()).postDelayed(this::confirmNextTurnToStart, 3000); // 3000 Millisekunden == 3 Sekunden
                 } else {
                     previewTileToPlace.setRotation(0);
                     gameboardAdapter.setCanPlaceTile(true);
@@ -157,8 +153,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
                     moveButtonsLeft();
                 }
-
-
             } else {
                 tileToPlace = null;
                 gameboardAdapter.setYourTurn(false);
@@ -172,7 +166,6 @@ public class GameBoardActivity extends AppCompatActivity {
                 binding.backgroundRight.setVisibility(View.GONE);
 
                 moveButtonsRight();
-
             }
             if (gameboardAdapter != null) {
                 gameboardAdapter.notifyDataSetChanged();
@@ -183,29 +176,22 @@ public class GameBoardActivity extends AppCompatActivity {
             gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
         }
 
-        // GameLogic
+        // Spiellogik bestätigen
         confirmTilePlacement();
         confirmMeeplePlacement();
         setupRotationButtons();
 
         JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
         joystick.setOnMoveListener((angle, strength) -> {
-//            TODO: Future adjust strength based on the scale of the gridView
-//               Move across the gridView
-            // Convert angle to radians
             double rad = Math.toRadians(angle);
 
-            // Calculate change in X and Y coordinates
-            float deltaX = (float) (-strength * Math.cos(rad)); // Negate this to reverse the direction
+            float deltaX = (float) (-strength * Math.cos(rad));
             float deltaY = (float) (strength * Math.sin(rad));
 
-            // Check if gridView is not null
             if (gridView != null) {
-                // Get current translations
                 float currentTranslationX = gridView.getTranslationX();
                 float currentTranslationY = gridView.getTranslationY();
 
-                // Update translations
                 float newX = currentTranslationX + deltaX;
                 float newY = currentTranslationY + deltaY;
                 gridView.setTranslationX(newX);
@@ -213,19 +199,33 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
 
-        // Navigating across the game board with buttons
+        // Durch das Spielfeld navigieren
         moveRight();
         moveLeft();
         moveUp();
         moveDown();
 
-        // Zooming In and Out of the game board
+        // Ein- und Auszoomen des Spielfelds
         zoomIn();
         zoomOut();
 
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
 
+        // Button zum Verlassen des Spiels
+        Button leaveGameButton = findViewById(R.id.leavegamebtn);
+        leaveGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameSessionViewModel.leavegamesession(currentPlayer);
 
+
+                Intent intent = new Intent(GameBoardActivity.this, GameLobbyActivity.class);
+                //intent.putExtra("LOBBY", currentLobby.toJsonString());
+
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void moveButtonsRight() {
