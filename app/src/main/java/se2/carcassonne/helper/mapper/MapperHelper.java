@@ -3,9 +3,12 @@ package se2.carcassonne.helper.mapper;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+import java.util.List;
 
 import se2.carcassonne.model.Lobby;
 import se2.carcassonne.model.Player;
@@ -165,5 +168,25 @@ public class MapperHelper {
             return null;
         }
         return numOfPlayers.asInt();
+    }
+
+    public String getJsonStringFromList(List<Long> list) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(list);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;  // Or handle the error in another way appropriate to your application
+        }
+    }
+
+    public List<Long> getListFromJsonString(String jsonString) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(jsonString, new TypeReference<List<Long>>() {});
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;  // Or handle the error in another way appropriate to your application
+        }
     }
 }

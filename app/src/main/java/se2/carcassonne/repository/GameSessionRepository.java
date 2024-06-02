@@ -3,13 +3,20 @@ package se2.carcassonne.repository;
 import androidx.lifecycle.MutableLiveData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.material.color.utilities.Score;
 
+import java.util.List;
+
+import lombok.Getter;
 import se2.carcassonne.api.GameSessionApi;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.model.NextTurn;
 import se2.carcassonne.model.PlacedTileDto;
+import se2.carcassonne.model.Scoreboard;
 
+@Getter
 public class GameSessionRepository {
 
     private static GameSessionRepository instance;
@@ -18,6 +25,9 @@ public class GameSessionRepository {
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
     private final MutableLiveData<NextTurn> getNextTurnLiveData = new MutableLiveData<>();
     private final MutableLiveData<PlacedTileDto> placedTileLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Long>> allPlayersLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> gameEndedLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Scoreboard> scoreboardLiveData = new MutableLiveData<>();
     private final ObjectMapper objectMapper;
 
     private GameSessionRepository() {
@@ -43,8 +53,35 @@ public class GameSessionRepository {
         gameSessionApi.nextTurn(gameSessionId);
     }
 
-    public void subscribeToNextTurn(Long gameSessionId){
+    public void subscribeToNextTurn(Long gameSessionId) {
         webSocketClient.subscribeToTopic("/topic/game-session-" + gameSessionId + "/next-turn-response", this::getNextTurnMessageReceived);
+    }
+
+    public void subscribeToGetAllPlayersInLobby(Long gameLobbyId) {
+        webSocketClient.subscribeToTopic("/topic/lobby-" + gameLobbyId + "/player-list", this::getAllPlayersInLobby);
+    }
+
+    public void subscribeToForwardedScoreboard(Long gameSessionId) {
+        webSocketClient.subscribeToTopic("/topic/game-end-" + gameSessionId + "/scoreboard", this::getScoreboard);
+    }
+
+    private void getScoreboard(String message) {
+        try {
+            Scoreboard scoreboard = objectMapper.readValue(message, Scoreboard.class);
+            scoreboardLiveData.postValue(scoreboard);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void getAllPlayersInLobby(String message) {
+        try {
+            List<Long> allPlayerIds = objectMapper.readValue(message, new TypeReference<List<Long>>() {
+            });
+            allPlayersLiveData.postValue(allPlayerIds);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void getNextTurnMessageReceived(String message) {
@@ -57,16 +94,19 @@ public class GameSessionRepository {
         }
     }
 
-    public void sendPlacedTile(PlacedTileDto placedTileDto){
+    public void sendPlacedTile(PlacedTileDto placedTileDto) {
         gameSessionApi.sendPlacedTile(placedTileDto);
     }
 
-    public void subscribeToPlacedTile(Long gameSessionId) {
-        webSocketClient.subscribeToTopic("/topic/game-session-"+gameSessionId+"/tile", this::getPlacedTile );
-        //                 "/topic/game-session-" + placedTileDto.getGameSessionId() + "/tile",
+    public void forwardScoreboard(Scoreboard scoreboard) {
+        gameSessionApi.forwardScoreboard(scoreboard);
     }
 
-    private void getPlacedTile(String message){
+    public void subscribeToPlacedTile(Long gameSessionId) {
+        webSocketClient.subscribeToTopic("/topic/game-session-" + gameSessionId + "/tile", this::getPlacedTile);
+    }
+
+    private void getPlacedTile(String message) {
         try {
             PlacedTileDto placedTileDto = objectMapper.readValue(message, PlacedTileDto.class);
             placedTileLiveData.postValue(placedTileDto);
@@ -75,12 +115,24 @@ public class GameSessionRepository {
         }
     }
 
+    public void subscribeToGameFinished(Long gameSessionId) {
+        webSocketClient.subscribeToTopic("/topic/game-session-" + gameSessionId + "/game-finished", this::endGameMessageReceived);
+    }
+
+    private void endGameMessageReceived(String message) {
+        if (message.equals("FINISHED")) {
+            gameEndedLiveData.postValue(true);
+        }
+    }
+
+
     public NextTurn getCurrentNextTurn() {
         return currentNextTurn;
     }
 
     /**
      * Returns the next turn live data object
+     *
      * @return
      */
     public MutableLiveData<NextTurn> getNextTurnLiveData() {
@@ -91,4 +143,7 @@ public class GameSessionRepository {
     public MutableLiveData<PlacedTileDto> getPlacedTileLiveData() {
         return placedTileLiveData;
     }
+
+
+
 }

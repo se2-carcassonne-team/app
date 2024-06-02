@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import se2.carcassonne.R;
@@ -20,6 +21,7 @@ import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.GameState;
 import se2.carcassonne.model.Lobby;
 import se2.carcassonne.repository.GameSessionRepository;
+import se2.carcassonne.viewmodel.GameSessionViewModel;
 import se2.carcassonne.viewmodel.LobbyViewModel;
 import se2.carcassonne.viewmodel.PlayerListAdapter;
 import se2.carcassonne.repository.PlayerRepository;
@@ -27,10 +29,11 @@ import se2.carcassonne.repository.PlayerRepository;
 public class InLobbyActivity extends AppCompatActivity {
     InLobbyActivityBinding binding;
     private LobbyViewModel lobbyViewmodel;
+    private GameSessionViewModel gameSessionViewModel;
     private PlayerListAdapter adapter;
     private final MapperHelper mapperHelper = new MapperHelper();
     private GameSessionRepository gameSessionRepository;
-
+    String allPlayersInLobby;
     Animation pulseAnimation;
 
 
@@ -54,7 +57,14 @@ public class InLobbyActivity extends AppCompatActivity {
 
         gameSessionRepository = GameSessionRepository.getInstance();
         lobbyViewmodel = new LobbyViewModel();
+        gameSessionViewModel = new GameSessionViewModel();
         binding.textViewLobbyName.setText(mapperHelper.getLobbyName(intent.getStringExtra("LOBBY")));
+
+        /*
+         * Get All Players In Lobby
+         */
+        gameSessionViewModel.sendGetAllPlayersInLobby(currentLobby.getId());
+
 
         lobbyViewmodel.getPlayerLeavesLobbyLiveData().observe(this, playerWhoLeft -> {
             if (playerWhoLeft != null) {
@@ -85,7 +95,18 @@ public class InLobbyActivity extends AppCompatActivity {
             PlayerRepository.getInstance().getCurrentPlayer().setGameSessionId(gameSessionIdLong);
             gameSessionRepository.subscribeToNextTurn(gameSessionIdLong);
             gameSessionRepository.subscribeToPlacedTile(gameSessionIdLong);
+            gameSessionRepository.subscribeToGameFinished(gameSessionIdLong);
+
+            /*
+             * All Players In Lobby Observable
+             */
+            gameSessionViewModel.allPlayersInLobbyLiveData().observe(this, allPlayers -> {
+                allPlayersInLobby = mapperHelper.getJsonStringFromList(allPlayers);
+                gameSessionRepository.subscribeToGetAllPlayersInLobby(gameSessionIdLong);
+            });
+            startGameIntent.putExtra("ALL_PLAYERS", allPlayersInLobby);
             startGameIntent.putExtra("LOBBY_ADMIN_ID", currentLobby.getLobbyAdminId() + "");
+            startGameIntent.putExtra("LOBBY_ID", currentLobby.getId() + "");
             startActivity(startGameIntent);
         });
         binding.gameLobbyStartGameBtn.setOnClickListener(view -> {

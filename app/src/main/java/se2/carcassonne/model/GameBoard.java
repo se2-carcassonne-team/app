@@ -1,6 +1,10 @@
 package se2.carcassonne.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 
@@ -21,6 +25,8 @@ public class GameBoard {
 
     private ArrayList<Tile> allTiles = new ArrayList<>();
 
+    private HashMap<Long, Integer> playerWithPoints = new HashMap<>();
+
 
     public GameBoard() {
         initializeGameBoard();
@@ -34,6 +40,8 @@ public class GameBoard {
         allTiles = TileInitializer.initializeTiles();
         Tile startTile = allTiles.get(0);
         placeTile(startTile, new Coordinates(12, 12));
+
+
     }
 
     public void placeTile(Tile tile, Coordinates coordinates) {
@@ -171,4 +179,18 @@ public class GameBoard {
         return northEdgeMatches && eastEdgeMatches && southEdgeMatches && westEdgeMatches;
     }
 
+    public List<Long> getTopThreePlayers() {
+        return playerWithPoints.entrySet()
+                .stream()
+                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue())) // Sort in descending order of points
+                .limit(3)
+                .map(Map.Entry::getKey) // Map to only the keys (player IDs)
+                .collect(Collectors.toList());
+    }
+
+    public void initGamePoints(List<Long> allPlayerIds){
+        for (Long playerId : allPlayerIds) {
+            playerWithPoints.put(playerId, 0);
+        }
+    }
 }

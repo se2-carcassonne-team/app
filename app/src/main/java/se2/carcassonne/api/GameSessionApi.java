@@ -6,13 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.model.PlacedTileDto;
+import se2.carcassonne.model.Scoreboard;
 
 public class GameSessionApi {
     private final ObjectMapper objectMapper;
     private final WebSocketClient webSocketClient;
 
 
-    public GameSessionApi(){
+    public GameSessionApi() {
         this.objectMapper = new ObjectMapper();
         this.webSocketClient = WebSocketClient.getInstance();
     }
@@ -25,11 +26,19 @@ public class GameSessionApi {
         }
     }
 
-    public void sendPlacedTile(PlacedTileDto placedTileDto){
+    public void sendPlacedTile(PlacedTileDto placedTileDto) {
         try {
             webSocketClient.sendMessage("/app/place-tile", objectMapper.writeValueAsString(placedTileDto));
         } catch (Exception e) {
             Log.e("GameSessionApi", "Error sending placed tile message", e);
+        }
+    }
+
+    public void forwardScoreboard(Scoreboard scoreboard) {
+        try {
+            webSocketClient.sendMessage("/app/scoreboard", objectMapper.writeValueAsString(scoreboard));
+        } catch (Exception e) {
+            Log.e("GameSessionApi", "Error sending scoreboard message", e);
         }
     }
 }

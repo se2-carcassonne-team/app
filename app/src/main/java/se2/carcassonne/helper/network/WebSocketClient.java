@@ -99,10 +99,4 @@ public class WebSocketClient {
         disposablesMap.clear();
     }
 
-    public void disconnect(){
-        if (client.isConnected()){
-            cancelAllSubscriptions();
-            client.disconnect();
-        }
-    }
 }

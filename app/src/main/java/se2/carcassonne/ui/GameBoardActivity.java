@@ -21,11 +21,13 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.Objects;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
+import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.GameBoard;
@@ -34,7 +36,9 @@ import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Player;
 import se2.carcassonne.model.PointCalculator;
 import se2.carcassonne.model.RoadResult;
+import se2.carcassonne.model.Scoreboard;
 import se2.carcassonne.model.Tile;
+import se2.carcassonne.repository.GameSessionRepository;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
 
@@ -58,7 +62,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button zoomInBtn;
     private Button zoomOutBtn;
     private PointCalculator roadCalculator;
-
+    private MapperHelper mapperHelper;
+    private GameSessionRepository gameSessionRepository;
     Animation scaleAnimation = null;
 
     @Override
@@ -76,6 +81,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
         objectMapper = new ObjectMapper();
+        mapperHelper = new MapperHelper();
         currentPlayer = PlayerRepository.getInstance().getCurrentPlayer();
 
 //        Create a new game board and place a random tile on it
@@ -92,12 +98,18 @@ public class GameBoardActivity extends AppCompatActivity {
 //        Instantiate gameBoardActivityViewModel
         gameSessionViewModel = new GameSessionViewModel();
 
+        gameSessionRepository = GameSessionRepository.getInstance();
+
 //        Get the next turn message from the previous activity
         intent = getIntent();
         String currentLobbyAdmin = intent.getStringExtra("LOBBY_ADMIN_ID");
+        List<Long> allPlayersInLobby = mapperHelper.getListFromJsonString(intent.getStringExtra("ALL_PLAYERS"));
+
+        gameBoard.initGamePoints(allPlayersInLobby);
 
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
+
 
         String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
         binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
@@ -157,8 +169,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
                     moveButtonsLeft();
                 }
-
-
             } else {
                 tileToPlace = null;
                 gameboardAdapter.setYourTurn(false);
@@ -178,6 +188,34 @@ public class GameBoardActivity extends AppCompatActivity {
                 gameboardAdapter.notifyDataSetChanged();
             }
         });
+
+        gameSessionRepository.subscribeToForwardedScoreboard(currentPlayer.getGameSessionId());
+
+        /*
+         * game ended observable, forwarding the scoreboard
+         */
+        gameSessionViewModel.gameEndedLiveData().observe(this, gameEnded -> {
+            assert currentLobbyAdmin != null;
+            if (gameEnded && currentLobbyAdmin.equals(currentPlayer.getId().toString())) {
+                Scoreboard scoreboard = new Scoreboard(currentPlayer.getGameSessionId(), currentPlayer.getGameLobbyId(), gameBoard.getTopThreePlayers(), null);
+                gameSessionViewModel.sendScoreboardRequest(scoreboard);
+            }
+        });
+
+
+        /*
+         * scoreboard observable, go to scoreboard screen
+         */
+        gameSessionViewModel.scoreboardLiveData().observe(this, scoreboard -> {
+            Intent gameEndIntent = new Intent(this, GameEndActivity.class);
+
+            for (int i = 0; i < scoreboard.getPlayerNames().size(); i++) {
+                gameEndIntent.putExtra("PLAYER" + i, scoreboard.getPlayerNames().get(i));
+            }
+
+            startActivity(gameEndIntent);
+        });
+
 
         if (currentPlayer.getId().toString().equals(currentLobbyAdmin)) {
             gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
