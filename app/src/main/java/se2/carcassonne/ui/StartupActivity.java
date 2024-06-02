@@ -2,6 +2,7 @@ package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,7 +20,6 @@ import se2.carcassonne.repository.PlayerRepository;
 
 public class StartupActivity extends AppCompatActivity {
     StartupActivityBinding binding;
-    PlayerRepository repository = PlayerRepository.getInstance();
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
 
     @Override
@@ -53,7 +53,5 @@ public class StartupActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Player player = PlayerRepository.getInstance().getCurrentPlayer();
-        if(player != null) repository.deletePlayer(player);
     }
 }
