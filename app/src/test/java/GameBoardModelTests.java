@@ -5,6 +5,9 @@ import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Tile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,5 +100,81 @@ public class GameBoardModelTests {
     public void validTilePlacementsForAnyRotation() {
         GameBoard gameBoard = new GameBoard();
         assertTrue(gameBoard.hasValidPositionForAnyRotation(gameBoard.getAllTiles().get(1))); // check if there is a valid position for any rotation
+    }
+
+    @Test
+    void testInitGamePoints() {
+        GameBoard gameBoard = new GameBoard();
+        List<Long> playerIds = Arrays.asList(1L, 2L, 3L);
+        gameBoard.initGamePoints(playerIds);
+
+        assertEquals(3, gameBoard.getPlayerWithPoints().size());
+        assertEquals(0, gameBoard.getPlayerWithPoints().get(1L));
+        assertEquals(0, gameBoard.getPlayerWithPoints().get(2L));
+        assertEquals(0, gameBoard.getPlayerWithPoints().get(3L));
+    }
+
+    @Test
+    void testGetTopThreePlayersWithLessThanThreePlayers() {
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.initGamePoints(Arrays.asList(1L, 2L));
+        gameBoard.getPlayerWithPoints().put(1L, 40);
+        gameBoard.getPlayerWithPoints().put(2L, 30);
+
+        List<Long> topPlayers = gameBoard.getTopThreePlayers();
+
+        assertEquals(2, topPlayers.size());
+        assertEquals(1L, topPlayers.get(0));
+        assertEquals(2L, topPlayers.get(1));
+    }
+
+    @Test
+    void testGetTopThreePlayersWithMoreThanThreePlayers() {
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.initGamePoints(Arrays.asList(1L, 2L, 3L, 4L));
+        gameBoard.getPlayerWithPoints().put(1L, 40);
+        gameBoard.getPlayerWithPoints().put(2L, 30);
+        gameBoard.getPlayerWithPoints().put(3L, 20);
+        gameBoard.getPlayerWithPoints().put(4L, 10);
+        List<Long> topPlayers = gameBoard.getTopThreePlayers();
+
+        assertEquals(3, topPlayers.size());
+        assertEquals(1L, topPlayers.get(0));
+        assertEquals(2L, topPlayers.get(1));
+        assertEquals(3L, topPlayers.get(2));
+    }
+
+    @Test
+    void testGetTopThreePlayersWithNoPlayers() {
+        GameBoard gameBoard = new GameBoard();
+        List<Long> topPlayers = gameBoard.getTopThreePlayers();
+
+        assertTrue(topPlayers.isEmpty());
+    }
+
+    @Test
+    void testGetTopThreePlayersWithTie() {
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.initGamePoints(Arrays.asList(1L, 2L, 3L, 4L));
+        gameBoard.getPlayerWithPoints().put(1L, 30);
+        gameBoard.getPlayerWithPoints().put(2L, 30);
+        gameBoard.getPlayerWithPoints().put(3L, 30);
+        gameBoard.getPlayerWithPoints().put(4L, 10);
+        List<Long> topPlayers = gameBoard.getTopThreePlayers();
+
+        assertEquals(3, topPlayers.size());
+        assertTrue(topPlayers.contains(1L));
+        assertTrue(topPlayers.contains(3L));
+        assertTrue(topPlayers.contains(2L));
+    }
+
+    // Additional test to cover edge cases
+    @Test
+    void testInitGamePointsWithEmptyList() {
+        List<Long> playerIds = Collections.emptyList();
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.initGamePoints(playerIds);
+
+        assertTrue(gameBoard.getPlayerWithPoints().isEmpty());
     }
 }

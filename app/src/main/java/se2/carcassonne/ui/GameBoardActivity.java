@@ -40,7 +40,9 @@ import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Player;
 import se2.carcassonne.model.PointCalculator;
 import se2.carcassonne.model.RoadResult;
+import se2.carcassonne.model.Scoreboard;
 import se2.carcassonne.model.Tile;
+import se2.carcassonne.repository.GameSessionRepository;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
 
@@ -65,6 +67,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button zoomOutBtn;
     private PointCalculator roadCalculator;
     private MapperHelper mapperHelper;
+    private GameSessionRepository gameSessionRepository;
     Animation scaleAnimation = null;
 
     @Override
@@ -80,8 +83,9 @@ public class GameBoardActivity extends AppCompatActivity {
         //Bind all UI elements
         bindGameBoardUiElements();
 
-        mapperHelper = new MapperHelper();
+
         objectMapper = new ObjectMapper();
+        mapperHelper = new MapperHelper();
         currentPlayer = PlayerRepository.getInstance().getCurrentPlayer();
 
 //        Create a new game board and place a random tile on it
@@ -97,6 +101,8 @@ public class GameBoardActivity extends AppCompatActivity {
 //        Instantiate gameBoardActivityViewModel
         gameSessionViewModel = new GameSessionViewModel();
 
+        gameSessionRepository = GameSessionRepository.getInstance();
+
 //        Get the next turn message from the previous activity
         intent = getIntent();
         String currentLobbyAdmin = intent.getStringExtra("LOBBY_ADMIN_ID");
@@ -108,6 +114,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
+
 
         String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
         binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
@@ -218,6 +225,48 @@ public class GameBoardActivity extends AppCompatActivity {
                 gameboardAdapter.notifyDataSetChanged();
             }
         });
+
+        gameSessionRepository.subscribeToForwardedScoreboard(currentPlayer.getGameSessionId());
+
+        /*
+         * game ended observable, forwarding the scoreboard
+         */
+        gameSessionViewModel.gameEndedLiveData().observe(this, gameEnded -> {
+            assert currentLobbyAdmin != null;
+            if (gameEnded && currentLobbyAdmin.equals(currentPlayer.getId().toString())) {
+                HashMap<Long, String> playerIdsWithNames = new HashMap<>();
+                List<Long> topThreePlayers = gameBoard.getTopThreePlayers();
+
+                // Assuming you have a method to get player IDs from their names
+                for (Long playerId : topThreePlayers) {
+                    playerIdsWithNames.put(playerId, null);
+                }
+
+                Scoreboard scoreboardDto = new Scoreboard(
+                        currentPlayer.getGameSessionId(),
+                        currentPlayer.getGameLobbyId(),
+                        playerIdsWithNames
+                );
+                gameSessionViewModel.sendScoreboardRequest(scoreboardDto);
+            }
+        });
+
+
+        /*
+         * scoreboard observable, go to scoreboard screen
+         */
+        gameSessionViewModel.scoreboardLiveData().observe(this, scoreboard -> {
+            Intent gameEndIntent = new Intent(this, GameEndActivity.class);
+
+            List<String> topThree = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
+
+            for (int i = 0; i < topThree.size(); i++) {
+                gameEndIntent.putExtra("PLAYER" + i, topThree.get(i));
+            }
+
+            startActivity(gameEndIntent);
+        });
+
 
         if (currentPlayer.getId().toString().equals(currentLobbyAdmin)) {
             gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
@@ -370,9 +419,6 @@ public class GameBoardActivity extends AppCompatActivity {
                     gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount() - 1);
                     String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
                     binding.tvMeepleCount.setText(formattedString);
-
-                    //RoadResult roadResult = roadCalculator.getAllTilesThatArePartOfRoad(tileToPlace);
-                    //meepleAdapter = new MeepleAdapter(this, tileToPlace, !roadResult.hasMeepleOnRoad());
 
                     int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                     int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
