@@ -38,6 +38,10 @@ public class PlayerRepository {
         return instance;
     }
 
+    public static void resetInstance() {
+        instance = null;
+    }
+
     public void createPlayer(Player player) {
         if (isValidUsername(player.getUsername())) {
             webSocketClient.subscribeToQueue(QUEUE_RESPONSE, this::createPlayerMessageReceived);
@@ -74,23 +78,6 @@ public class PlayerRepository {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
-    }
-
-    public void deletePlayer(Player player) {
-        webSocketClient.subscribeToQueue(QUEUE_RESPONSE, this::deletePlayerMessageReceived);
-        webSocketClient.subscribeToQueue(QUEUE_ERRORS, this::createPlayerMessageReceived);
-        playerApi.deleteUser(player);
-    }
-
-    private void deletePlayerMessageReceived(String message) {
-        webSocketClient.unsubscribe(QUEUE_RESPONSE);
-        webSocketClient.unsubscribe(QUEUE_ERRORS);
-
-        if(message.equals("103")) {
-            Log.d("onDelete", "Player deleted");
-        } else if (message.contains("ERROR")) {
-            Log.d("onDelete", "Error while deleting");
-        }
     }
 
     public MutableLiveData<String> getCreatePlayerLiveData() {

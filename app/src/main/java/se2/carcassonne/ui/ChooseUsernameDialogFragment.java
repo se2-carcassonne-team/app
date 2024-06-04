@@ -47,7 +47,7 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
         invalidUsernameLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
         messageLiveData.observe(this, message -> dismiss());
 
-        chooseUsernameStartGameButton.setOnClickListener(view -> playerViewModel.createPlayer(new Player(null, text.getText().toString(), null, null, null)));
+        chooseUsernameStartGameButton.setOnClickListener(view -> playerViewModel.createPlayer(new Player(null, text.getText().toString(), null, null, null, null)));
 
         return builder.setView(dialogView).create();
     }
