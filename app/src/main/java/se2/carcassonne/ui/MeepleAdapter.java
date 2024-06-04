@@ -144,6 +144,4 @@ public class MeepleAdapter extends BaseAdapter {
         }
         notifyDataSetChanged(); // Refresh the GridView
     }
-
-
 }

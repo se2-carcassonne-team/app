@@ -13,14 +13,17 @@ import lombok.NoArgsConstructor;
 public class Player {
    private Long id;
    private String username;
+   private String sessionId;
    private Long gameLobbyId;
    private Long gameSessionId;
    private List<Meeple> meepleList;
    private PlayerColour playerColour;
-   private int points;
-   public Player(Long id, String username, Long gameLobbyId, Long gameSessionId, PlayerColour playerColour) {
+    private int points;
+
+    public Player(Long id, String username, String sessionId, Long gameLobbyId, Long gameSessionId, PlayerColour playerColour) {
       this.id = id;
       this.username = username;
+      this.sessionId = sessionId;
       this.gameLobbyId = gameLobbyId;
       this.gameSessionId = gameSessionId;
       this.meepleList = new ArrayList<>(7);

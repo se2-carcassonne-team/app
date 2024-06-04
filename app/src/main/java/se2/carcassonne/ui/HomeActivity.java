@@ -3,6 +3,7 @@ package se2.carcassonne.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -22,6 +23,7 @@ import se2.carcassonne.helper.animation.AnimationHelper;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 
+import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.PlayerViewModel;
 
 public class HomeActivity extends AppCompatActivity {
@@ -47,6 +49,7 @@ public class HomeActivity extends AppCompatActivity {
 
         AnimationHelper.fadeIn(logo,2000,null);
 
+        PlayerRepository.resetInstance();
         playerViewModel = new PlayerViewModel();
 
         showChooseUsernameDialog();

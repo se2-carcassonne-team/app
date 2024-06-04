@@ -1,6 +1,8 @@
 package se2.carcassonne.model;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -267,6 +269,7 @@ public class PointCalculator {
 
 
     private Map<Long, List<Meeple>> findPlayersWithMeeplesOnRoad(List<Tile> roadTiles) {
+        Log.e("RoadResult", "----------------------------------");
         Map<Long, List<Meeple>> playersWithMeeples = new HashMap<>();
         for (Tile tile : roadTiles) {
             Meeple meeple = tile.getPlacedMeeple();
@@ -274,7 +277,7 @@ public class PointCalculator {
                 int positionIndex = getPositionIndexFromCoordinates(meeple.getCoordinates());
 
                 // Check if the position index is valid and if the meeple is placed on a road feature
-                if (positionIndex >= 0 &&  tile.getFeatures()[positionIndex] == 2) {
+                if (positionIndex >= 0 &&  tile.rotatedFeatures(tile.getRotation())[positionIndex] == 2) {
                     Long playerId = meeple.getPlayerId();
                     playersWithMeeples.putIfAbsent(playerId, new ArrayList<>());
                     Objects.requireNonNull(playersWithMeeples.get(playerId)).add(meeple);
@@ -287,7 +290,7 @@ public class PointCalculator {
         // Assuming coordinates are structured in a 3x3 grid, from (0,0) to (2,2)
         if (coordinates != null && coordinates.getXPosition() >= 0 && coordinates.getXPosition() < 3
                 && coordinates.getYPosition() >= 0 && coordinates.getYPosition() < 3) {
-            return coordinates.getYPosition() * 3 + coordinates.getXPosition();
+            return coordinates.getXPosition() * 3 + coordinates.getYPosition();
         }
         return -1; // Returns -1 if coordinates are invalid
     }

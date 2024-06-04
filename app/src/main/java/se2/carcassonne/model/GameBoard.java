@@ -1,5 +1,7 @@
 package se2.carcassonne.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +52,7 @@ public class GameBoard {
         // place the tile on the gameBoardMatrix with respect to rotation
          */
 
-        tile.setFeatures(tile.rotatedFeatures(tile.getRotation()));
+        //tile.setFeatures(tile.rotatedFeatures(tile.getRotation()));
 
         // place the tile on the gameBoardMatrix
         gameBoardMatrix[x][y] = tile;
@@ -125,6 +127,20 @@ public class GameBoard {
             }
         }
         return validPositions;
+    }
+
+    public boolean hasValidPositionForAnyRotation(Tile tile) {
+        // Check for all rotations if there is a valid position
+        for (int rotation = 0; rotation < 4; rotation++) {
+            tile.setRotation(rotation);
+            ArrayList<Coordinates> validPositions = highlightValidPositions(tile);
+            if (!validPositions.isEmpty()) {
+                tile.setRotation(0);
+                return true;
+            }
+        }
+        tile.setRotation(0);
+        return false;
     }
 
     private boolean validPlacementForTileWithCurrentRotation(Tile tileToPlace, Coordinates position) {
@@ -214,15 +230,4 @@ public class GameBoard {
 
         return removedMeeplesCount;
     }
-
-    public boolean hasRoadMeeple(Tile tile) {
-            Meeple potentialMeepleOnRoad = tile.getPlacedMeeple();
-            if (potentialMeepleOnRoad != null) {
-                int meeplePosition = (potentialMeepleOnRoad.getCoordinates().getYPosition() * 3) + potentialMeepleOnRoad.getCoordinates().getXPosition();
-                // Meeple is on a road
-                return tile.getFeatures()[meeplePosition] == 2;
-            }
-        return false;
-    }
-
 }

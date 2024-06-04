@@ -3,6 +3,8 @@ package se2.carcassonne.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.os.VibratorManager;
 import android.view.View;
@@ -171,19 +173,32 @@ public class GameBoardActivity extends AppCompatActivity {
                     vibrator.vibrate(500); // for 500 ms
                 }
                 tileToPlace = gameBoard.getAllTiles().get(Math.toIntExact(nextTurn.getTileId()));
-                previewTileToPlace.setRotation(0);
-                gameboardAdapter.setCanPlaceTile(true);
-                gameboardAdapter.setYourTurn(true);
-                gameboardAdapter.setTileToPlace(tileToPlace);
-                previewTileToPlace.setImageResource(
-                        getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
-                binding.buttonConfirmTilePlacement.setVisibility(View.VISIBLE);
-                binding.buttonRotateClockwise.setVisibility(View.VISIBLE);
-                binding.buttonRotateCounterClockwise.setVisibility(View.VISIBLE);
-                binding.previewTileToPlace.setVisibility(View.VISIBLE);
-                binding.backgroundRight.setVisibility(View.VISIBLE);
+                if (!gameBoard.hasValidPositionForAnyRotation(tileToPlace)) {
+                    previewTileToPlace.setImageResource(
+                            getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
 
-                moveButtonsLeft();
+                    // Display a Toast or some notification to the user
+                    Toast.makeText(this, "No valid positions to place tile. Next turn will start shortly.", Toast.LENGTH_SHORT).show();
+
+                    // Handler to add a delay before the next turn starts
+                    new Handler(Looper.getMainLooper()).postDelayed(this::confirmNextTurnToStart, 3000); // 3000 milliseconds == 3 seconds
+                } else {
+                    previewTileToPlace.setRotation(0);
+                    gameboardAdapter.setCanPlaceTile(true);
+                    gameboardAdapter.setYourTurn(true);
+                    gameboardAdapter.setTileToPlace(tileToPlace);
+                    previewTileToPlace.setImageResource(
+                            getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
+                    binding.buttonConfirmTilePlacement.setVisibility(View.VISIBLE);
+                    binding.buttonRotateClockwise.setVisibility(View.VISIBLE);
+                    binding.buttonRotateCounterClockwise.setVisibility(View.VISIBLE);
+                    binding.previewTileToPlace.setVisibility(View.VISIBLE);
+                    binding.backgroundRight.setVisibility(View.VISIBLE);
+
+                    moveButtonsLeft();
+                }
+
+
             } else {
                 tileToPlace = null;
                 gameboardAdapter.setYourTurn(false);
@@ -356,10 +371,14 @@ public class GameBoardActivity extends AppCompatActivity {
                     String formattedString = String.format(getString(R.string.meepleCount), gameboardAdapter.getMeepleCount());
                     binding.tvMeepleCount.setText(formattedString);
 
+                    //RoadResult roadResult = roadCalculator.getAllTilesThatArePartOfRoad(tileToPlace);
+                    //meepleAdapter = new MeepleAdapter(this, tileToPlace, !roadResult.hasMeepleOnRoad());
+
                     int xToPlace = gameboardAdapter.getToPlaceCoordinates().getXPosition();
                     int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
                     PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), placedMeeple);
                     gameSessionViewModel.sendPlacedTile(placedTileDto);
+
                 }
 
                 gameboardAdapter.setCanPlaceMeeple(false);
@@ -369,6 +388,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
                 hideMeepleGrid();
                 gameboardAdapter.setToPlaceCoordinates(null);
+
 
                 calculatePointsForCurrentTurn();
                 confirmNextTurnToStart();

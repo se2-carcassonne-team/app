@@ -526,4 +526,20 @@ public class PointCalculatorModelTests {
         assertFalse(roadResult.getPlayersWithMeeplesOnRoad().containsKey(2L));
 
     }
+
+
+    @Test
+    public void meepleOnMonasteryRoadRecognition() {
+        PointCalculator pointCalculator = new PointCalculator(gameBoard);
+
+        gameBoard.getAllTiles().get(49).setRotation(1);
+        gameBoard.placeTile(gameBoard.getAllTiles().get(49), new Coordinates(13, 12));
+        Meeple meeple = new Meeple(1L, PlayerColour.RED, 1L, true, new Coordinates(0,1));
+        gameBoardMatrix[13][12].setPlacedMeeple(meeple);
+
+        RoadResult result = pointCalculator.getAllTilesThatArePartOfRoad(gameBoardMatrix[13][12]);
+        assertFalse(result.isRoadCompleted());
+        assertTrue(result.hasMeepleOnRoad());
+
+    }
 }

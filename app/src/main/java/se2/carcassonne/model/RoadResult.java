@@ -1,5 +1,8 @@
 package se2.carcassonne.model;
 
+import android.util.Log;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +27,9 @@ public class RoadResult {
         for (Tile tile : allPartsOfRoad) {
             Meeple potentialMeepleOnRoad = tile.getPlacedMeeple();
             if (potentialMeepleOnRoad != null) {
-                int meeplePosition = (potentialMeepleOnRoad.getCoordinates().getYPosition() * 3) + potentialMeepleOnRoad.getCoordinates().getXPosition();
+                int meeplePosition = (potentialMeepleOnRoad.getCoordinates().getXPosition() * 3) + potentialMeepleOnRoad.getCoordinates().getYPosition();
                 // Meeple is on a road
+
                 if (tile.rotatedFeatures(tile.getRotation())[meeplePosition] == 2) {
                     return true;
                 }
