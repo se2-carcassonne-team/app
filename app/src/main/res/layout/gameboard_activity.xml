@@ -167,6 +167,16 @@
         app:layout_constraintStart_toStartOf="@id/preview_tile_to_place"
         app:layout_constraintTop_toTopOf="@id/preview_tile_to_place" />
 
+    <Button
+        android:id="@+id/leavegamebtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="140dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/road_occupied"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

@@ -9,6 +9,7 @@ import se2.carcassonne.api.GameSessionApi;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.model.NextTurn;
 import se2.carcassonne.model.PlacedTileDto;
+import se2.carcassonne.model.Player;
 
 public class GameSessionRepository {
 
@@ -30,6 +31,10 @@ public class GameSessionRepository {
             instance = new GameSessionRepository();
         }
         return instance;
+    }
+    public void leavegamesession(Player player){
+        gameSessionApi.leaveGame(player);
+
     }
 
     /**
