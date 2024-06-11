@@ -2,11 +2,13 @@ package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +41,7 @@ public class InLobbyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.e("InLobbyActivity", "onCreate");
         super.onCreate(savedInstanceState);
         binding = InLobbyActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -89,25 +92,28 @@ public class InLobbyActivity extends AppCompatActivity {
             }
         });
         lobbyViewmodel.getGameToBeStartedLiveData().observe(this, gameSessionId -> {
-            Intent startGameIntent = new Intent(this, GameBoardActivity.class);
-            Long gameSessionIdLong = Long.parseLong(gameSessionId);
-//            Set the gameSessionId for the currentPlayer
-            PlayerRepository.getInstance().getCurrentPlayer().setGameSessionId(gameSessionIdLong);
-            gameSessionRepository.subscribeToNextTurn(gameSessionIdLong);
-            gameSessionRepository.subscribeToPlacedTile(gameSessionIdLong);
-            gameSessionRepository.subscribeToGameFinished(gameSessionIdLong);
+            if(gameSessionId != null){
+                Intent startGameIntent = new Intent(this, GameBoardActivity.class);
+                Long gameSessionIdLong = Long.parseLong(gameSessionId);
+                // Set the gameSessionId for the currentPlayer
+                PlayerRepository.getInstance().getCurrentPlayer().setGameSessionId(gameSessionIdLong);
+                gameSessionRepository.subscribeToNextTurn(gameSessionIdLong);
+                gameSessionRepository.subscribeToPlacedTile(gameSessionIdLong);
+                gameSessionRepository.subscribeToGameFinished(gameSessionIdLong);
 
-            /*
-             * All Players In Lobby Observable
-             */
-            gameSessionViewModel.allPlayersInLobbyLiveData().observe(this, allPlayers -> {
-                allPlayersInLobby = mapperHelper.getJsonStringFromList(allPlayers);
-                gameSessionRepository.subscribeToGetAllPlayersInLobby(gameSessionIdLong);
-            });
-            startGameIntent.putExtra("ALL_PLAYERS", allPlayersInLobby);
-            startGameIntent.putExtra("LOBBY_ADMIN_ID", currentLobby.getLobbyAdminId() + "");
-            startGameIntent.putExtra("LOBBY_ID", currentLobby.getId() + "");
-            startActivity(startGameIntent);
+                /*
+                 * All Players In Lobby Observable
+                 */
+                gameSessionViewModel.allPlayersInLobbyLiveData().observe(this, allPlayers -> {
+                    allPlayersInLobby = mapperHelper.getJsonStringFromList(allPlayers);
+                    gameSessionRepository.subscribeToGetAllPlayersInLobby(gameSessionIdLong);
+                });
+                startGameIntent.putExtra("ALL_PLAYERS", allPlayersInLobby);
+                startGameIntent.putExtra("LOBBY_ADMIN_ID", currentLobby.getLobbyAdminId() + "");
+                startGameIntent.putExtra("LOBBY_ID", currentLobby.getId() + "");
+                startActivity(startGameIntent);
+            }
+
         });
         binding.gameLobbyStartGameBtn.setOnClickListener(view -> {
                 binding.gameLobbyStartGameBtn.clearAnimation();
@@ -119,9 +125,32 @@ public class InLobbyActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        Log.e("InLobbyActivity", "onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.e("InLobbyActivity", "onStop");
+        super.onStop();
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.e("InLobbyActivity", "onResume");
+        super.onResume();
+    }
+
+    @Override
     protected void onDestroy() {
+        Log.e("InLobbyActivity", "onDestroy");
+
         lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().setValue(null);
         lobbyViewmodel.getPlayerLeavesLobbyLiveData().setValue(null);
+        lobbyViewmodel.getGameToBeStartedLiveData().postValue(null);
+
         super.onDestroy();
     }
 }

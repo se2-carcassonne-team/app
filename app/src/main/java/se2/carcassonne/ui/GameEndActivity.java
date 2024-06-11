@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.GameEndActivityBinding;
 
+import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 
 import se2.carcassonne.viewmodel.LobbyViewModel;
@@ -20,6 +21,8 @@ public class GameEndActivity extends AppCompatActivity {
     private static final String KEY_RESTART_INTENT = "KEY_RESTART";
     GameEndActivityBinding binding;
     LobbyViewModel lobbyViewModel;
+    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +45,9 @@ public class GameEndActivity extends AppCompatActivity {
 
         binding.btnMainMenu.setOnClickListener(v -> {
             Intent nextIntent = new Intent(this, StartupActivity.class); // Replace with your actual intent
-            resetApp(this, nextIntent);
+            //resetApp(this, nextIntent);
+            webSocketClient.cancelAllSubscriptions();
+            startActivity(nextIntent);
         });
     }
 
