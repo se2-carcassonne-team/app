@@ -125,22 +125,10 @@ public class InLobbyActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        Log.e("InLobbyActivity", "onPause");
-        super.onPause();
-    }
-
-    @Override
     protected void onStop() {
         Log.e("InLobbyActivity", "onStop");
         super.onStop();
         finish();
-    }
-
-    @Override
-    protected void onResume() {
-        Log.e("InLobbyActivity", "onResume");
-        super.onResume();
     }
 
     @Override

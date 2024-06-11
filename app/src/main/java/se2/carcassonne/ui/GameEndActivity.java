@@ -44,13 +44,16 @@ public class GameEndActivity extends AppCompatActivity {
         }
 
         binding.btnMainMenu.setOnClickListener(v -> {
-            Intent nextIntent = new Intent(this, StartupActivity.class); // Replace with your actual intent
+            // legacy code
+            //Intent nextIntent = new Intent(this, StartupActivity.class); // Replace with your actual intent
             //resetApp(this, nextIntent);
+            Intent nextIntent = new Intent(this, GameLobbyActivity.class);
             webSocketClient.cancelAllSubscriptions();
             startActivity(nextIntent);
         });
     }
 
+    // legacy code
     private void resetApp(Context context, Intent nextIntent) {
 
         Intent intent = new Intent(context, StartupActivity.class);
