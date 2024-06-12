@@ -48,7 +48,10 @@ public class GameEndActivity extends AppCompatActivity {
             //Intent nextIntent = new Intent(this, StartupActivity.class); // Replace with your actual intent
             //resetApp(this, nextIntent);
             Intent nextIntent = new Intent(this, GameLobbyActivity.class);
-            webSocketClient.cancelAllSubscriptions();
+
+            //webSocketClient.cancelAllSubscriptions();
+            lobbyViewModel.leaveLobby();
+
             startActivity(nextIntent);
         });
     }
