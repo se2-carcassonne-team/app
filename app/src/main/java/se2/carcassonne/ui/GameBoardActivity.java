@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.os.VibratorManager;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -45,6 +46,7 @@ import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.GameSessionRepository;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
+import se2.carcassonne.viewmodel.LobbyViewModel;
 
 public class GameBoardActivity extends AppCompatActivity {
     GameboardActivityBinding binding;
@@ -72,6 +74,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.e("GameBoardActivity", "onCreate");
+
         super.onCreate(savedInstanceState);
         binding = GameboardActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -93,6 +97,7 @@ public class GameBoardActivity extends AppCompatActivity {
         // TODO: CHECK THIS FURTHER, JUST AN IDEA AS OF RIGHT NOW
         roadCalculator = new PointCalculator(gameBoard);
 
+
 //        Set up the grid view
         gridView.setScaleX(3.0f);
         gridView.setScaleY(3.0f);
@@ -111,7 +116,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
         gameBoard.initGamePoints(allPlayersInLobby);
 
-
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
 
@@ -126,11 +130,13 @@ public class GameBoardActivity extends AppCompatActivity {
          * placed tile observable
          */
         gameSessionViewModel.getPlacedTileLiveData().observe(this, tilePlaced -> {
-            Tile tilePlacedByOtherPlayer = gameboardAdapter.getGameBoard().getAllTiles().get(Math.toIntExact(tilePlaced.getTileId()));
-            tilePlacedByOtherPlayer.setRotation(tilePlaced.getRotation());
-            tilePlacedByOtherPlayer.setPlacedMeeple(tilePlaced.getPlacedMeeple());
-            gameboardAdapter.getGameBoard().placeTile(tilePlacedByOtherPlayer, tilePlaced.getCoordinates());
-            gameboardAdapter.notifyDataSetChanged();
+            if(tilePlaced != null) {
+                Tile tilePlacedByOtherPlayer = gameboardAdapter.getGameBoard().getAllTiles().get(Math.toIntExact(tilePlaced.getTileId()));
+                tilePlacedByOtherPlayer.setRotation(tilePlaced.getRotation());
+                tilePlacedByOtherPlayer.setPlacedMeeple(tilePlaced.getPlacedMeeple());
+                gameboardAdapter.getGameBoard().placeTile(tilePlacedByOtherPlayer, tilePlaced.getCoordinates());
+                gameboardAdapter.notifyDataSetChanged();
+            }
         });
 
         /*
@@ -166,63 +172,63 @@ public class GameBoardActivity extends AppCompatActivity {
          * next turn observable
          */
         gameSessionViewModel.getNextTurnMessageLiveData().observe(this, nextTurn -> {
-            if (Objects.equals(nextTurn.getPlayerId(), currentPlayer.getId())) {
-                Vibrator vibrator;
-                if (android.os.Build.VERSION.SDK_INT >= 31) {
-                    VibratorManager vibratorManager = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
-                    vibrator = vibratorManager.getDefaultVibrator();
+            if (nextTurn != null){
+                if (Objects.equals(nextTurn.getPlayerId(), currentPlayer.getId())) {
+                    Vibrator vibrator;
+                    if (android.os.Build.VERSION.SDK_INT >= 31) {
+                        VibratorManager vibratorManager = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+                        vibrator = vibratorManager.getDefaultVibrator();
+                    } else {
+                        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    }
+
+                    // Vibrate for 500 milliseconds to inform user that ii is his/her turn
+                    if (vibrator.hasVibrator()) {
+                        vibrator.vibrate(500); // for 500 ms
+                    }
+                    tileToPlace = gameBoard.getAllTiles().get(Math.toIntExact(nextTurn.getTileId()));
+                    if (!gameBoard.hasValidPositionForAnyRotation(tileToPlace)) {
+                        previewTileToPlace.setImageResource(
+                                getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
+
+                        // Display a Toast or some notification to the user
+                        Toast.makeText(this, "No valid positions to place tile. Next turn will start shortly.", Toast.LENGTH_SHORT).show();
+
+                        // Handler to add a delay before the next turn starts
+                        new Handler(Looper.getMainLooper()).postDelayed(this::confirmNextTurnToStart, 3000); // 3000 milliseconds == 3 seconds
+                    } else {
+                        previewTileToPlace.setRotation(0);
+                        gameboardAdapter.setCanPlaceTile(true);
+                        gameboardAdapter.setYourTurn(true);
+                        gameboardAdapter.setTileToPlace(tileToPlace);
+                        previewTileToPlace.setImageResource(
+                                getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
+                        binding.buttonConfirmTilePlacement.setVisibility(View.VISIBLE);
+                        binding.buttonRotateClockwise.setVisibility(View.VISIBLE);
+                        binding.buttonRotateCounterClockwise.setVisibility(View.VISIBLE);
+                        binding.previewTileToPlace.setVisibility(View.VISIBLE);
+                        binding.backgroundRight.setVisibility(View.VISIBLE);
+
+                        moveButtonsLeft();
+                    }
                 } else {
-                    vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                }
-
-                // Vibrate for 500 milliseconds to inform user that ii is his/her turn
-                if (vibrator.hasVibrator()) {
-                    vibrator.vibrate(500); // for 500 ms
-                }
-                tileToPlace = gameBoard.getAllTiles().get(Math.toIntExact(nextTurn.getTileId()));
-                if (!gameBoard.hasValidPositionForAnyRotation(tileToPlace)) {
-                    previewTileToPlace.setImageResource(
-                            getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
-
-                    // Display a Toast or some notification to the user
-                    Toast.makeText(this, "No valid positions to place tile. Next turn will start shortly.", Toast.LENGTH_SHORT).show();
-
-                    // Handler to add a delay before the next turn starts
-                    new Handler(Looper.getMainLooper()).postDelayed(this::confirmNextTurnToStart, 3000); // 3000 milliseconds == 3 seconds
-                } else {
+                    tileToPlace = null;
+                    gameboardAdapter.setYourTurn(false);
+                    gameboardAdapter.setCanPlaceTile(false);
                     previewTileToPlace.setRotation(0);
-                    gameboardAdapter.setCanPlaceTile(true);
-                    gameboardAdapter.setYourTurn(true);
-                    gameboardAdapter.setTileToPlace(tileToPlace);
-                    previewTileToPlace.setImageResource(
-                            getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
-                    binding.buttonConfirmTilePlacement.setVisibility(View.VISIBLE);
-                    binding.buttonRotateClockwise.setVisibility(View.VISIBLE);
-                    binding.buttonRotateCounterClockwise.setVisibility(View.VISIBLE);
-                    binding.previewTileToPlace.setVisibility(View.VISIBLE);
-                    binding.backgroundRight.setVisibility(View.VISIBLE);
+                    previewTileToPlace.setImageResource(R.drawable.backside);
+                    buttonConfirm.setVisibility(View.GONE);
+                    binding.buttonRotateClockwise.setVisibility(View.GONE);
+                    binding.buttonRotateCounterClockwise.setVisibility(View.GONE);
+                    binding.previewTileToPlace.setVisibility(View.GONE);
+                    binding.backgroundRight.setVisibility(View.GONE);
 
-                    moveButtonsLeft();
+                    moveButtonsRight();
+
                 }
-
-
-            } else {
-                tileToPlace = null;
-                gameboardAdapter.setYourTurn(false);
-                gameboardAdapter.setCanPlaceTile(false);
-                previewTileToPlace.setRotation(0);
-                previewTileToPlace.setImageResource(R.drawable.backside);
-                buttonConfirm.setVisibility(View.GONE);
-                binding.buttonRotateClockwise.setVisibility(View.GONE);
-                binding.buttonRotateCounterClockwise.setVisibility(View.GONE);
-                binding.previewTileToPlace.setVisibility(View.GONE);
-                binding.backgroundRight.setVisibility(View.GONE);
-
-                moveButtonsRight();
-
-            }
-            if (gameboardAdapter != null) {
-                gameboardAdapter.notifyDataSetChanged();
+                if (gameboardAdapter != null) {
+                    gameboardAdapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -256,7 +262,8 @@ public class GameBoardActivity extends AppCompatActivity {
          * scoreboard observable, go to scoreboard screen
          */
         gameSessionViewModel.scoreboardLiveData().observe(this, scoreboard -> {
-            Intent gameEndIntent = new Intent(this, GameEndActivity.class);
+            if (scoreboard != null) {
+                Intent gameEndIntent = new Intent(this, GameEndActivity.class);
 
             List<String> topThree = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
 
@@ -264,7 +271,8 @@ public class GameBoardActivity extends AppCompatActivity {
                 gameEndIntent.putExtra("PLAYER" + i, topThree.get(i));
             }
 
-            startActivity(gameEndIntent);
+                startActivity(gameEndIntent);
+            }
         });
 
 
@@ -323,6 +331,37 @@ public class GameBoardActivity extends AppCompatActivity {
             points = 0;  // Assume 0 points if none are found
         }
         binding.tvPlayerPoints.setText(String.valueOf(points));
+    }
+
+    @Override
+    protected void onResume() {
+        Log.e("GameBoardActivity", "onResume");
+        super.onResume();
+        //gameSessionViewModel = new GameSessionViewModel();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.e("GameBoardActivity", "onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.e("GameBoardActivity", "onStop");
+        super.onStop();
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e("GameBoardActivity", "onDestroy");
+        super.onDestroy();
+
+        gameSessionViewModel.gameEndedLiveData().postValue(false);
+        gameSessionViewModel.scoreboardLiveData().postValue(null);
+        gameSessionViewModel.getNextTurnMessageLiveData().postValue(null);
+        gameSessionViewModel.getPlacedTileLiveData().postValue(null);
     }
 
     private void moveButtonsRight() {
@@ -424,7 +463,6 @@ public class GameBoardActivity extends AppCompatActivity {
                     int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
                     PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), placedMeeple);
                     gameSessionViewModel.sendPlacedTile(placedTileDto);
-
                 }
 
                 gameboardAdapter.setCanPlaceMeeple(false);

@@ -12,14 +12,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.GameEndActivityBinding;
 
+import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 
 import se2.carcassonne.viewmodel.LobbyViewModel;
+import se2.carcassonne.viewmodel.PlayerViewModel;
 
 public class GameEndActivity extends AppCompatActivity {
-    private static final String KEY_RESTART_INTENT = "KEY_RESTART";
     GameEndActivityBinding binding;
     LobbyViewModel lobbyViewModel;
+    PlayerViewModel playerViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +31,7 @@ public class GameEndActivity extends AppCompatActivity {
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
 
         lobbyViewModel = new LobbyViewModel();
+        playerViewModel = new PlayerViewModel();
 
         if (getIntent().hasExtra("PLAYER0")) {
             String first = getIntent().getStringExtra("PLAYER0");
@@ -41,21 +45,10 @@ public class GameEndActivity extends AppCompatActivity {
         }
 
         binding.btnMainMenu.setOnClickListener(v -> {
-            Intent nextIntent = new Intent(this, StartupActivity.class); // Replace with your actual intent
-            resetApp(this, nextIntent);
+            Intent nextIntent = new Intent(this, GameLobbyActivity.class);
+            playerViewModel.resetCurrentPlayer();
+            startActivity(nextIntent);
         });
     }
 
-    private void resetApp(Context context, Intent nextIntent) {
-
-        Intent intent = new Intent(context, StartupActivity.class);
-        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(KEY_RESTART_INTENT, nextIntent);
-        context.startActivity(intent);
-        if (context instanceof Activity) {
-            ((Activity) context).finish();
-        }
-
-        Runtime.getRuntime().exit(0);
-    }
 }

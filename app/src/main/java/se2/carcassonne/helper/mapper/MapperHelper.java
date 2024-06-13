@@ -175,7 +175,6 @@ public class MapperHelper {
         try {
             return mapper.writeValueAsString(list);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             return null;  // Or handle the error in another way appropriate to your application
         }
     }
@@ -185,7 +184,6 @@ public class MapperHelper {
         try {
             return mapper.readValue(jsonString, new TypeReference<List<Long>>() {});
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             return null;  // Or handle the error in another way appropriate to your application
         }
     }

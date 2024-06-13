@@ -28,11 +28,11 @@ public class GameSessionViewModel extends ViewModel {
         gameSessionRepository.getNextTurn(gameSessionId);
     }
 
-    public LiveData<NextTurn> getNextTurnMessageLiveData() {
+    public MutableLiveData<NextTurn> getNextTurnMessageLiveData() {
         return gameSessionRepository.getNextTurnLiveData();
     }
 
-    public LiveData<PlacedTileDto> getPlacedTileLiveData(){
+    public MutableLiveData<PlacedTileDto> getPlacedTileLiveData(){
         return gameSessionRepository.getPlacedTileLiveData();
     }
 
@@ -40,7 +40,7 @@ public class GameSessionViewModel extends ViewModel {
         gameSessionRepository.sendPlacedTile(placedTileDto);
     }
 
-    public LiveData<Boolean> gameEndedLiveData(){
+    public MutableLiveData<Boolean> gameEndedLiveData(){
         return gameSessionRepository.getGameEndedLiveData();
     }
 
@@ -56,7 +56,7 @@ public class GameSessionViewModel extends ViewModel {
         gameSessionRepository.forwardScoreboard(scoreboard);
     }
 
-    public LiveData<Scoreboard> scoreboardLiveData(){
+    public MutableLiveData<Scoreboard> scoreboardLiveData(){
         return gameSessionRepository.getScoreboardLiveData();
     }
 
