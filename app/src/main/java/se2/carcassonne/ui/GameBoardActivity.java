@@ -226,7 +226,6 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
 
-
         if (currentPlayer.getId().toString().equals(currentLobbyAdmin)) {
             gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId());
         }
