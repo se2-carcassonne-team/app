@@ -76,6 +76,11 @@ public class PlayerRepository {
         return currentPlayer;
     }
 
+    public void resetCurrentPlayer() {
+        currentPlayer.setGameLobbyId(null);
+        currentPlayer.setGameSessionId(null);
+    }
+
     public void deletePlayer(Player player) {
         webSocketClient.subscribeToQueue(QUEUE_RESPONSE, this::deletePlayerMessageReceived);
         webSocketClient.subscribeToQueue(QUEUE_ERRORS, this::createPlayerMessageReceived);

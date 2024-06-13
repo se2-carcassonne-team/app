@@ -16,10 +16,12 @@ import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 
 import se2.carcassonne.viewmodel.LobbyViewModel;
+import se2.carcassonne.viewmodel.PlayerViewModel;
 
 public class GameEndActivity extends AppCompatActivity {
     GameEndActivityBinding binding;
     LobbyViewModel lobbyViewModel;
+    PlayerViewModel playerViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class GameEndActivity extends AppCompatActivity {
         FullscreenHelper.setFullscreenAndImmersiveMode(this);
 
         lobbyViewModel = new LobbyViewModel();
+        playerViewModel = new PlayerViewModel();
 
         if (getIntent().hasExtra("PLAYER0")) {
             String first = getIntent().getStringExtra("PLAYER0");
@@ -43,9 +46,7 @@ public class GameEndActivity extends AppCompatActivity {
 
         binding.btnMainMenu.setOnClickListener(v -> {
             Intent nextIntent = new Intent(this, GameLobbyActivity.class);
-
-            lobbyViewModel.leaveLobby();
-
+            playerViewModel.resetCurrentPlayer();
             startActivity(nextIntent);
         });
     }
