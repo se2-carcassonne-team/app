@@ -269,7 +269,7 @@ public class PointCalculator {
 
 
     private Map<Long, List<Meeple>> findPlayersWithMeeplesOnRoad(List<Tile> roadTiles) {
-        Log.e("RoadResult", "----------------------------------");
+        //Log.e("RoadResult", "----------------------------------");
         Map<Long, List<Meeple>> playersWithMeeples = new HashMap<>();
         for (Tile tile : roadTiles) {
             Meeple meeple = tile.getPlacedMeeple();
