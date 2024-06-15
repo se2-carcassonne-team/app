@@ -1,6 +1,5 @@
 package se2.carcassonne.ui;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.os.VibratorManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -27,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -345,11 +342,9 @@ public class GameBoardActivity extends AppCompatActivity {
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
 
 
-
+        // Show the scoreboard in a dialog
         Button showScoreboardButton = findViewById(R.id.button_show_scoreboard);
         showScoreboardButton.setOnClickListener(v -> {
-            Log.e("GameBoardActivity", "showScoreboardButton.onClick playerPoints: " + playerPoints.toString());
-            Log.e("GameBoardActivity", "showScoreboardButton.onClick adapter: " + adapter.toString());
 
             AlertDialog.Builder builder = new AlertDialog.Builder(GameBoardActivity.this);
             LayoutInflater inflater = getLayoutInflater();

@@ -1,6 +1,5 @@
 package se2.carcassonne.viewmodel;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +16,8 @@ import java.util.Map;
 import se2.carcassonne.R;
 import se2.carcassonne.model.Player;
 
-// ScoreboardAdapter.java
 public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.ViewHolder> {
 
-    // map of username + points
-//    private final Map<String, Integer> playerPoints;
-//
-//    public ScoreboardAdapter(Map<String, Integer> playerPoints) {
-//        this.playerPoints = playerPoints;
-//    }
     private final List<Map.Entry<String, Integer>> playerPoints;
 
     private final List<Player> playerList;
@@ -42,15 +34,6 @@ public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.Vi
         return new ViewHolder(view);
     }
 
-//    @Override
-//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        // set text of playerNameTextView and playerPointsTextView using the player's name and points (both from the map)
-//        for (Map.Entry<String, Integer> playerPoints : playerPoints.entrySet()) {
-//            Log.e("ScoreboardAdapter", "onBindViewHolder: " + playerPoints.getKey() + " " + playerPoints.getValue());
-//            holder.playerNameTextView.setText(playerPoints.getKey());
-//            holder.playerPointsTextView.setText(String.valueOf(playerPoints.getValue()));
-//        }
-//    }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // get the current entry
@@ -95,11 +78,6 @@ public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.Vi
         }
     }
 
-//    public void updatePlayerPoints(Map<String, Integer> newPlayerPoints) {
-//        Log.e("ScoreboardAdapter", "updatePlayerPoints: " + newPlayerPoints.toString());
-//        this.playerPoints.putAll(newPlayerPoints);
-//        notifyDataSetChanged();
-//    }
     public void updatePlayerPoints(Map<String, Integer> newPlayerPoints) {
         this.playerPoints.clear();
         this.playerPoints.addAll(newPlayerPoints.entrySet());
