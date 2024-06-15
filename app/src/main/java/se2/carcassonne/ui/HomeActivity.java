@@ -47,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         logo = findViewById(R.id.logo_animation);
         logo.setVisibility(View.INVISIBLE);
 
-        AnimationHelper.fadeIn(logo,2000,null);
+        AnimationHelper.fadeIn(logo, 2000, null);
 
         PlayerRepository.resetInstance();
         playerViewModel = new PlayerViewModel();

@@ -17,6 +17,7 @@ public class PlayerViewModel extends ViewModel {
         playerRepository.createPlayer(player);
     }
 
+    public void resetCurrentPlayer() {playerRepository.resetCurrentPlayer();}
     public LiveData<String> getMessageLiveData() {
         return playerRepository.getCreatePlayerLiveData();
     }

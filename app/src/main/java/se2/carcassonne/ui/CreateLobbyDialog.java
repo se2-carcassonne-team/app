@@ -25,9 +25,6 @@ import se2.carcassonne.repository.PlayerRepository;
 
 public class CreateLobbyDialog extends DialogFragment {
     private final LobbyViewModel lobbyViewmodel;
-    private LiveData<String> lobbyAlreadyExistsLiveData;
-    private LiveData<String> invalidLobbyLiveData;
-    private LiveData<String> createLobbyLiveData;
 
     public CreateLobbyDialog() {
         this.lobbyViewmodel = new LobbyViewModel();
@@ -42,10 +39,6 @@ public class CreateLobbyDialog extends DialogFragment {
         EditText text = dialogView.findViewById(R.id.lobbyNameInput);
         Button createLobbyBtn = dialogView.findViewById(R.id.btnCreateLobby);
 
-        lobbyAlreadyExistsLiveData = lobbyViewmodel.getLobbyAlreadyExistsErrorMessage();
-        invalidLobbyLiveData = lobbyViewmodel.getInvalidLobbyNameErrorMessage();
-        createLobbyLiveData = lobbyViewmodel.getCreateLobbyLiveData();
-
         createLobbyBtn.setOnClickListener(view -> {
             String lobbyName = text.getText().toString();
             lobbyViewmodel.createLobby(
@@ -57,9 +50,19 @@ public class CreateLobbyDialog extends DialogFragment {
                     ));
         });
 
-        lobbyAlreadyExistsLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
-        invalidLobbyLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
-        createLobbyLiveData.observe(this, message -> {
+        lobbyViewmodel.getLobbyAlreadyExistsErrorMessage().observe(this, errorMessage -> {
+            if(errorMessage != null) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        lobbyViewmodel.getInvalidLobbyNameErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        lobbyViewmodel.getCreateLobbyLiveData().observe(this, message -> {
             if (message != null) {
                 Intent intent = new Intent(requireActivity(), InLobbyActivity.class);
                 intent.putExtra("LOBBY", message);
@@ -74,9 +77,12 @@ public class CreateLobbyDialog extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
+        lobbyViewmodel.getLobbyAlreadyExistsErrorMessage().removeObservers(this);
+        lobbyViewmodel.getInvalidLobbyNameErrorMessage().removeObservers(this);
+        lobbyViewmodel.getCreateLobbyLiveData().removeObservers(this);
+
         lobbyViewmodel.getCreateLobbyLiveData().setValue(null);
-        lobbyAlreadyExistsLiveData.removeObservers(this);
-        invalidLobbyLiveData.removeObservers(this);
-        createLobbyLiveData.removeObservers(this);
+        lobbyViewmodel.getInvalidLobbyNameErrorMessage().setValue(null);
+        lobbyViewmodel.getLobbyAlreadyExistsErrorMessage().setValue(null);
     }
 }

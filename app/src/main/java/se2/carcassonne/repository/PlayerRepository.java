@@ -80,6 +80,11 @@ public class PlayerRepository {
         return currentPlayer;
     }
 
+    public void resetCurrentPlayer() {
+        currentPlayer.setGameLobbyId(null);
+        currentPlayer.setGameSessionId(null);
+    }
+
     public MutableLiveData<String> getCreatePlayerLiveData() {
         return createPlayerLiveData;
     }

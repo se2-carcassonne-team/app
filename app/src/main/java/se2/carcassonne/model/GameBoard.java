@@ -1,6 +1,11 @@
 package se2.carcassonne.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 import lombok.Data;
 
@@ -21,6 +26,7 @@ public class GameBoard {
 
     private ArrayList<Tile> allTiles = new ArrayList<>();
 
+    private HashMap<Long, Integer> playerWithPoints = new HashMap<>();
 
     public GameBoard() {
         initializeGameBoard();
@@ -34,6 +40,8 @@ public class GameBoard {
         allTiles = TileInitializer.initializeTiles();
         Tile startTile = allTiles.get(0);
         placeTile(startTile, new Coordinates(12, 12));
+
+
     }
 
     public void placeTile(Tile tile, Coordinates coordinates) {
@@ -41,6 +49,12 @@ public class GameBoard {
         int y = coordinates.getYPosition();
 
         tile.setCoordinates(coordinates);
+
+        /*
+        // place the tile on the gameBoardMatrix with respect to rotation
+         */
+
+        //tile.setFeatures(tile.rotatedFeatures(tile.getRotation()));
 
         // place the tile on the gameBoardMatrix
         gameBoardMatrix[x][y] = tile;
@@ -171,4 +185,83 @@ public class GameBoard {
         return northEdgeMatches && eastEdgeMatches && southEdgeMatches && westEdgeMatches;
     }
 
+    public List<Long> getTopThreePlayers() {
+        return playerWithPoints.entrySet()
+                .stream()
+                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue())) // Sort in descending order of points
+                .limit(3)
+                .map(Map.Entry::getKey) // Map to only the keys (player IDs)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> sortTopThreePlayersAfterForwarding(Scoreboard scoreboard) {
+        // Get the map of player IDs to player names from the scoreboard
+        Map<Long, String> playerIdToNameMap = scoreboard.getPlayerIdsWithNames();
+        List<String> topThreePlayerNames = new ArrayList<>();
+
+        // Sort the player IDs by their points in descending order
+        List<Map.Entry<Long, Integer>> sortedEntries = playerWithPoints.entrySet()
+                .stream()
+                .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue())) // Sort in descending order of points
+                .collect(Collectors.toList());
+
+        // Get the names of the top three players based on sorted player IDs
+        for (int i = 0; i < Math.min(3, sortedEntries.size()); i++) {
+            Long playerId = sortedEntries.get(i).getKey();
+            String playerName = playerIdToNameMap.get(playerId);
+            if (playerName != null) {
+                topThreePlayerNames.add(playerName);
+            }
+        }
+
+        return topThreePlayerNames;
+    }
+
+    public void initGamePoints(List<Long> allPlayerIds){
+        for (Long playerId : allPlayerIds) {
+            playerWithPoints.put(playerId, 0);
+        }
+    }
+
+    public void updatePoints(FinishedTurnDto finishedTurnDto) {
+        // Check if the DTO contains any points data
+        if (finishedTurnDto.getPoints() != null) {
+            for (Map.Entry<Long, Integer> entry : finishedTurnDto.getPoints().entrySet()) {
+                Long playerId = entry.getKey();
+                Integer pointsToAdd = entry.getValue();
+
+                // Check if the player already exists in the playerWithPoints map
+                if (playerWithPoints.containsKey(playerId)) {
+                    // If the player exists, add the new points to the existing ones
+                    playerWithPoints.put(playerId, (playerWithPoints.get(playerId) + pointsToAdd));
+                }
+            }
+        }
+    }
+
+    public Map<Long, Integer> finishedTurnRemoveMeeplesOnRoad(Map<Long, List<Meeple>> playersWithMeeples) {
+        Map<Long, Integer> removedMeeplesCount = new HashMap<>();
+        if (playersWithMeeples == null) {
+            return removedMeeplesCount;
+        }
+
+        for (Map.Entry<Long, List<Meeple>> entry : playersWithMeeples.entrySet()) {
+            Long playerId = entry.getKey();
+            List<Meeple> meeplesToRemove = entry.getValue();
+            int count = 0;
+
+            for (Tile tile : placedTiles) {
+                Meeple meeple = tile.getPlacedMeeple();
+                if (meeple != null && meeplesToRemove.contains(meeple)){
+                    tile.removeMeeple();  // Remove the meeple from the tile
+                    count++;
+                }
+            }
+            if (count > 0) {
+                removedMeeplesCount.put(playerId, count);
+            }
+        }
+
+        return removedMeeplesCount;
+    }
 }

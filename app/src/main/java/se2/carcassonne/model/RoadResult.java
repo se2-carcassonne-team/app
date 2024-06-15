@@ -1,6 +1,10 @@
 package se2.carcassonne.model;
 
+import android.util.Log;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,15 +20,17 @@ import lombok.Setter;
 public class RoadResult {
     private boolean isRoadCompleted;
     private List<Tile> allPartsOfRoad;
-    private int points;
+    private Map<Long, Integer> points;
+    private Map<Long, List<Meeple>> playersWithMeeplesOnRoad;
 
     public boolean hasMeepleOnRoad() {
         for (Tile tile : allPartsOfRoad) {
             Meeple potentialMeepleOnRoad = tile.getPlacedMeeple();
             if (potentialMeepleOnRoad != null) {
-                int meeplePosition = (potentialMeepleOnRoad.getCoordinates().getYPosition() * 3) + potentialMeepleOnRoad.getCoordinates().getXPosition();
+                int meeplePosition = (potentialMeepleOnRoad.getCoordinates().getXPosition() * 3) + potentialMeepleOnRoad.getCoordinates().getYPosition();
                 // Meeple is on a road
-                if (tile.getFeatures()[meeplePosition] == 2) {
+
+                if (tile.rotatedFeatures(tile.getRotation())[meeplePosition] == 2) {
                     return true;
                 }
             }
