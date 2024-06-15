@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +49,6 @@ import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.GameSessionRepository;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
-import se2.carcassonne.viewmodel.LobbyViewModel;
 import se2.carcassonne.viewmodel.ScoreboardAdapter;
 
 public class GameBoardActivity extends AppCompatActivity {
