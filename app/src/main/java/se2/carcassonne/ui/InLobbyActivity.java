@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +22,7 @@ import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.GameState;
 import se2.carcassonne.model.Lobby;
+import se2.carcassonne.model.Player;
 import se2.carcassonne.repository.GameSessionRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
 import se2.carcassonne.viewmodel.LobbyViewModel;
@@ -60,6 +63,8 @@ public class InLobbyActivity extends AppCompatActivity {
         gameSessionViewModel = new GameSessionViewModel();
         binding.textViewLobbyName.setText(mapperHelper.getLobbyName(intent.getStringExtra("LOBBY")));
 
+        HashMap<Long, String> playerIdsWithNames = new HashMap<>();
+
         /*
          * Get All Players In Lobby
          */
@@ -71,7 +76,9 @@ public class InLobbyActivity extends AppCompatActivity {
                 finish();
             }
         });
-        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> adapter.updateDataWithLobby(playerList, intent.getStringExtra("LOBBY")));
+        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> {
+                    adapter.updateDataWithLobby(playerList, intent.getStringExtra("LOBBY"));
+        });
         lobbyViewmodel.getPlayerJoinsOrLeavesLobbyLiveData().observe(this, playerList -> adapter.updateData(playerList));
         lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().observe(this, newGameLobby -> {
             if (newGameLobby != null && !newGameLobby.startsWith("RESET")) {
@@ -104,6 +111,11 @@ public class InLobbyActivity extends AppCompatActivity {
                 allPlayersInLobby = mapperHelper.getJsonStringFromList(allPlayers);
                 gameSessionRepository.subscribeToGetAllPlayersInLobby(gameSessionIdLong);
             });
+
+            // new!!!!
+            List<Player> playerList = adapter.getPlayerList();
+            startGameIntent.putExtra("playerList", (Serializable) playerList);
+
             startGameIntent.putExtra("ALL_PLAYERS", allPlayersInLobby);
             startGameIntent.putExtra("LOBBY_ADMIN_ID", currentLobby.getLobbyAdminId() + "");
             startGameIntent.putExtra("LOBBY_ID", currentLobby.getId() + "");
