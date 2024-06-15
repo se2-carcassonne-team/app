@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.os.Vibrator;
 import android.os.VibratorManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,13 +17,15 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +49,7 @@ import se2.carcassonne.model.Tile;
 import se2.carcassonne.repository.GameSessionRepository;
 import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
-import se2.carcassonne.viewmodel.LobbyViewModel;
+import se2.carcassonne.viewmodel.ScoreboardAdapter;
 
 public class GameBoardActivity extends AppCompatActivity {
     GameboardActivityBinding binding;
@@ -71,6 +74,9 @@ public class GameBoardActivity extends AppCompatActivity {
     private MapperHelper mapperHelper;
     private GameSessionRepository gameSessionRepository;
     Animation scaleAnimation = null;
+
+    private Map<String, Integer> playerPoints = new HashMap<>();
+    private ScoreboardAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +103,6 @@ public class GameBoardActivity extends AppCompatActivity {
         // TODO: CHECK THIS FURTHER, JUST AN IDEA AS OF RIGHT NOW
         roadCalculator = new PointCalculator(gameBoard);
 
-
 //        Set up the grid view
         gridView.setScaleX(3.0f);
         gridView.setScaleY(3.0f);
@@ -115,6 +120,14 @@ public class GameBoardActivity extends AppCompatActivity {
         List<Long> allPlayersInLobby = mapperHelper.getListFromJsonString(intent.getStringExtra("ALL_PLAYERS"));
 
         gameBoard.initGamePoints(allPlayersInLobby);
+
+        List<Player> playerList = (List<Player>) getIntent().getSerializableExtra("playerList");
+        // initialize playerPoints with 0 points for each player
+        for (Player player : playerList) {
+            playerPoints.put(player.getUsername(), 0);
+        }
+        adapter = new ScoreboardAdapter(playerPoints, playerList);
+
 
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
@@ -144,6 +157,17 @@ public class GameBoardActivity extends AppCompatActivity {
          */
         gameSessionViewModel.finishedTurnLiveData().observe(this, finishedTurnDto -> {
             if (finishedTurnDto != null) {
+
+                Map<Long, Integer> newPoints = finishedTurnDto.getPoints();
+                for (Player player : playerList) {
+                    if (newPoints.containsKey(player.getId())) {
+                        playerPoints.put(player.getUsername(), newPoints.get(player.getId()));
+                    }
+                }
+
+                // Update the ScoreboardAdapter with the new player points
+                adapter.updatePlayerPoints(playerPoints);
+
                 gameBoard.updatePoints(finishedTurnDto);
                 updatePlayerPoints();
 
@@ -323,6 +347,34 @@ public class GameBoardActivity extends AppCompatActivity {
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
 
 
+        // Show the scoreboard in a dialog
+        Button showScoreboardButton = findViewById(R.id.button_show_scoreboard);
+        showScoreboardButton.setOnClickListener(v -> {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(GameBoardActivity.this);
+            LayoutInflater inflater = getLayoutInflater();
+            View view = inflater.inflate(R.layout.scoreboard_dialog, null);
+            builder.setView(view);
+
+            // RecyclerView in dialog:
+            RecyclerView scoreboardList = view.findViewById(R.id.scoreboard_list);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            scoreboardList.setLayoutManager(layoutManager); // Set the layout manager
+            scoreboardList.setAdapter(adapter);
+
+
+            // Create the AlertDialog instance
+            AlertDialog dialog = builder.create();
+
+            // Button in dialog to close it
+            Button closeButton = view.findViewById(R.id.button_close_scoreboard);
+            closeButton.setOnClickListener(v1 -> {
+                // Dismiss the dialog when the close button is clicked
+                dialog.dismiss();
+            });
+
+            dialog.show();
+        });
     }
 
     private void updatePlayerPoints() {
@@ -463,6 +515,7 @@ public class GameBoardActivity extends AppCompatActivity {
                     int yToPlace = gameboardAdapter.getToPlaceCoordinates().getYPosition();
                     PlacedTileDto placedTileDto = new PlacedTileDto(currentPlayer.getGameSessionId(), tileToPlace.getId(), new Coordinates(xToPlace, yToPlace), tileToPlace.getRotation(), placedMeeple);
                     gameSessionViewModel.sendPlacedTile(placedTileDto);
+
                 }
 
                 gameboardAdapter.setCanPlaceMeeple(false);

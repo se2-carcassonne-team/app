@@ -33,6 +33,10 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
         this.playerList = playerList;
     }
 
+    public List<Player> getPlayerList() {
+        return playerList;
+    }
+
     public void updateDataWithLobby(String newPlayerList, String currentLobbyString) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {

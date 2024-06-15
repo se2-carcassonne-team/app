@@ -1,5 +1,6 @@
 package se2.carcassonne.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Player {
+public class Player implements Serializable {
    private Long id;
    private String username;
    private String sessionId;
