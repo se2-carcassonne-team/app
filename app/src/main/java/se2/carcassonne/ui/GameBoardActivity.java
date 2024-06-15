@@ -126,7 +126,7 @@ public class GameBoardActivity extends AppCompatActivity {
         for (Player player : playerList) {
             playerPoints.put(player.getUsername(), 0);
         }
-        adapter = new ScoreboardAdapter(playerPoints);
+        adapter = new ScoreboardAdapter(playerPoints, playerList);
 
 
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
