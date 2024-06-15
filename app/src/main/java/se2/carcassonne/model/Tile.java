@@ -42,7 +42,6 @@ public class Tile {
      * <p>3 = castle</p>
      * <p>4 = village</p>
      * <p>5 = monastery</p>
-     * TODO: more detailed?
      */
     private int[] features = new int[9];
 
@@ -180,7 +179,6 @@ public class Tile {
     public int[] rotatedFeatures(int rotation) {
         // rotate a 3x3 matrix by 90 degrees: transpose matrix & switch first and last columns
         // e.g. {1 2 3 4 5 6 7 8 9} --> {7 4 1 8 5 2 9 6 3}
-        // TODO: implement efficiently (hardcoded)
         switch (rotation){
             case 0: {
                 return getFeatures();

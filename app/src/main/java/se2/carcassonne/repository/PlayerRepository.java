@@ -1,7 +1,5 @@
 package se2.carcassonne.repository;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

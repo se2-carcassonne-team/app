@@ -1,8 +1,6 @@
 package se2.carcassonne.model;
 
 import java.util.HashMap;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;

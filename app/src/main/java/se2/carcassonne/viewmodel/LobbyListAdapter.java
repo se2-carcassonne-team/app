@@ -46,9 +46,8 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
             }
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
-//            TODO handle exception logging
-            e.printStackTrace();
             // Handle parsing exception if needed
+            return;
         }
     }
 
@@ -59,7 +58,8 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
             lobbyList.add(lobbyToAdd);
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            // Handle parsing exception if needed
+            return;
         }
     }
 
@@ -86,7 +86,6 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
 
 
     public static class LobbyViewHolder extends RecyclerView.ViewHolder {
-        private final CardView cardView;
         private final TextView lobbyNameTextView;
         private final TextView currentPlayersTextView;
         private Lobby currentLobby;
@@ -94,7 +93,7 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
 
         public LobbyViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
-            cardView = itemView.findViewById(R.id.cardView);
+            CardView cardView = itemView.findViewById(R.id.cardView);
             lobbyNameTextView = itemView.findViewById(R.id.lobbyNameTextView);
             currentPlayersTextView = itemView.findViewById(R.id.currentPlayersTextView);
 

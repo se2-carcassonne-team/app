@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import se2.carcassonne.model.Lobby;
@@ -184,7 +187,8 @@ public class MapperHelper {
         try {
             return mapper.readValue(jsonString, new TypeReference<List<Long>>() {});
         } catch (JsonProcessingException e) {
-            return null;  // Or handle the error in another way appropriate to your application
+            // return an empty list
+            return Collections.emptyList();
         }
     }
 }

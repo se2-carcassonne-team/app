@@ -18,12 +18,12 @@ import se2.carcassonne.model.Player;
 
 public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.ViewHolder> {
 
-    private final List<Map.Entry<String, Integer>> playerPoints;
+    private final List<Map.Entry<String, Integer>> playersPoints;
 
     private final List<Player> playerList;
 
-    public ScoreboardAdapter(Map<String, Integer> playerPoints, List<Player> playerList) {
-        this.playerPoints = new ArrayList<>(playerPoints.entrySet());
+    public ScoreboardAdapter(Map<String, Integer> playersPoints, List<Player> playerList) {
+        this.playersPoints = new ArrayList<>(playersPoints.entrySet());
         this.playerList = playerList;
     }
 
@@ -37,7 +37,7 @@ public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // get the current entry
-        Map.Entry<String, Integer> playerPoints = this.playerPoints.get(position);
+        Map.Entry<String, Integer> playerPoints = this.playersPoints.get(position);
 
         // set text of playerNameTextView and playerPointsTextView using the player's name and points from the current entry
         holder.playerNameTextView.setText(playerPoints.getKey());
@@ -62,7 +62,7 @@ public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return playerPoints.size();
+        return playersPoints.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -79,8 +79,8 @@ public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.Vi
     }
 
     public void updatePlayerPoints(Map<String, Integer> newPlayerPoints) {
-        this.playerPoints.clear();
-        this.playerPoints.addAll(newPlayerPoints.entrySet());
+        this.playersPoints.clear();
+        this.playersPoints.addAll(newPlayerPoints.entrySet());
         notifyDataSetChanged();
     }
 }

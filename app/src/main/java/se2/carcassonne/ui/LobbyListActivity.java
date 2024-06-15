@@ -17,12 +17,12 @@ import se2.carcassonne.viewmodel.LobbyViewModel;
 
 public class LobbyListActivity extends AppCompatActivity {
     LobbyListActivityBinding binding;
-    private LobbyListAdapter adapter;
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
     private LobbyViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LobbyListAdapter adapter;
         super.onCreate(savedInstanceState);
         binding = LobbyListActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -35,7 +35,7 @@ public class LobbyListActivity extends AppCompatActivity {
 
         viewModel = new LobbyViewModel();
 
-        viewModel.getListOfAllLobbiesLiveData().observe(this, lobbyList -> adapter.updateData(lobbyList));
+        viewModel.getListOfAllLobbiesLiveData().observe(this, adapter::updateData);
 
         viewModel.getAllLobbies();
 

@@ -67,15 +67,13 @@ public class GameBoardActivity extends AppCompatActivity {
     private GameBoard gameBoard;
     private ImageView previewTileToPlace;
     private GameSessionViewModel gameSessionViewModel;
-    private Intent intent;
     private Button zoomInBtn;
     private Button zoomOutBtn;
     private PointCalculator roadCalculator;
-    private MapperHelper mapperHelper;
-    private GameSessionRepository gameSessionRepository;
     Animation scaleAnimation = null;
+    private static final String DRAWABLE = "drawable";
 
-    private Map<String, Integer> playerPoints = new HashMap<>();
+    private final Map<String, Integer> playerPoints = new HashMap<>();
     private ScoreboardAdapter adapter;
 
     @Override
@@ -95,12 +93,11 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
         objectMapper = new ObjectMapper();
-        mapperHelper = new MapperHelper();
+        MapperHelper mapperHelper = new MapperHelper();
         currentPlayer = PlayerRepository.getInstance().getCurrentPlayer();
 
 //        Create a new game board and place a random tile on it
         gameBoard = new GameBoard();
-        // TODO: CHECK THIS FURTHER, JUST AN IDEA AS OF RIGHT NOW
         roadCalculator = new PointCalculator(gameBoard);
 
 //        Set up the grid view
@@ -111,18 +108,18 @@ public class GameBoardActivity extends AppCompatActivity {
 //        Instantiate gameBoardActivityViewModel
         gameSessionViewModel = new GameSessionViewModel();
 
-        gameSessionRepository = GameSessionRepository.getInstance();
+        GameSessionRepository gameSessionRepository = GameSessionRepository.getInstance();
 
 //        Get the next turn message from the previous activity
-        intent = getIntent();
+        Intent intent = getIntent();
         String currentLobbyAdmin = intent.getStringExtra("LOBBY_ADMIN_ID");
-        Long currentLobbyId = Long.parseLong(Objects.requireNonNull(intent.getStringExtra("LOBBY_ID")));
         List<Long> allPlayersInLobby = mapperHelper.getListFromJsonString(intent.getStringExtra("ALL_PLAYERS"));
 
         gameBoard.initGamePoints(allPlayersInLobby);
 
         List<Player> playerList = (List<Player>) getIntent().getSerializableExtra("playerList");
         // initialize playerPoints with 0 points for each player
+        assert playerList != null;
         for (Player player : playerList) {
             playerPoints.put(player.getUsername(), 0);
         }
@@ -134,7 +131,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
         String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
-        binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, "drawable", getPackageName()));
+        binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, DRAWABLE, getPackageName()));
 
         binding.tvPlayerPoints.setText(String.valueOf(currentPlayer.getPoints()));
 
@@ -174,8 +171,6 @@ public class GameBoardActivity extends AppCompatActivity {
                 // Remove meeples and get the count of removed meeples
                 Map<Long, Integer> removedMeeplesMap = gameBoard.finishedTurnRemoveMeeplesOnRoad(finishedTurnDto.getPlayersWithMeeples());
 
-                // TODO: MEEPLE COUNT SHALL ONLY BE UPDATED FOR THE PERSON WHOSE MEEPLES HAVE BEEN REMOVED FROM THE BOARD
-
                 // Update the meeple count only if the current player's meeples were removed
                 if (removedMeeplesMap.containsKey(currentPlayer.getId())) {
                     Integer meeplesRemovedForCurrentPlayer = removedMeeplesMap.get(currentPlayer.getId());
@@ -213,7 +208,7 @@ public class GameBoardActivity extends AppCompatActivity {
                     tileToPlace = gameBoard.getAllTiles().get(Math.toIntExact(nextTurn.getTileId()));
                     if (!gameBoard.hasValidPositionForAnyRotation(tileToPlace)) {
                         previewTileToPlace.setImageResource(
-                                getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
+                                getResources().getIdentifier(tileToPlace.getImageName() + "_0", DRAWABLE, getPackageName()));
 
                         // Display a Toast or some notification to the user
                         Toast.makeText(this, "No valid positions to place tile. Next turn will start shortly.", Toast.LENGTH_SHORT).show();
@@ -226,7 +221,7 @@ public class GameBoardActivity extends AppCompatActivity {
                         gameboardAdapter.setYourTurn(true);
                         gameboardAdapter.setTileToPlace(tileToPlace);
                         previewTileToPlace.setImageResource(
-                                getResources().getIdentifier(tileToPlace.getImageName() + "_0", "drawable", getPackageName()));
+                                getResources().getIdentifier(tileToPlace.getImageName() + "_0", DRAWABLE, getPackageName()));
                         binding.buttonConfirmTilePlacement.setVisibility(View.VISIBLE);
                         binding.buttonRotateClockwise.setVisibility(View.VISIBLE);
                         binding.buttonRotateCounterClockwise.setVisibility(View.VISIBLE);
@@ -368,10 +363,10 @@ public class GameBoardActivity extends AppCompatActivity {
 
             // Button in dialog to close it
             Button closeButton = view.findViewById(R.id.button_close_scoreboard);
-            closeButton.setOnClickListener(v1 -> {
+            closeButton.setOnClickListener(v1 ->
                 // Dismiss the dialog when the close button is clicked
-                dialog.dismiss();
-            });
+                dialog.dismiss()
+            );
 
             dialog.show();
         });
@@ -389,7 +384,6 @@ public class GameBoardActivity extends AppCompatActivity {
     protected void onResume() {
         Log.e("GameBoardActivity", "onResume");
         super.onResume();
-        //gameSessionViewModel = new GameSessionViewModel();
     }
 
     @Override
@@ -498,7 +492,6 @@ public class GameBoardActivity extends AppCompatActivity {
         binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
             if (gameboardAdapter.isYourTurn() && gameboardAdapter.getMeepleCount() > 0) {
                 if (meepleAdapter.getPlaceMeepleCoordinates() != null) {
-                    // TODO: Dynamically adjust player color - done?
                     Meeple placedMeeple = new Meeple();
                     placedMeeple.setColor(currentPlayer.getPlayerColour());
                     placedMeeple.setPlayerId(currentPlayer.getId());
@@ -550,7 +543,6 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 
-    // TODO : REMOVE MEEPLES FROM ROAD RESULT THAT ARE NOT ON A ROAD
     private void calculatePointsForCurrentTurn() {
         if (tileToPlace == null) return;
 
@@ -572,7 +564,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void hideMeepleGrid() {
         binding.overlayGridview.setVisibility(View.GONE);
-        // gameboardAdapter.notifyDataSetChanged();
     }
 
     private void zoomOut() {
