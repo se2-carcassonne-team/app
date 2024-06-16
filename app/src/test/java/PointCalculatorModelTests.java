@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-public class PointCalculatorModelTests {
+class PointCalculatorModelTests {
     private GameBoard gameBoard;
     private Tile[][] gameBoardMatrix;
     @BeforeEach
@@ -275,7 +275,7 @@ public class PointCalculatorModelTests {
     }
 
     @Test
-    public void quadrupleJunction(){
+    void quadrupleJunction(){
         PointCalculator calculator = new PointCalculator(gameBoard);
 
         // Large junction to the left of start tile
@@ -322,7 +322,7 @@ public class PointCalculatorModelTests {
     }
 
     @Test
-    public void parallelStreets(){
+    void parallelStreets(){
         PointCalculator calculator = new PointCalculator(gameBoard);
 
         // Large junction to the right of start tile
@@ -345,7 +345,7 @@ public class PointCalculatorModelTests {
 
     //https://aauklagenfurt-my.sharepoint.com/:b:/g/personal/philippar_edu_aau_at/EXHyN-Is1ytFs1ipZ_Yy884BWovwT5BOO17p5RwFjX3nyw?e=V90GBp
     @Test
-    public void hugeJunctionConnectedWithJunctionFromEachSide(){
+    void hugeJunctionConnectedWithJunctionFromEachSide(){
         PointCalculator calculator = new PointCalculator(gameBoard);
 
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(13, 12));
@@ -405,7 +405,7 @@ public class PointCalculatorModelTests {
     }
 
     @Test
-    public void testRoadMeepleRecognitionForOneMeepleOnRoad(){
+    void testRoadMeepleRecognitionForOneMeepleOnRoad(){
         PointCalculator calculator = new PointCalculator(gameBoard);
         // Meeple on start tile
         Meeple meeple = new Meeple(1L, PlayerColour.RED, 1L, true, new Coordinates(1,1));
@@ -429,7 +429,7 @@ public class PointCalculatorModelTests {
     }
 
     @Test
-    public void testRoadMeepleRecognitionForTwoMeeplesOnSameRoad(){
+    void testRoadMeepleRecognitionForTwoMeeplesOnSameRoad(){
         PointCalculator pointCalculator = new PointCalculator(gameBoard);
         // Meeple on start tile for Player 1
         Meeple meeple1 = new Meeple(1L, PlayerColour.RED, 1L, true, new Coordinates(1,1));
@@ -479,7 +479,7 @@ public class PointCalculatorModelTests {
     }
 
     @Test
-    public void recognizeCycleThatCompletesRoad(){
+    void recognizeCycleThatCompletesRoad(){
         PointCalculator pointCalculator = new PointCalculator(gameBoard);
         // Downward going curve to the right of start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(59), new Coordinates(13, 12));
@@ -501,7 +501,7 @@ public class PointCalculatorModelTests {
     }
 
 //    @Test
-//    public void meepleNotActuallyOnRoadButOnCompletedRoad(){
+//    void meepleNotActuallyOnRoadButOnCompletedRoad(){
 //        PointCalculator pointCalculator = new PointCalculator(gameBoard);
 //
 //        // Junction to the left of start tile
@@ -529,7 +529,7 @@ public class PointCalculatorModelTests {
 //
 //
 //    @Test
-//    public void meepleOnMonasteryRoadRecognition() {
+//    void meepleOnMonasteryRoadRecognition() {
 //        PointCalculator pointCalculator = new PointCalculator(gameBoard);
 //
 //        gameBoard.getAllTiles().get(49).setRotation(1);

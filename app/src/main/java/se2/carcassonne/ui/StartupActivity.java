@@ -2,7 +2,6 @@ package se2.carcassonne.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,8 +14,6 @@ import se2.carcassonne.databinding.StartupActivityBinding;
 import se2.carcassonne.helper.animation.AnimationHelper;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
-import se2.carcassonne.model.Player;
-import se2.carcassonne.repository.PlayerRepository;
 
 public class StartupActivity extends AppCompatActivity {
     StartupActivityBinding binding;

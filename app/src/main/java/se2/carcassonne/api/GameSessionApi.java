@@ -5,19 +5,15 @@ import android.util.Log;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.model.FinishedTurnDto;
-import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Scoreboard;
 
 public class GameSessionApi {
     private final ObjectMapper objectMapper;
     private final WebSocketClient webSocketClient;
+    private static final String TAG = "GameSessionApi";
 
 
     public GameSessionApi() {
@@ -29,7 +25,7 @@ public class GameSessionApi {
         try {
             webSocketClient.sendMessage("/app/next-turn", objectMapper.writeValueAsString(gameSessionId));
         } catch (Exception e) {
-            Log.e("GameSessionApi", "Error sending next turn message", e);
+            Log.e(TAG, "Error sending next turn message", e);
         }
     }
 
@@ -37,7 +33,7 @@ public class GameSessionApi {
         try {
             webSocketClient.sendMessage("/app/place-tile", objectMapper.writeValueAsString(placedTileDto));
         } catch (Exception e) {
-            Log.e("GameSessionApi", "Error sending placed tile message", e);
+            Log.e(TAG, "Error sending placed tile message", e);
         }
     }
 
@@ -53,7 +49,7 @@ public class GameSessionApi {
         try {
             webSocketClient.sendMessage("/app/scoreboard", objectMapper.writeValueAsString(scoreboard));
         } catch (Exception e) {
-            Log.e("GameSessionApi", "Error sending scoreboard message", e);
+            Log.e(TAG, "Error sending scoreboard message", e);
         }
     }
 }

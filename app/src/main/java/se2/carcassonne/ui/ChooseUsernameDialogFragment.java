@@ -22,8 +22,6 @@ import se2.carcassonne.viewmodel.PlayerViewModel;
 public class ChooseUsernameDialogFragment extends DialogFragment {
     private final PlayerViewModel playerViewModel;
     private LiveData<String> userAlreadyExistsLiveData;
-    private LiveData<String> invalidUsernameLiveData;
-    private LiveData<String> messageLiveData;
 
     public ChooseUsernameDialogFragment(PlayerViewModel playerViewModel){
         this.playerViewModel = playerViewModel;
@@ -40,8 +38,8 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
         Button chooseUsernameStartGameButton = dialogView.findViewById(R.id.btnConfirmUsername);
 
         userAlreadyExistsLiveData = playerViewModel.getUserAlreadyExistsErrorMessage();
-        invalidUsernameLiveData = playerViewModel.getInvalidUsernameErrorMessage();
-        messageLiveData = playerViewModel.getMessageLiveData();
+        LiveData<String> invalidUsernameLiveData = playerViewModel.getInvalidUsernameErrorMessage();
+        LiveData<String> messageLiveData = playerViewModel.getMessageLiveData();
 
         userAlreadyExistsLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
         invalidUsernameLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());

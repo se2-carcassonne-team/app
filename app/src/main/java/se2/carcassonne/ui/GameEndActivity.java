@@ -1,10 +1,6 @@
 package se2.carcassonne.ui;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-import android.app.Activity;
-
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.GameEndActivityBinding;
 
-import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 
 import se2.carcassonne.viewmodel.LobbyViewModel;

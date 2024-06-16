@@ -50,12 +50,6 @@ public class GameBoard {
 
         tile.setCoordinates(coordinates);
 
-        /*
-        // place the tile on the gameBoardMatrix with respect to rotation
-         */
-
-        //tile.setFeatures(tile.rotatedFeatures(tile.getRotation()));
-
         // place the tile on the gameBoardMatrix
         gameBoardMatrix[x][y] = tile;
 

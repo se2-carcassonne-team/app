@@ -4,10 +4,10 @@ import java.sql.Timestamp;
 
 import se2.carcassonne.model.Lobby;
 
-public class LobbyModelTests {
+class LobbyModelTests {
 
     @Test
-    public void testToJsonString() {
+    void testToJsonString() {
         Timestamp timestamp = Timestamp.valueOf("2024-04-25 12:00:00");
         // Create a sample Lobby object
         Lobby lobby = new Lobby();
