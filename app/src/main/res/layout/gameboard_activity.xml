@@ -195,13 +195,47 @@
         app:layout_constraintStart_toStartOf="@id/preview_tile_to_place"
         app:layout_constraintTop_toTopOf="@id/preview_tile_to_place" />
 
+    <Button
+        android:id="@+id/leavegamebtn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="40dp"
+
+        android:background="@drawable/road_occupied"
+        app:layout_constraintBottom_toTopOf="@+id/left_scrl_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settingsBtn" />
+
+    <Button
+        android:id="@+id/settingsBtn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="175dp"
+        android:background="@drawable/settings_button"
+        app:layout_constraintBottom_toTopOf="@+id/left_scrl_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvMeepleCount" />
+
+    <Button
+        android:id="@+id/muteBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/mute_button"
+        app:layout_constraintBottom_toTopOf="@+id/left_scrl_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/leavegamebtn" />
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.25" />
+        app:layout_constraintGuide_begin="183dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

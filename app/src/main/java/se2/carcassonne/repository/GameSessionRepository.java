@@ -18,6 +18,7 @@ import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.NextTurn;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Scoreboard;
+import se2.carcassonne.model.Player;
 
 @Getter
 public class GameSessionRepository {
@@ -44,6 +45,10 @@ public class GameSessionRepository {
             instance = new GameSessionRepository();
         }
         return instance;
+    }
+    public void leavegamesession(Player player){
+        gameSessionApi.leaveGame(player);
+
     }
 
     /**

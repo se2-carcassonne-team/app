@@ -2,6 +2,7 @@ package se2.carcassonne.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -35,6 +36,7 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.mapper.MapperHelper;
+import se2.carcassonne.helper.music.MusicPlayer;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.FinishedTurnDto;
@@ -74,7 +76,11 @@ public class GameBoardActivity extends AppCompatActivity {
     private MapperHelper mapperHelper;
     private GameSessionRepository gameSessionRepository;
     Animation scaleAnimation = null;
-
+    private boolean settingsVisible = false;
+    private boolean isMuted = false;
+    private Button settingsButton;
+    private Button muteButton;
+    private Button leaveGameButton;
     private Map<String, Integer> playerPoints = new HashMap<>();
     private ScoreboardAdapter adapter;
 
@@ -143,7 +149,7 @@ public class GameBoardActivity extends AppCompatActivity {
          * placed tile observable
          */
         gameSessionViewModel.getPlacedTileLiveData().observe(this, tilePlaced -> {
-            if(tilePlaced != null) {
+            if (tilePlaced != null) {
                 Tile tilePlacedByOtherPlayer = gameboardAdapter.getGameBoard().getAllTiles().get(Math.toIntExact(tilePlaced.getTileId()));
                 tilePlacedByOtherPlayer.setRotation(tilePlaced.getRotation());
                 tilePlacedByOtherPlayer.setPlacedMeeple(tilePlaced.getPlacedMeeple());
@@ -191,12 +197,11 @@ public class GameBoardActivity extends AppCompatActivity {
         });
 
 
-
         /*
          * next turn observable
          */
         gameSessionViewModel.getNextTurnMessageLiveData().observe(this, nextTurn -> {
-            if (nextTurn != null){
+            if (nextTurn != null) {
                 if (Objects.equals(nextTurn.getPlayerId(), currentPlayer.getId())) {
                     Vibrator vibrator;
                     if (android.os.Build.VERSION.SDK_INT >= 31) {
@@ -289,11 +294,11 @@ public class GameBoardActivity extends AppCompatActivity {
             if (scoreboard != null) {
                 Intent gameEndIntent = new Intent(this, GameEndActivity.class);
 
-            List<String> topThree = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
+                List<String> topThree = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
 
-            for (int i = 0; i < topThree.size(); i++) {
-                gameEndIntent.putExtra("PLAYER" + i, topThree.get(i));
-            }
+                for (int i = 0; i < topThree.size(); i++) {
+                    gameEndIntent.putExtra("PLAYER" + i, topThree.get(i));
+                }
 
                 startActivity(gameEndIntent);
             }
@@ -345,6 +350,27 @@ public class GameBoardActivity extends AppCompatActivity {
         zoomOut();
 
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
+
+        // Settings Button und die neuen Buttons initialisieren
+        settingsButton = findViewById(R.id.settingsBtn);
+        // Button Musik muten
+        muteButton = findViewById(R.id.muteBtn);
+        // Button zum Verlassen des Spiels
+        leaveGameButton = findViewById(R.id.leavegamebtn);
+
+        leaveGameButton.setVisibility(View.GONE);
+        muteButton.setVisibility(View.GONE);
+        setupPopUp();
+        // Set up leave game button
+        setupLeaveGameButton();
+        // Mute the music
+        // Setze den Klick-Listener für den Mute-Button
+        muteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MusicPlayer.toggleMute();
+            }
+        });
 
 
         // Show the scoreboard in a dialog
@@ -667,5 +693,39 @@ public class GameBoardActivity extends AppCompatActivity {
                 gameboardAdapter.setCurrentTileRotation(tileToPlace);
             }
         });
+
     }
-}
+
+    private void setupLeaveGameButton() {
+        leaveGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameSessionViewModel.leavegamesession(currentPlayer);
+
+
+                Intent intent = new Intent(GameBoardActivity.this, GameLobbyActivity.class);
+                //intent.putExtra("LOBBY", currentLobby.toJsonString());
+
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    private void setupPopUp() {
+        settingsButton.setOnClickListener(v -> {
+            if (settingsVisible) {
+                // Wenn die Buttons sichtbar sind, dann verstecke sie
+                leaveGameButton.setVisibility(View.GONE);
+                muteButton.setVisibility(View.GONE);
+                settingsVisible = false;
+            } else {
+                // Wenn die Buttons nicht sichtbar sind, dann zeige sie an
+                leaveGameButton.setVisibility(View.VISIBLE);
+                muteButton.setVisibility(View.VISIBLE);
+                settingsVisible = true;
+            }
+        });
+    }
+
+    }

@@ -14,6 +14,7 @@ import se2.carcassonne.model.FinishedTurnDto;
 import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Scoreboard;
+import se2.carcassonne.model.Player;
 
 public class GameSessionApi {
     private final ObjectMapper objectMapper;
@@ -32,8 +33,15 @@ public class GameSessionApi {
             Log.e("GameSessionApi", "Error sending next turn message", e);
         }
     }
-
-    public void sendPlacedTile(PlacedTileDto placedTileDto) {
+    public void leaveGame(Player player) {
+        try {
+            String message = objectMapper.writeValueAsString(player);
+            webSocketClient.sendMessage("/app/player-leave-gamesession", message);
+        } catch (Exception e) {
+            Log.e("GameSessionApi", "Error leave game message", e);
+        }
+    }
+    public void sendPlacedTile(PlacedTileDto placedTileDto){
         try {
             webSocketClient.sendMessage("/app/place-tile", objectMapper.writeValueAsString(placedTileDto));
         } catch (Exception e) {
