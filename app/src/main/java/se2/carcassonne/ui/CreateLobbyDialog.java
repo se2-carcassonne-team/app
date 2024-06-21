@@ -14,14 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.LiveData;
 
 import java.sql.Timestamp;
 
 import se2.carcassonne.R;
 import se2.carcassonne.model.Lobby;
-import se2.carcassonne.viewmodel.LobbyViewModel;
 import se2.carcassonne.repository.PlayerRepository;
+import se2.carcassonne.viewmodel.LobbyViewModel;
 
 public class CreateLobbyDialog extends DialogFragment {
     private final LobbyViewModel lobbyViewmodel;

@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import se2.carcassonne.ui.InLobbyActivity;
 import se2.carcassonne.R;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.model.GameState;
 import se2.carcassonne.model.Lobby;
+import se2.carcassonne.ui.InLobbyActivity;
 
 public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.LobbyViewHolder> {
     private List<Lobby> lobbyList;
@@ -47,7 +47,6 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
             // Handle parsing exception if needed
-            return;
         }
     }
 
@@ -59,7 +58,6 @@ public class LobbyListAdapter extends RecyclerView.Adapter<LobbyListAdapter.Lobb
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
             // Handle parsing exception if needed
-            return;
         }
     }
 

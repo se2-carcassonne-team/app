@@ -8,9 +8,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.GameEndActivityBinding;
-
 import se2.carcassonne.helper.resize.FullscreenHelper;
-
 import se2.carcassonne.viewmodel.LobbyViewModel;
 import se2.carcassonne.viewmodel.PlayerViewModel;
 
