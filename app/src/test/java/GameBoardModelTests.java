@@ -204,8 +204,8 @@ class GameBoardModelTests {
         List<String> topPlayers = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
 
         assertEquals(2, topPlayers.size());
-        assertEquals("Player1", topPlayers.get(0));
-        assertEquals("Player2", topPlayers.get(1));
+        assertEquals("Player1 (40 points)", topPlayers.get(0));
+        assertEquals("Player2 (30 points)", topPlayers.get(1));
     }
 
     @Test
@@ -227,9 +227,9 @@ class GameBoardModelTests {
         List<String> topPlayers = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
 
         assertEquals(3, topPlayers.size());
-        assertEquals("Player1", topPlayers.get(0));
-        assertEquals("Player2", topPlayers.get(1));
-        assertEquals("Player3", topPlayers.get(2));
+        assertEquals("Player1 (40 points)", topPlayers.get(0));
+        assertEquals("Player2 (30 points)", topPlayers.get(1));
+        assertEquals("Player3 (20 points)", topPlayers.get(2));
     }
 
     @Test
@@ -252,9 +252,9 @@ class GameBoardModelTests {
         List<String> topPlayers = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
 
         assertEquals(3, topPlayers.size());
-        assertTrue(topPlayers.contains("Player1"));
-        assertTrue(topPlayers.contains("Player2"));
-        assertTrue(topPlayers.contains("Player3"));
+        assertTrue(topPlayers.contains("Player1 (30 points)"));
+        assertTrue(topPlayers.contains("Player2 (30 points)"));
+        assertTrue(topPlayers.contains("Player3 (30 points)"));
     }
 
 
