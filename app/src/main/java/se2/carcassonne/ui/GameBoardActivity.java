@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -133,7 +134,7 @@ public class GameBoardActivity extends AppCompatActivity {
         String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
         binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, DRAWABLE, getPackageName()));
 
-        binding.tvPlayerPoints.setText(String.valueOf(currentPlayer.getPoints()));
+        //binding.tvPlayerPoints.setText(String.valueOf(currentPlayer.getPoints()));
 
 
         /*
@@ -278,7 +279,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
         /*
-         * scoreboard observable, go to scoreboard screen
+         * scoreboard observable, go to end-game (winners) screen
          */
         gameSessionViewModel.scoreboardLiveData().observe(this, scoreboard -> {
             if (scoreboard != null) {
@@ -342,7 +343,7 @@ public class GameBoardActivity extends AppCompatActivity {
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
 
 
-        // Show the scoreboard in a dialog
+        // Show the current scoreboard in a dialog
         Button showScoreboardButton = findViewById(R.id.button_show_scoreboard);
         showScoreboardButton.setOnClickListener(v -> {
 
@@ -370,6 +371,15 @@ public class GameBoardActivity extends AppCompatActivity {
 
             dialog.show();
         });
+
+        // Handle back button press
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Display a toast instead of calling super.handleOnBackPressed()
+                Toast.makeText(GameBoardActivity.this, "leave the game via red X button instead", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updatePlayerPoints() {
@@ -377,7 +387,8 @@ public class GameBoardActivity extends AppCompatActivity {
         if (points == null) {
             points = 0;  // Assume 0 points if none are found
         }
-        binding.tvPlayerPoints.setText(String.valueOf(points));
+        // Note: commented out, looks nicer since we have a scoreboard now
+        //binding.tvPlayerPoints.setText(String.valueOf(points));
     }
 
     @Override
@@ -404,10 +415,13 @@ public class GameBoardActivity extends AppCompatActivity {
         Log.e("GameBoardActivity", "onDestroy");
         super.onDestroy();
 
+        currentPlayer.setPoints(0);
+
         gameSessionViewModel.gameEndedLiveData().postValue(false);
         gameSessionViewModel.scoreboardLiveData().postValue(null);
         gameSessionViewModel.getNextTurnMessageLiveData().postValue(null);
         gameSessionViewModel.getPlacedTileLiveData().postValue(null);
+        gameSessionViewModel.finishedTurnLiveData().postValue(null);
     }
 
     private void moveButtonsRight() {

@@ -1,8 +1,6 @@
 package se2.carcassonne.model;
 
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -260,16 +258,15 @@ public class PointCalculator {
         int totalPoints = uniqueTiles.size() * POINTS_ROAD;
 
         // Distribute points to each player based on their meeples on the road
-        playersWithMeeples.forEach((playerId, meeples) -> {
-            playerPoints.put(playerId, totalPoints);
-        });
+        playersWithMeeples.forEach((playerId, meeples) ->
+            playerPoints.put(playerId, totalPoints)
+        );
 
         return playerPoints;
     }
 
 
     private Map<Long, List<Meeple>> findPlayersWithMeeplesOnRoad(List<Tile> roadTiles) {
-        //Log.e("RoadResult", "----------------------------------");
         Map<Long, List<Meeple>> playersWithMeeples = new HashMap<>();
         for (Tile tile : roadTiles) {
             Meeple meeple = tile.getPlacedMeeple();

@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.R;

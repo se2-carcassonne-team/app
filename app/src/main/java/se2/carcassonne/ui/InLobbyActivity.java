@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,10 +26,10 @@ import se2.carcassonne.model.GameState;
 import se2.carcassonne.model.Lobby;
 import se2.carcassonne.model.Player;
 import se2.carcassonne.repository.GameSessionRepository;
+import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
 import se2.carcassonne.viewmodel.LobbyViewModel;
 import se2.carcassonne.viewmodel.PlayerListAdapter;
-import se2.carcassonne.repository.PlayerRepository;
 
 public class InLobbyActivity extends AppCompatActivity {
     InLobbyActivityBinding binding;
@@ -77,9 +78,9 @@ public class InLobbyActivity extends AppCompatActivity {
                 finish();
             }
         });
-        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> {
-                    adapter.updateDataWithLobby(playerList, intent.getStringExtra("LOBBY"));
-        });
+        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList ->
+                    adapter.updateDataWithLobby(playerList, intent.getStringExtra("LOBBY"))
+        );
         lobbyViewmodel.getPlayerJoinsOrLeavesLobbyLiveData().observe(this, adapter::updateData);
         lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().observe(this, newGameLobby -> {
             if (newGameLobby != null && !newGameLobby.startsWith("RESET")) {
@@ -133,6 +134,15 @@ public class InLobbyActivity extends AppCompatActivity {
         binding.gameLobbyLeaveBtn.setOnClickListener(view -> lobbyViewmodel.leaveLobby());
 
         lobbyViewmodel.getAllPlayers(currentLobby.get());
+
+        // Handle back button press
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // execute leave-lobby logic
+                lobbyViewmodel.leaveLobby();
+            }
+        });
     }
 
     @Override
