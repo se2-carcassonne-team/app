@@ -278,7 +278,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
         /*
-         * scoreboard observable, go to scoreboard screen
+         * scoreboard observable, go to end-game (winners) screen
          */
         gameSessionViewModel.scoreboardLiveData().observe(this, scoreboard -> {
             if (scoreboard != null) {
@@ -342,7 +342,7 @@ public class GameBoardActivity extends AppCompatActivity {
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
 
 
-        // Show the scoreboard in a dialog
+        // Show the current scoreboard in a dialog
         Button showScoreboardButton = findViewById(R.id.button_show_scoreboard);
         showScoreboardButton.setOnClickListener(v -> {
 
@@ -405,10 +405,13 @@ public class GameBoardActivity extends AppCompatActivity {
         Log.e("GameBoardActivity", "onDestroy");
         super.onDestroy();
 
+        currentPlayer.setPoints(0);
+
         gameSessionViewModel.gameEndedLiveData().postValue(false);
         gameSessionViewModel.scoreboardLiveData().postValue(null);
         gameSessionViewModel.getNextTurnMessageLiveData().postValue(null);
         gameSessionViewModel.getPlacedTileLiveData().postValue(null);
+        gameSessionViewModel.finishedTurnLiveData().postValue(null);
     }
 
     private void moveButtonsRight() {
