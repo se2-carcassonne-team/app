@@ -43,5 +43,6 @@
     <string name="third_place">Third Place</string>
     <string name="main_menu">Main Menu</string>
     <string name="points">%d</string>
+    <string name="cheat">Cheat</string>
 
 </resources>

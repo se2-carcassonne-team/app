@@ -77,6 +77,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private final Map<String, Integer> playerPoints = new HashMap<>();
     private ScoreboardAdapter adapter;
 
+    private FinishedTurnDto finishedTurnDto;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.e("GameBoardActivity", "onCreate");
@@ -92,6 +94,7 @@ public class GameBoardActivity extends AppCompatActivity {
         //Bind all UI elements
         bindGameBoardUiElements();
 
+        finishedTurnDto = new FinishedTurnDto();
 
         objectMapper = new ObjectMapper();
         MapperHelper mapperHelper = new MapperHelper();
@@ -362,6 +365,18 @@ public class GameBoardActivity extends AppCompatActivity {
             // Create the AlertDialog instance
             AlertDialog dialog = builder.create();
 
+            // Hide cheat button if player cannot cheat
+            Button cheatButton = view.findViewById(R.id.button_cheat);
+            if(!PlayerRepository.getInstance().getCurrentPlayer().getCanCheat()) {
+                cheatButton.setVisibility(View.GONE);
+            }
+
+            cheatButton.setOnClickListener(v2 -> {
+                gameSessionViewModel.sendCheatRequest(PlayerRepository.getInstance().getCurrentPlayer().getId(), finishedTurnDto);
+                cheatButton.setVisibility(View.GONE);
+                PlayerRepository.getInstance().getCurrentPlayer().setCanCheat(false);
+            });
+
             // Button in dialog to close it
             Button closeButton = view.findViewById(R.id.button_close_scoreboard);
             closeButton.setOnClickListener(v1 ->
@@ -563,9 +578,21 @@ public class GameBoardActivity extends AppCompatActivity {
         // Calculate the potential changes resulting from placing this tile
         RoadResult roadResult = roadCalculator.getAllTilesThatArePartOfRoad(tileToPlace);
 
+
+
         if (roadResult.isRoadCompleted()) {
+
+            // Add cheat points if the player can cheat
+            for (Long playerId : roadResult.getPoints().keySet()) {
+                if(PlayerRepository.getInstance().getCurrentPlayer().getId().equals(playerId) && PlayerRepository.getInstance().getCurrentPlayer().getCanCheat()) {
+                    Integer points = roadResult.getPoints().get(playerId);
+                    Integer updatedPoints = points + gameSessionViewModel.getCheatPoints();
+                    roadResult.getPoints().put(playerId, updatedPoints);
+                }
+            }
+
             // Create the FinishedTurnDto with the results of the point calculation
-            FinishedTurnDto finishedTurnDto = new FinishedTurnDto(
+            finishedTurnDto = new FinishedTurnDto(
                     currentPlayer.getGameSessionId(),
                     roadResult.getPoints(),
                     roadResult.getPlayersWithMeeplesOnRoad()

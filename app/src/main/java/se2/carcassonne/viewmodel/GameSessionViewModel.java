@@ -23,6 +23,10 @@ public class GameSessionViewModel extends ViewModel {
         gameSessionRepository.getNextTurn(gameSessionId);
     }
 
+    public Integer getCheatPoints() {
+        return gameSessionRepository.getCheatPoints();
+    }
+
     public MutableLiveData<NextTurn> getNextTurnMessageLiveData() {
         return gameSessionRepository.getNextTurnLiveData();
     }
@@ -49,6 +53,10 @@ public class GameSessionViewModel extends ViewModel {
 
     public void sendScoreboardRequest(Scoreboard scoreboard){
         gameSessionRepository.forwardScoreboard(scoreboard);
+    }
+
+    public void sendCheatRequest(Long playerId, FinishedTurnDto finishedTurnDto) {
+        gameSessionRepository.sendCheatRequest(playerId, finishedTurnDto);
     }
 
     public MutableLiveData<Scoreboard> scoreboardLiveData(){

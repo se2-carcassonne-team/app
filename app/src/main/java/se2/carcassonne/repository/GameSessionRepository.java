@@ -1,5 +1,7 @@
 package se2.carcassonne.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,6 +31,7 @@ public class GameSessionRepository {
     private final MutableLiveData<Boolean> gameEndedLiveData = new MutableLiveData<>();
     private final MutableLiveData<Scoreboard> scoreboardLiveData = new MutableLiveData<>();
     private final MutableLiveData<FinishedTurnDto> finishedTurnLiveData = new MutableLiveData<>();
+    private Integer cheatPoints = 0;
     private final ObjectMapper objectMapper;
 
     private static final String TOPIC_GAMESESSION = "/topic/game-session-";
@@ -142,6 +145,18 @@ public class GameSessionRepository {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to parse JSON message for points for completed roads", e);
         }
+    }
+
+    public void cheatPointsReceived(String message) {
+        try {
+            cheatPoints = objectMapper.readValue(message, Integer.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to parse JSON message for cheat points", e);
+        }
+    }
+
+    public void sendCheatRequest(Long playerId, FinishedTurnDto finishedTurnDto) {
+        gameSessionApi.sendCheatRequest(playerId, finishedTurnDto);
     }
 
     /**

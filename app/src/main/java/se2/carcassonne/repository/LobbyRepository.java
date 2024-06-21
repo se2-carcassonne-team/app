@@ -12,6 +12,7 @@ import se2.carcassonne.api.LobbyApi;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.model.Lobby;
+import se2.carcassonne.model.Player;
 
 @RequiredArgsConstructor
 public class LobbyRepository {
@@ -113,6 +114,8 @@ public class LobbyRepository {
 
     private void playerReceivesGameStartMessage(String message) {
         gameToBeStartedLiveData.postValue(message);
+        Integer gameSessionId = mapperHelper.getSessionId(message);
+        webSocketClient.subscribeToTopic("/topic/game-session-" + gameSessionId + "/cheat-points", this::wrapper);
     }
 
     private void playerInLobbyReceivesUpdatedLobbyMessage(String message) {
@@ -147,12 +150,22 @@ public class LobbyRepository {
     }
 
     public void joinLobby(Lobby lobby){
+        Player currentPlayer = PlayerRepository.getInstance().getCurrentPlayer();
         webSocketClient.subscribeToQueue(QUEUE_RESPONSE, this::playerJoinsLobbyMessageReceived);
         webSocketClient.subscribeToQueue(QUEUE_ERRORS, this::playerJoinsLobbyMessageReceived);
         webSocketClient.subscribeToTopic(TOPIC_LOBBY+lobby.getId(), this::playerInLobbyReceivesJoinOrLeaveMessage);
         webSocketClient.subscribeToTopic(TOPIC_LOBBY+lobby.getId()+UPDATE, this::playerInLobbyReceivesUpdatedLobbyMessage);
         webSocketClient.subscribeToTopic(TOPIC_LOBBY+lobby.getId()+GAME_START, this::playerReceivesGameStartMessage);
-        lobbyApi.joinLobby(lobby.getId(), PlayerRepository.getInstance().getCurrentPlayer());
+        webSocketClient.subscribeToTopic(TOPIC_LOBBY + lobby.getId() + "/player-" +  currentPlayer.getId() + "/cheat", this::playerCanCheatMessageReceived);
+        lobbyApi.joinLobby(lobby.getId(), currentPlayer);
+    }
+
+    private void playerCanCheatMessageReceived(String message) {
+        PlayerRepository.getInstance().getCurrentPlayer().setCanCheat(true);
+    }
+
+    private void wrapper(String message) {
+        GameSessionRepository.getInstance().cheatPointsReceived(message);
     }
 
     private void playerJoinsLobbyMessageReceived(String message) {
