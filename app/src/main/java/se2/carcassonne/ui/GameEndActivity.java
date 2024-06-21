@@ -4,6 +4,7 @@ package se2.carcassonne.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.GameEndActivityBinding;
@@ -43,6 +44,16 @@ public class GameEndActivity extends AppCompatActivity {
             Intent nextIntent = new Intent(this, GameLobbyActivity.class);
             playerViewModel.resetCurrentPlayer();
             startActivity(nextIntent);
+        });
+
+        // Handle back button press
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent nextIntent = new Intent(GameEndActivity.this, GameLobbyActivity.class);
+                playerViewModel.resetCurrentPlayer();
+                startActivity(nextIntent);
+            }
         });
     }
 

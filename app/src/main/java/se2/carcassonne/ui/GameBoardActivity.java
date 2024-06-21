@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -369,6 +370,15 @@ public class GameBoardActivity extends AppCompatActivity {
             );
 
             dialog.show();
+        });
+
+        // Handle back button press
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Display a toast instead of calling super.handleOnBackPressed()
+                Toast.makeText(GameBoardActivity.this, "leave the game via red X button instead", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
