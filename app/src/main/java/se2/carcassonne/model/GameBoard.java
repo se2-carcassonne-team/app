@@ -204,7 +204,7 @@ public class GameBoard {
             Long playerId = sortedEntries.get(i).getKey();
             String playerName = playerIdToNameMap.get(playerId);
             if (playerName != null) {
-                topThreePlayerNames.add(playerName);
+                topThreePlayerNames.add(playerName+" ("+sortedEntries.get(i).getValue()+" points)");
             }
         }
 

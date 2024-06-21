@@ -133,7 +133,7 @@ public class GameBoardActivity extends AppCompatActivity {
         String resourceName = "meeple_" + currentPlayer.getPlayerColour().name().toLowerCase();
         binding.ivMeepleWithPlayerColor.setImageResource(getResources().getIdentifier(resourceName, DRAWABLE, getPackageName()));
 
-        binding.tvPlayerPoints.setText(String.valueOf(currentPlayer.getPoints()));
+        //binding.tvPlayerPoints.setText(String.valueOf(currentPlayer.getPoints()));
 
 
         /*
@@ -377,7 +377,8 @@ public class GameBoardActivity extends AppCompatActivity {
         if (points == null) {
             points = 0;  // Assume 0 points if none are found
         }
-        binding.tvPlayerPoints.setText(String.valueOf(points));
+        // Note: commented out, looks nicer since we have a scoreboard now
+        //binding.tvPlayerPoints.setText(String.valueOf(points));
     }
 
     @Override
