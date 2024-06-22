@@ -1,12 +1,10 @@
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import se2.carcassonne.model.Coordinates;
-import se2.carcassonne.model.FinishedTurnDto;
-import se2.carcassonne.model.GameBoard;
-import se2.carcassonne.model.Meeple;
-import se2.carcassonne.model.PlayerColour;
-import se2.carcassonne.model.Scoreboard;
-import se2.carcassonne.model.Tile;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,11 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import se2.carcassonne.model.Coordinates;
+import se2.carcassonne.model.FinishedTurnDto;
+import se2.carcassonne.model.GameBoard;
+import se2.carcassonne.model.Scoreboard;
+import se2.carcassonne.model.Tile;
 
-public class GameBoardModelTests {
+class GameBoardModelTests {
     @Test
-    public void testCorrectInitializeGameBoardSize() {
+    void testCorrectInitializeGameBoardSize() {
         GameBoard gameBoard = new GameBoard();
         Tile[][] gameBoardMatrix = gameBoard.getGameBoardMatrix();
         assertEquals(25, gameBoardMatrix.length);
@@ -27,7 +29,7 @@ public class GameBoardModelTests {
     }
 
     @Test
-    public void testCorrectInitializeGameBoardOnlyOneTileInMiddle() {
+    void testCorrectInitializeGameBoardOnlyOneTileInMiddle() {
         GameBoard gameBoard = new GameBoard();
         Tile[][] gameBoardMatrix = gameBoard.getGameBoardMatrix();
         for (int i = 0; i < gameBoardMatrix.length; i++) {
@@ -42,7 +44,7 @@ public class GameBoardModelTests {
     }
 
     @Test
-    public void testCheckGameBoardListsNotNull() {
+    void testCheckGameBoardListsNotNull() {
         GameBoard gameBoard = new GameBoard();
         assertNotNull(gameBoard.getPlacedTiles());
         assertNotNull(gameBoard.getPlaceablePositions());
@@ -50,7 +52,7 @@ public class GameBoardModelTests {
     }
 
     @Test
-    public void testCheckGameBoardTilesAfterInit() {
+    void testCheckGameBoardTilesAfterInit() {
         Tile startTile = new Tile(0L, "castle_wall_road", new int[]{3, 2, 1, 2}, new int[]{3, 3, 3, 2, 2, 2, 1, 1, 1}, new boolean[]{false, false, false, false, false, false, false, false, false}, false);
         GameBoard gameBoard = new GameBoard();
         assertEquals(1, gameBoard.getPlacedTiles().size()); // start tile in the middle
@@ -64,7 +66,7 @@ public class GameBoardModelTests {
     }
 
     @Test
-    public void testHighlightValidPositions() {
+    void testHighlightValidPositions() {
         Tile tileToPlace = new Tile(1L, "road_junction_large", new int[]{2, 2, 2, 2}, new int[]{1, 2, 1, 2, 4, 2, 1, 2, 1}, new boolean[]{false, false, false, false, false, false, false, false, false}, true);
         GameBoard gameBoard = new GameBoard();
         assertEquals(4, gameBoard.getPlaceablePositions().size()); // 4 valid positions around the start tile
@@ -77,7 +79,7 @@ public class GameBoardModelTests {
     }
 
     @Test
-    public void testPlaceTile() {
+    void testPlaceTile() {
         Tile tileToPlace = new Tile(1L, "road_junction_large", new int[]{2, 2, 2, 2}, new int[]{1, 2, 1, 2, 4, 2, 1, 2, 1}, new boolean[]{false, false, false, false, false, false, false, false, false}, true);
         GameBoard gameBoard = new GameBoard();
         assertEquals(4, gameBoard.getPlaceablePositions().size()); // 4 valid positions around the start tile
@@ -94,7 +96,7 @@ public class GameBoardModelTests {
     }
 
     @Test
-    public void noValidTilePlacementForAnyRotation() {
+    void noValidTilePlacementForAnyRotation() {
         GameBoard gameBoard = new GameBoard();
         gameBoard.placeTile(gameBoard.getAllTiles().get(1), new Coordinates(13, 12)); // place the tile east from start tile
         gameBoard.placeTile(gameBoard.getAllTiles().get(39), new Coordinates(11, 12)); // place the tile west from start tile
@@ -103,7 +105,7 @@ public class GameBoardModelTests {
     }
 
     @Test
-    public void validTilePlacementsForAnyRotation() {
+    void validTilePlacementsForAnyRotation() {
         GameBoard gameBoard = new GameBoard();
         assertTrue(gameBoard.hasValidPositionForAnyRotation(gameBoard.getAllTiles().get(1))); // check if there is a valid position for any rotation
     }
@@ -187,7 +189,7 @@ public class GameBoardModelTests {
 
     /////// tests for sortTopThreePlayersAfterForwarding(Scoreboard scoreboard)
     @Test
-    public void testSortTopThreePlayersAfterForwardingWithLessThanThreePlayers() {
+    void testSortTopThreePlayersAfterForwardingWithLessThanThreePlayers() {
         GameBoard gameBoard = new GameBoard();
         gameBoard.initGamePoints(Arrays.asList(1L, 2L));
         gameBoard.getPlayerWithPoints().put(1L, 40);
@@ -202,12 +204,12 @@ public class GameBoardModelTests {
         List<String> topPlayers = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
 
         assertEquals(2, topPlayers.size());
-        assertEquals("Player1", topPlayers.get(0));
-        assertEquals("Player2", topPlayers.get(1));
+        assertEquals("Player1 (40 points)", topPlayers.get(0));
+        assertEquals("Player2 (30 points)", topPlayers.get(1));
     }
 
     @Test
-    public void testSortTopThreePlayersAfterForwardingWithMoreThanThreePlayers() {
+    void testSortTopThreePlayersAfterForwardingWithMoreThanThreePlayers() {
         GameBoard gameBoard = new GameBoard();
         gameBoard.initGamePoints(Arrays.asList(1L, 2L, 3L, 4L));
         gameBoard.getPlayerWithPoints().put(1L, 40);
@@ -225,13 +227,13 @@ public class GameBoardModelTests {
         List<String> topPlayers = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
 
         assertEquals(3, topPlayers.size());
-        assertEquals("Player1", topPlayers.get(0));
-        assertEquals("Player2", topPlayers.get(1));
-        assertEquals("Player3", topPlayers.get(2));
+        assertEquals("Player1 (40 points)", topPlayers.get(0));
+        assertEquals("Player2 (30 points)", topPlayers.get(1));
+        assertEquals("Player3 (20 points)", topPlayers.get(2));
     }
 
     @Test
-    public void testSortTopThreePlayersAfterForwardingWithTie() {
+    void testSortTopThreePlayersAfterForwardingWithTie() {
         GameBoard gameBoard = new GameBoard();
         gameBoard.initGamePoints(Arrays.asList(1L, 2L, 3L, 4L));
         gameBoard.getPlayerWithPoints().put(1L, 30);
@@ -250,15 +252,15 @@ public class GameBoardModelTests {
         List<String> topPlayers = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
 
         assertEquals(3, topPlayers.size());
-        assertTrue(topPlayers.contains("Player1"));
-        assertTrue(topPlayers.contains("Player2"));
-        assertTrue(topPlayers.contains("Player3"));
+        assertTrue(topPlayers.contains("Player1 (30 points)"));
+        assertTrue(topPlayers.contains("Player2 (30 points)"));
+        assertTrue(topPlayers.contains("Player3 (30 points)"));
     }
 
 
     //////// tests for updatePoints(FinishedTurnDto finishedTurnDto)
     @Test
-    public void testUpdatePointsWithNullPointsMap() {
+    void testUpdatePointsWithNullPointsMap() {
         GameBoard gameBoard = new GameBoard();
         gameBoard.initGamePoints(Arrays.asList(1L, 2L));
         gameBoard.updatePoints(new FinishedTurnDto(null, null, null));
@@ -268,7 +270,7 @@ public class GameBoardModelTests {
     }
 
     @Test
-    public void testUpdatePointsWithPointsMap() {
+    void testUpdatePointsWithPointsMap() {
         GameBoard gameBoard = new GameBoard();
         gameBoard.initGamePoints(Arrays.asList(1L, 2L));
 
@@ -287,7 +289,7 @@ public class GameBoardModelTests {
     ///// tests for finishedTurnRemoveMeeplesOnRoads(Map<Long, List<Meeple>> playersWithMeeples)
 
     @Test
-    public void testFinishedTurnRemoveMeeplesOnRoadWithNullMap() {
+    void testFinishedTurnRemoveMeeplesOnRoadWithNullMap() {
         GameBoard gameBoard = new GameBoard();
         gameBoard.initGamePoints(Arrays.asList(1L, 2L));
         Map<Long, Integer> removedMeeplesCount = gameBoard.finishedTurnRemoveMeeplesOnRoad(null);
@@ -296,7 +298,7 @@ public class GameBoardModelTests {
     }
 
     @Test
-    public void testFinishedTurnRemoveMeeplesOnRoadWithEmptyMap() {
+    void testFinishedTurnRemoveMeeplesOnRoadWithEmptyMap() {
         GameBoard gameBoard = new GameBoard();
         gameBoard.initGamePoints(Arrays.asList(1L, 2L));
         Map<Long, Integer> removedMeeplesCount = gameBoard.finishedTurnRemoveMeeplesOnRoad(new HashMap<>());

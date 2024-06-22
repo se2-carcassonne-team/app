@@ -31,6 +31,8 @@ public class LobbyRepository {
     private static final String QUEUE_RESPONSE = "/user/queue/response";
     private static final String QUEUE_ERRORS = "/user/queue/errors";
     private static final String TOPIC_LOBBY = "/topic/lobby-";
+    private static final String UPDATE = "/update";
+    private static final String GAME_START = "/game-start";
 
     private static final Pattern lobbyNamePattern = Pattern.compile("^[a-zA-Z0-9]+(?:[_ -]?[a-zA-Z0-9]+)*$");
     private final MapperHelper mapperHelper = new MapperHelper();
@@ -96,7 +98,6 @@ public class LobbyRepository {
      */
     private void createLobbyLiveData(String message) {
 
-        // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.unsubscribe(QUEUE_RESPONSE);
         webSocketClient.unsubscribe(QUEUE_ERRORS);
         if(lobbyAlreadyExistsError(message)){
@@ -104,8 +105,8 @@ public class LobbyRepository {
         } else {
             PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getIdFromLobbyStringAsLong(message));
             webSocketClient.subscribeToTopic(TOPIC_LOBBY+(mapperHelper.getIdFromLobbyString(message)), this::playerInLobbyReceivesJoinOrLeaveMessage);
-            webSocketClient.subscribeToTopic(TOPIC_LOBBY+(mapperHelper.getIdFromLobbyString(message))+"/update", this::playerInLobbyReceivesUpdatedLobbyMessage);
-            webSocketClient.subscribeToTopic(TOPIC_LOBBY+(mapperHelper.getIdFromLobbyString(message))+"/game-start", this::playerReceivesGameStartMessage);
+            webSocketClient.subscribeToTopic(TOPIC_LOBBY+(mapperHelper.getIdFromLobbyString(message))+UPDATE, this::playerInLobbyReceivesUpdatedLobbyMessage);
+            webSocketClient.subscribeToTopic(TOPIC_LOBBY+(mapperHelper.getIdFromLobbyString(message))+GAME_START, this::playerReceivesGameStartMessage);
             createLobbyLiveData.postValue(message);
         }
     }
@@ -124,12 +125,10 @@ public class LobbyRepository {
     }
 
     private void playerInLobbyReceivesJoinOrLeaveMessage(String message) {
-        // TODO : DOES THIS MAKE SENSE?
         getPlayerJoinsOrLeavesLobbyLiveData().postValue(message);
     }
 
     public void getAllLobbies() {
-        // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.subscribeToTopic("/topic/lobby-list", this::getAllLobbiesLiveData);
         webSocketClient.subscribeToQueue("/user/queue/lobby-list-response", this::getAllLobbiesLiveData);
         webSocketClient.subscribeToQueue(QUEUE_ERRORS, this::getAllLobbiesLiveData);
@@ -137,7 +136,6 @@ public class LobbyRepository {
     }
 
     private void getAllLobbiesLiveData(String message){
-        // TODO : ERROR HANDLING BASED ON CODES
         // STAY SUBSCRIBED FOR FUTURE UPDATES
         webSocketClient.unsubscribe("user/queue/lobby-list-response");
         webSocketClient.unsubscribe(QUEUE_ERRORS);
@@ -149,17 +147,15 @@ public class LobbyRepository {
     }
 
     public void joinLobby(Lobby lobby){
-        // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.subscribeToQueue(QUEUE_RESPONSE, this::playerJoinsLobbyMessageReceived);
         webSocketClient.subscribeToQueue(QUEUE_ERRORS, this::playerJoinsLobbyMessageReceived);
         webSocketClient.subscribeToTopic(TOPIC_LOBBY+lobby.getId(), this::playerInLobbyReceivesJoinOrLeaveMessage);
-        webSocketClient.subscribeToTopic(TOPIC_LOBBY+lobby.getId()+"/update", this::playerInLobbyReceivesUpdatedLobbyMessage);
-        webSocketClient.subscribeToTopic(TOPIC_LOBBY+lobby.getId()+"/game-start", this::playerReceivesGameStartMessage);
+        webSocketClient.subscribeToTopic(TOPIC_LOBBY+lobby.getId()+UPDATE, this::playerInLobbyReceivesUpdatedLobbyMessage);
+        webSocketClient.subscribeToTopic(TOPIC_LOBBY+lobby.getId()+GAME_START, this::playerReceivesGameStartMessage);
         lobbyApi.joinLobby(lobby.getId(), PlayerRepository.getInstance().getCurrentPlayer());
     }
 
     private void playerJoinsLobbyMessageReceived(String message) {
-        // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.unsubscribe(QUEUE_RESPONSE);
         webSocketClient.unsubscribe(QUEUE_ERRORS);
         PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(mapperHelper.getLobbyIdFromPlayer(message));
@@ -167,32 +163,28 @@ public class LobbyRepository {
     }
 
     public void leaveLobby() {
-        // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.subscribeToQueue(QUEUE_RESPONSE, this::playerLeavesLobbyMessageReceived);
         webSocketClient.subscribeToQueue(QUEUE_ERRORS, this::playerLeavesLobbyMessageReceived);
         lobbyApi.leaveLobby(PlayerRepository.getInstance().getCurrentPlayer());
     }
 
     private void playerLeavesLobbyMessageReceived(String message) {
-        // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.unsubscribe(QUEUE_RESPONSE);
         webSocketClient.unsubscribe(QUEUE_ERRORS);
         webSocketClient.unsubscribe(TOPIC_LOBBY+PlayerRepository.getInstance().getCurrentPlayer().getGameLobbyId());
-        webSocketClient.unsubscribe(TOPIC_LOBBY+(mapperHelper.getIdFromLobbyString(message))+"/update");
-        webSocketClient.unsubscribe(TOPIC_LOBBY+(mapperHelper.getIdFromLobbyString(message))+"/game-start");
+        webSocketClient.unsubscribe(TOPIC_LOBBY+(mapperHelper.getIdFromLobbyString(message))+UPDATE);
+        webSocketClient.unsubscribe(TOPIC_LOBBY+(mapperHelper.getIdFromLobbyString(message))+GAME_START);
         PlayerRepository.getInstance().getCurrentPlayer().setGameLobbyId(null);
         playerLeavesLobbyLiveData.postValue(message);
     }
 
     public void getAllPlayers(Lobby lobby) {
-        // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.subscribeToQueue("/user/queue/player-list-response", this::listAllPlayersReceivedFromServer);
         webSocketClient.subscribeToQueue(QUEUE_ERRORS, this::listAllPlayersReceivedFromServer);
         lobbyApi.getAllPlayers(lobby.getId());
     }
 
     private void listAllPlayersReceivedFromServer(String message) {
-        // TODO : ERROR HANDLING BASED ON CODES
         webSocketClient.unsubscribe("/user/queue/player-list-response");
         webSocketClient.unsubscribe(QUEUE_ERRORS);
         if (!Objects.equals(message, "null")) {

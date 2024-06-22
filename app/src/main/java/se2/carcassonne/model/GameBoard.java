@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 import lombok.Data;
 
 @Data
@@ -49,12 +48,6 @@ public class GameBoard {
         int y = coordinates.getYPosition();
 
         tile.setCoordinates(coordinates);
-
-        /*
-        // place the tile on the gameBoardMatrix with respect to rotation
-         */
-
-        //tile.setFeatures(tile.rotatedFeatures(tile.getRotation()));
 
         // place the tile on the gameBoardMatrix
         gameBoardMatrix[x][y] = tile;
@@ -210,7 +203,7 @@ public class GameBoard {
             Long playerId = sortedEntries.get(i).getKey();
             String playerName = playerIdToNameMap.get(playerId);
             if (playerName != null) {
-                topThreePlayerNames.add(playerName);
+                topThreePlayerNames.add(playerName+" ("+sortedEntries.get(i).getValue()+" points)");
             }
         }
 

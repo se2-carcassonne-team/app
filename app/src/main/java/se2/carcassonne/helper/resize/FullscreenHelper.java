@@ -5,6 +5,9 @@ import android.content.pm.ActivityInfo;
 import android.view.View;
 
 public class FullscreenHelper {
+    private FullscreenHelper() {
+        throw new IllegalStateException("Utility class");
+    }
     public static void setFullscreenAndImmersiveMode(Activity activity) {
         activity.setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         activity.getWindow().getDecorView().setSystemUiVisibility(

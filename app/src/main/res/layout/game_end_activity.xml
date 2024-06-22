@@ -65,7 +65,7 @@
         android:id="@+id/tvFirstPlace"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:autoSizeMaxTextSize="1000dp"
+        android:autoSizeMaxTextSize="500dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:fontFamily="@font/almendra_sc"

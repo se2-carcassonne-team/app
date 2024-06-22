@@ -1,7 +1,5 @@
 package se2.carcassonne.ui;
 
-import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 
 import java.util.ArrayList;
 
@@ -19,7 +16,6 @@ import se2.carcassonne.R;
 import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.GameBoard;
 import se2.carcassonne.model.Tile;
-import se2.carcassonne.repository.PlayerRepository;
 
 @Getter
 @Setter
@@ -107,7 +103,6 @@ public class GameboardAdapter extends BaseAdapter {
                     if (currentCol == placedTile.getCoordinates().getXPosition() && currentRow == placedTile.getCoordinates().getYPosition()) {
                         imageView.setImageResource(
                                 context.getResources().getIdentifier(placedTile.getImageName() + "_0", "drawable", context.getPackageName()));
-                        //overlayImageView.setImageDrawable(getDrawable(context, R.drawable.meeple_blue));
 
                         imageView.setRotation(placedTile.getRotation() * 90f);
                         imageView.setAlpha(0.9f);
@@ -123,7 +118,6 @@ public class GameboardAdapter extends BaseAdapter {
 
                             Log.d("meeple", "ID: " + placedTile.getId() + " Pos: " + meeplePosition);
 
-                            //overlayImageView.setImageDrawable(getDrawable(context, R.drawable.meeple_blue));
                             overlayImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                             switch (meeplePosition) {

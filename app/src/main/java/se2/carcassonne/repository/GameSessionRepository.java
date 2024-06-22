@@ -9,12 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 import lombok.Getter;
-
-import lombok.Getter;
 import se2.carcassonne.api.GameSessionApi;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.model.FinishedTurnDto;
-import se2.carcassonne.model.Meeple;
 import se2.carcassonne.model.NextTurn;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Scoreboard;
@@ -34,6 +31,8 @@ public class GameSessionRepository {
     private final MutableLiveData<Scoreboard> scoreboardLiveData = new MutableLiveData<>();
     private final MutableLiveData<FinishedTurnDto> finishedTurnLiveData = new MutableLiveData<>();
     private final ObjectMapper objectMapper;
+
+    private static final String TOPIC_GAMESESSION = "/topic/game-session-";
 
     private GameSessionRepository() {
         this.gameSessionApi = new GameSessionApi();
@@ -57,13 +56,12 @@ public class GameSessionRepository {
      * posts value to the live data object
      */
     public void getNextTurn(Long gameSessionId) {
-//        TODO check if already subscribed
 //        Draw next tile and get next player
         gameSessionApi.nextTurn(gameSessionId);
     }
 
     public void subscribeToNextTurn(Long gameSessionId) {
-        webSocketClient.subscribeToTopic("/topic/game-session-" + gameSessionId + "/next-turn-response", this::getNextTurnMessageReceived);
+        webSocketClient.subscribeToTopic(TOPIC_GAMESESSION + gameSessionId + "/next-turn-response", this::getNextTurnMessageReceived);
     }
 
     public void subscribeToGetAllPlayersInLobby(Long gameLobbyId) {
@@ -112,7 +110,7 @@ public class GameSessionRepository {
     }
 
     public void subscribeToPlacedTile(Long gameSessionId) {
-        webSocketClient.subscribeToTopic("/topic/game-session-" + gameSessionId + "/tile", this::getPlacedTile);
+        webSocketClient.subscribeToTopic(TOPIC_GAMESESSION + gameSessionId + "/tile", this::getPlacedTile);
     }
 
     private void getPlacedTile(String message) {
@@ -125,7 +123,7 @@ public class GameSessionRepository {
     }
 
     public void subscribeToGameFinished(Long gameSessionId) {
-        webSocketClient.subscribeToTopic("/topic/game-session-" + gameSessionId + "/game-finished", this::endGameMessageReceived);
+        webSocketClient.subscribeToTopic(TOPIC_GAMESESSION + gameSessionId + "/game-finished", this::endGameMessageReceived);
     }
 
     private void endGameMessageReceived(String message) {
@@ -139,7 +137,7 @@ public class GameSessionRepository {
     }
 
     public void subscribeToPointsForCompletedRoad(Long gameSessionId){
-        webSocketClient.subscribeToTopic("/topic/game-session-" + gameSessionId + "/points-meeples", this::getPointsForCompletedRoad);
+        webSocketClient.subscribeToTopic(TOPIC_GAMESESSION + gameSessionId + "/points-meeples", this::getPointsForCompletedRoad);
     }
 
     private void getPointsForCompletedRoad(String message) {

@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,7 +43,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
             this.currentLobby = mapperHelper.getLobbyFromJsonString(currentLobbyString);
             notifyDataSetChanged();// Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            // Handle parsing exception if needed
         }
     }
 
@@ -54,7 +53,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
             playerList = objectMapper.readValue(newPlayerList, new TypeReference<List<Player>>() {});
             notifyDataSetChanged();// Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            // Handle parsing exception if needed
         }
     }
 
@@ -70,7 +69,6 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
             playerList.add(playerToEdit);
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             // Handle parsing exception if needed
         }
     }
@@ -88,7 +86,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
             }
             notifyDataSetChanged(); // Notify RecyclerView about the changes
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            // Handle parsing exception if needed
         }
     }
 
@@ -116,11 +114,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
 
     public static class PlayerViewHolder extends RecyclerView.ViewHolder {
         private final TextView playerNameTextView;
-        private final ConstraintLayout layout;
 
         public PlayerViewHolder(@NonNull View itemView) {
             super(itemView);
-            layout = itemView.findViewById(R.id.cvPlayerList);
             playerNameTextView = itemView.findViewById(R.id.tvPlayerName);
         }
 

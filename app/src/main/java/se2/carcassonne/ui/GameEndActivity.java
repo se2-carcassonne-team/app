@@ -1,20 +1,14 @@
 package se2.carcassonne.ui;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-import android.app.Activity;
-
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import se2.carcassonne.databinding.GameEndActivityBinding;
-
-import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
-
 import se2.carcassonne.viewmodel.LobbyViewModel;
 import se2.carcassonne.viewmodel.PlayerViewModel;
 
@@ -48,6 +42,16 @@ public class GameEndActivity extends AppCompatActivity {
             Intent nextIntent = new Intent(this, GameLobbyActivity.class);
             playerViewModel.resetCurrentPlayer();
             startActivity(nextIntent);
+        });
+
+        // Handle back button press
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent nextIntent = new Intent(GameEndActivity.this, GameLobbyActivity.class);
+                playerViewModel.resetCurrentPlayer();
+                startActivity(nextIntent);
+            }
         });
     }
 

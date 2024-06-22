@@ -7,13 +7,13 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -26,25 +26,26 @@ import se2.carcassonne.model.GameState;
 import se2.carcassonne.model.Lobby;
 import se2.carcassonne.model.Player;
 import se2.carcassonne.repository.GameSessionRepository;
+import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.GameSessionViewModel;
 import se2.carcassonne.viewmodel.LobbyViewModel;
 import se2.carcassonne.viewmodel.PlayerListAdapter;
-import se2.carcassonne.repository.PlayerRepository;
 
 public class InLobbyActivity extends AppCompatActivity {
     InLobbyActivityBinding binding;
     private LobbyViewModel lobbyViewmodel;
-    private GameSessionViewModel gameSessionViewModel;
-    private PlayerListAdapter adapter;
     private final MapperHelper mapperHelper = new MapperHelper();
-    private GameSessionRepository gameSessionRepository;
     String allPlayersInLobby;
     Animation pulseAnimation;
+    private static final String INLOBBY_ACTIVITY = "InLobbyActivity";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.e("InLobbyActivity", "onCreate");
+        GameSessionRepository gameSessionRepository;
+        PlayerListAdapter adapter;
+        GameSessionViewModel gameSessionViewModel;
+        Log.e(INLOBBY_ACTIVITY, "onCreate");
         super.onCreate(savedInstanceState);
         binding = InLobbyActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -66,8 +67,6 @@ public class InLobbyActivity extends AppCompatActivity {
         gameSessionViewModel = new GameSessionViewModel();
         binding.textViewLobbyName.setText(mapperHelper.getLobbyName(intent.getStringExtra("LOBBY")));
 
-        HashMap<Long, String> playerIdsWithNames = new HashMap<>();
-
         /*
          * Get All Players In Lobby
          */
@@ -79,17 +78,16 @@ public class InLobbyActivity extends AppCompatActivity {
                 finish();
             }
         });
-        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList -> {
-                    adapter.updateDataWithLobby(playerList, intent.getStringExtra("LOBBY"));
-        });
-        lobbyViewmodel.getPlayerJoinsOrLeavesLobbyLiveData().observe(this, playerList -> adapter.updateData(playerList));
+        lobbyViewmodel.getMessageLiveDataListPlayers().observe(this, playerList ->
+                    adapter.updateDataWithLobby(playerList, intent.getStringExtra("LOBBY"))
+        );
+        lobbyViewmodel.getPlayerJoinsOrLeavesLobbyLiveData().observe(this, adapter::updateData);
         lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().observe(this, newGameLobby -> {
             if (newGameLobby != null && !newGameLobby.startsWith("RESET")) {
                 binding.gameLobbyStartGameBtn.setVisibility(View.VISIBLE);
                 // Load the animation
                 pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
                 // Set the animation to repeat indefinitely
-//                pulseAnimation.setRepeatCount(Animation.INFINITE);
                 binding.gameLobbyStartGameBtn.startAnimation(pulseAnimation);
                 adapter.updateGameLobby(newGameLobby);
                 currentLobby.set(mapperHelper.getLobbyFromJsonString(newGameLobby));
@@ -136,18 +134,27 @@ public class InLobbyActivity extends AppCompatActivity {
         binding.gameLobbyLeaveBtn.setOnClickListener(view -> lobbyViewmodel.leaveLobby());
 
         lobbyViewmodel.getAllPlayers(currentLobby.get());
+
+        // Handle back button press
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // execute leave-lobby logic
+                lobbyViewmodel.leaveLobby();
+            }
+        });
     }
 
     @Override
     protected void onStop() {
-        Log.e("InLobbyActivity", "onStop");
+        Log.e(INLOBBY_ACTIVITY, "onStop");
         super.onStop();
         finish();
     }
 
     @Override
     protected void onDestroy() {
-        Log.e("InLobbyActivity", "onDestroy");
+        Log.e(INLOBBY_ACTIVITY, "onDestroy");
 
         lobbyViewmodel.getPlayerInLobbyReceivesUpdatedLobbyLiveData().setValue(null);
         lobbyViewmodel.getPlayerLeavesLobbyLiveData().setValue(null);

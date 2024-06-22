@@ -1,9 +1,6 @@
 package se2.carcassonne.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,9 +20,6 @@ public class Lobby {
     private String gameState;
     private Integer numPlayers;
     private Long lobbyAdminId;
-/*
-    @JsonIgnore
-    private List<String> availableColours;*/
 
     public String toJsonString() {
         return "{" +
