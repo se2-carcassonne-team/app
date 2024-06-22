@@ -17,6 +17,7 @@ import androidx.lifecycle.LiveData;
 
 import se2.carcassonne.R;
 import se2.carcassonne.model.Player;
+import se2.carcassonne.repository.PlayerRepository;
 import se2.carcassonne.viewmodel.PlayerViewModel;
 
 public class ChooseUsernameDialogFragment extends DialogFragment {
@@ -43,7 +44,18 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
 
         userAlreadyExistsLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
         invalidUsernameLiveData.observe(this, errorMessage -> Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show());
-        messageLiveData.observe(this, message -> dismiss());
+
+        PlayerRepository playerRepository = PlayerRepository.getInstance();
+
+        messageLiveData.observe(this, message -> {
+            // ensure that the player object is set
+            if(playerRepository.getCurrentPlayer() == null) {
+                // wait for the player object to be set
+                return;
+            } else {
+                dismiss();
+            }
+        });
 
         chooseUsernameStartGameButton.setOnClickListener(view -> playerViewModel.createPlayer(new Player(null, text.getText().toString(), null, null, null, null)));
 
@@ -53,7 +65,6 @@ public class ChooseUsernameDialogFragment extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        userAlreadyExistsLiveData.removeObservers(this);
         userAlreadyExistsLiveData.removeObservers(this);
         playerViewModel.getMessageLiveData().removeObservers(this);
     }

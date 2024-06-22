@@ -140,7 +140,7 @@ public class LobbyRepository {
 
     private void getAllLobbiesLiveData(String message){
         // STAY SUBSCRIBED FOR FUTURE UPDATES
-        webSocketClient.unsubscribe("user/queue/lobby-list-response");
+        webSocketClient.unsubscribe("/user/queue/lobby-list-response");
         webSocketClient.unsubscribe(QUEUE_ERRORS);
         if (!Objects.equals(message, "null")) {
             listAllLobbiesLiveData.postValue(message);

@@ -75,9 +75,10 @@ public class GameBoardActivity extends AppCompatActivity {
     private static final String DRAWABLE = "drawable";
 
     private final Map<String, Integer> playerPoints = new HashMap<>();
-    private ScoreboardAdapter adapter;
+    private ScoreboardAdapter scoreboardAdapter;
 
     private FinishedTurnDto finishedTurnDto;
+    private boolean thisPlayerCanCheat = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +128,17 @@ public class GameBoardActivity extends AppCompatActivity {
         for (Player player : playerList) {
             playerPoints.put(player.getUsername(), 0);
         }
-        adapter = new ScoreboardAdapter(playerPoints, playerList);
+        scoreboardAdapter = new ScoreboardAdapter(playerPoints, playerList);
 
+        // make a network call to the endpoint /app/can-i-cheat with the playerId as the request body to check if this player can cheat
+        // set the value of iCanCheat to the response of the network call
+        gameSessionViewModel.sendCanICheat(currentPlayer.getId());
+        gameSessionViewModel.getICanCheat().observe(this, iCanCheat -> {
+            if (iCanCheat != null) {
+                this.thisPlayerCanCheat = iCanCheat;
+                scoreboardAdapter.notifyDataSetChanged();
+            }
+        });
 
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
@@ -167,7 +177,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 }
 
                 // Update the ScoreboardAdapter with the new player points
-                adapter.updatePlayerPoints(playerPoints);
+                scoreboardAdapter.updatePlayerPoints(playerPoints);
 
                 gameBoard.updatePoints(finishedTurnDto);
                 updatePlayerPoints();
@@ -359,7 +369,7 @@ public class GameBoardActivity extends AppCompatActivity {
             RecyclerView scoreboardList = view.findViewById(R.id.scoreboard_list);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             scoreboardList.setLayoutManager(layoutManager); // Set the layout manager
-            scoreboardList.setAdapter(adapter);
+            scoreboardList.setAdapter(scoreboardAdapter);
 
 
             // Create the AlertDialog instance
@@ -367,9 +377,14 @@ public class GameBoardActivity extends AppCompatActivity {
 
             // Hide cheat button if player cannot cheat
             Button cheatButton = view.findViewById(R.id.button_cheat);
-            if(!PlayerRepository.getInstance().getCurrentPlayer().getCanCheat()) {
+            if(Boolean.TRUE.equals(GameSessionRepository.getInstance().getICanCheat().getValue())) {
+                cheatButton.setVisibility(View.VISIBLE);
+                PlayerRepository.getInstance().getCurrentPlayer().setCanCheat(true);
+            } else {
                 cheatButton.setVisibility(View.GONE);
             }
+
+
 
             cheatButton.setOnClickListener(v2 -> {
                 gameSessionViewModel.sendCheatRequest(PlayerRepository.getInstance().getCurrentPlayer().getId(), finishedTurnDto);
@@ -437,6 +452,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gameSessionViewModel.getNextTurnMessageLiveData().postValue(null);
         gameSessionViewModel.getPlacedTileLiveData().postValue(null);
         gameSessionViewModel.finishedTurnLiveData().postValue(null);
+        gameSessionViewModel.getICanCheat().postValue(null);
     }
 
     private void moveButtonsRight() {

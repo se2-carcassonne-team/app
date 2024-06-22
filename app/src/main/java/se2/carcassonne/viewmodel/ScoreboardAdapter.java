@@ -83,4 +83,5 @@ public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.Vi
         this.playersPoints.addAll(newPlayerPoints.entrySet());
         notifyDataSetChanged();
     }
+
 }

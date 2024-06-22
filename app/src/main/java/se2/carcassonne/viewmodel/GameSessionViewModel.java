@@ -1,5 +1,6 @@
 package se2.carcassonne.viewmodel;
 
+import androidx.compose.runtime.snapshots.Snapshot;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -71,4 +72,12 @@ public class GameSessionViewModel extends ViewModel {
         gameSessionRepository.sendPointsForCompletedRoad(finishedTurnDto);
     }
 
+    public void sendCanICheat(Long playerId) {
+        gameSessionRepository.sendCanICheat(playerId);
+    }
+
+
+    public MutableLiveData<Boolean> getICanCheat() {
+        return gameSessionRepository.getICanCheat();
+    }
 }
