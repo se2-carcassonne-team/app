@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.StartupActivityBinding;
 import se2.carcassonne.helper.animation.AnimationHelper;
+import se2.carcassonne.helper.music.MusicPlayer;
 import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.helper.resize.FullscreenHelper;
+import android.media.MediaPlayer;
 
 public class StartupActivity extends AppCompatActivity {
     StartupActivityBinding binding;
@@ -41,6 +43,7 @@ public class StartupActivity extends AppCompatActivity {
                                 AnimationHelper.startButtonAnimation(startGameBtn))));
 
         startGameBtn.setOnClickListener(v -> {
+            MusicPlayer.playBackgroundMusic(this);
             Intent intent = new Intent(StartupActivity.this, HomeActivity.class);
             startActivity(intent);
         });
