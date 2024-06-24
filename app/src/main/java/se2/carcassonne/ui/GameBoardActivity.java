@@ -708,7 +708,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
                 Intent intent = new Intent(GameBoardActivity.this, GameLobbyActivity.class);
-                //intent.putExtra("LOBBY", currentLobby.toJsonString());
 
                 startActivity(intent);
                 finish();

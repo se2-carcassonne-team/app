@@ -9,6 +9,7 @@ import se2.carcassonne.R;
 public class MusicPlayer {
     private static MediaPlayer mediaPlayer;
     private static boolean isMuted = false;
+    private static final String TAG = "MusicPlayer";
 
     public static void playBackgroundMusic(Context context) {
         if (mediaPlayer == null) {
@@ -20,32 +21,20 @@ public class MusicPlayer {
         }
     }
 
-    public static void stopBackgroundMusic() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-        isMuted = false; // Reset mute state when music is stopped
-    }
-
     public static void toggleMute() {
         if (mediaPlayer != null) {
             if (isMuted) {
                 mediaPlayer.start(); // Resume music if muted
-                Log.d("MusicPlayer", "Music resumed");
+                Log.d(TAG, "Music resumed");
             } else {
                 mediaPlayer.pause(); // Pause music if not muted
-                Log.d("MusicPlayer", "Music paused");
+                Log.d(TAG, "Music paused");
             }
             isMuted = !isMuted; // Toggle mute state
-            Log.d("MusicPlayer", "Mute state is now: " + isMuted);
+            Log.d(TAG, "Mute state is now: " + isMuted);
         } else {
-            Log.d("MusicPlayer", "MediaPlayer is null, cannot toggle mute");
+            Log.d(TAG, "MediaPlayer is null, cannot toggle mute");
         }
     }
 
-    public static boolean isMuted() {
-        return isMuted;
-    }
 }

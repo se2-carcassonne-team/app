@@ -1,5 +1,6 @@
 package se2.carcassonne.api;
 
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +35,7 @@ public class GameSessionApi {
             String message = objectMapper.writeValueAsString(player);
             webSocketClient.sendMessage("/app/player-leave-gamesession", message);
         } catch (Exception e) {
-            Log.e("GameSessionApi", "Error leave game message", e);
+            Log.e(TAG, "Error leave game message", e);
         }
     }
     public void sendPlacedTile(PlacedTileDto placedTileDto){
