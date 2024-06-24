@@ -11,6 +11,10 @@ public class MusicPlayer {
     private static boolean isMuted = false;
     private static final String TAG = "MusicPlayer";
 
+    private MusicPlayer() {
+        // Leerer Konstruktor, um die Instanziierung zu verhindern
+    }
+
     public static void playBackgroundMusic(Context context) {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer.create(context, R.raw.background_music);

@@ -362,12 +362,7 @@ public class GameBoardActivity extends AppCompatActivity {
         setupLeaveGameButton();
         // Mute the music
         // Setze den Klick-Listener für den Mute-Button
-        muteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MusicPlayer.toggleMute();
-            }
-        });
+        muteButton.setOnClickListener(v -> MusicPlayer.toggleMute());
 
         // Show the current scoreboard in a dialog
         Button showScoreboardButton = findViewById(R.id.button_show_scoreboard);
@@ -701,17 +696,11 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void setupLeaveGameButton() {
-        leaveGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gameSessionViewModel.leavegamesession(currentPlayer);
-
-
-                Intent intent = new Intent(GameBoardActivity.this, GameLobbyActivity.class);
-
-                startActivity(intent);
-                finish();
-            }
+        leaveGameButton.setOnClickListener(v -> {
+            gameSessionViewModel.leavegamesession(currentPlayer);
+            Intent intent = new Intent(GameBoardActivity.this, GameLobbyActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -731,4 +720,5 @@ public class GameBoardActivity extends AppCompatActivity {
         });
     }
 
-    }
+
+}
