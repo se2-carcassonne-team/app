@@ -545,8 +545,18 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void confirmMeeplePlacement() {
         binding.buttonConfirmMeeplePlacement.setOnClickListener(v -> {
+            boolean[] features = tileToPlace.getAllowedMeeplePositions();
+            boolean containsTrue = false;
+
+            for (boolean feature : features) {
+                if (feature) {
+                    containsTrue = true;
+                    break;
+                }
+            }
+
             if (gameboardAdapter.isYourTurn() && gameboardAdapter.getMeepleCount() > 0) {
-                if (meepleAdapter.getPlaceMeepleCoordinates() != null) {
+                if (meepleAdapter.getPlaceMeepleCoordinates() != null && containsTrue) {
                     Meeple placedMeeple = new Meeple();
                     placedMeeple.setColor(currentPlayer.getPlayerColour());
                     placedMeeple.setPlayerId(currentPlayer.getId());
