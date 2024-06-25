@@ -21,17 +21,26 @@
         android:src="@drawable/meeple_black"
         android:layout_marginEnd="8dp"/>
 
-        <TextView
-            android:id="@+id/playerNameTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="16sp" />
+    <TextView
+        android:id="@+id/playerNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/playerPointsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/playerPointsTextView"
+        android:layout_width="0dp"
+        android:layout_weight="0.3"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/button_accuse"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_weight="0.3"
+        android:background="@color/btn_gold"
+        android:text="@string/accuse" />
+</LinearLayout>
 </androidx.cardview.widget.CardView>

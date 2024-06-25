@@ -78,10 +78,11 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private FinishedTurnDto finishedTurnDto;
     private boolean hasCheated = false;
+    private static final String TAG = "GameBoardActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.e("GameBoardActivity", "onCreate");
+        Log.e(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
         binding = GameboardActivityBinding.inflate(getLayoutInflater());
@@ -170,7 +171,11 @@ public class GameBoardActivity extends AppCompatActivity {
                 Map<Long, Integer> newPoints = finishedTurnDto.getPoints();
                 for (Player player : playerList) {
                     if (newPoints.containsKey(player.getId())) {
-                        playerPoints.put(player.getUsername(), newPoints.get(player.getId()) + playerPoints.get(player.getUsername()));
+                        if(newPoints.get(player.getId()) + playerPoints.get(player.getUsername()) > 0) {
+                            playerPoints.put(player.getUsername(), newPoints.get(player.getId()) + playerPoints.get(player.getUsername()));
+                        } else {
+                            playerPoints.put(player.getUsername(), 0);
+                        }
                     }
                 }
 
@@ -412,6 +417,15 @@ public class GameBoardActivity extends AppCompatActivity {
             dialog.show();
         });
 
+        //
+        gameSessionViewModel.getCheaterFound().observe(this, cheaterFound -> {
+            if (Boolean.TRUE.equals(cheaterFound)) {
+                // display toast that the cheater was found
+                Toast.makeText(this, "Cheater found!", Toast.LENGTH_SHORT).show();
+                scoreboardAdapter.notifyDataSetChanged(); // set visibility of accuse buttons to GONE in the scoreboard adapter
+            }
+        });
+
         // Handle back button press
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -433,26 +447,26 @@ public class GameBoardActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Log.e("GameBoardActivity", "onResume");
+        Log.e(TAG, "onResume");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.e("GameBoardActivity", "onPause");
+        Log.e(TAG, "onPause");
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.e("GameBoardActivity", "onStop");
+        Log.e(TAG, "onStop");
         super.onStop();
         finish();
     }
 
     @Override
     protected void onDestroy() {
-        Log.e("GameBoardActivity", "onDestroy");
+        Log.e(TAG, "onDestroy");
         super.onDestroy();
 
         currentPlayer.setPoints(0);
@@ -463,6 +477,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gameSessionViewModel.getPlacedTileLiveData().postValue(null);
         gameSessionViewModel.finishedTurnLiveData().postValue(null);
         gameSessionViewModel.getICanCheat().postValue(null);
+        gameSessionViewModel.getCheaterFound().postValue(false);
     }
 
     private void moveButtonsRight() {

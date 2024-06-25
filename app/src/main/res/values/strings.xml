@@ -44,5 +44,7 @@
     <string name="main_menu">Main Menu</string>
     <string name="points">%d</string>
     <string name="cheat">Cheat</string>
+    <string name="points_text">Points</string>
+    <string name="accuse">Accuse</string>
 
 </resources>

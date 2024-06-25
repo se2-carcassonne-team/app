@@ -22,6 +22,7 @@ public class Player implements Serializable {
     private int points;
     private Boolean canCheat;
     private int cheatPoints;
+    private Boolean hasAccused;
 
     public Player(Long id, String username, String sessionId, Long gameLobbyId, Long gameSessionId, PlayerColour playerColour) {
       this.id = id;
@@ -34,6 +35,7 @@ public class Player implements Serializable {
       this.points = 0;
       this.canCheat = false;
       this.cheatPoints = 0;
+      this.hasAccused = false;
    }
 
     public void addPoints(int points) {

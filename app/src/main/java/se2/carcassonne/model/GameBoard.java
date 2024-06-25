@@ -226,7 +226,11 @@ public class GameBoard {
                 // Check if the player already exists in the playerWithPoints map
                 if (playerWithPoints.containsKey(playerId)) {
                     // If the player exists, add the new points to the existing ones
-                    playerWithPoints.put(playerId, (playerWithPoints.get(playerId) + pointsToAdd));
+                    if(playerWithPoints.get(playerId) + pointsToAdd > 0) {
+                        playerWithPoints.put(playerId, (playerWithPoints.get(playerId) + pointsToAdd));
+                    } else {
+                        playerWithPoints.put(playerId, 0);
+                    }
                 }
             }
         }

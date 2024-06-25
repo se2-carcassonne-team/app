@@ -306,4 +306,30 @@ class GameBoardModelTests {
         assertTrue(removedMeeplesCount.isEmpty());
     }
 
+    @Test
+    void testUpdatePointsWithValidPointsData() {
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.initGamePoints(Arrays.asList(1L, 2L));
+
+        Map<Long, Integer> points = new HashMap<>();
+        points.put(1L, 10);
+        points.put(2L, 20);
+
+        gameBoard.updatePoints(new FinishedTurnDto(null, points, null));
+
+        assertEquals(10, gameBoard.getPlayerWithPoints().get(1L));
+        assertEquals(20, gameBoard.getPlayerWithPoints().get(2L));
+    }
+
+    @Test
+    void testUpdatePointsWithNullPointsData() {
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.initGamePoints(Arrays.asList(1L, 2L));
+
+        gameBoard.updatePoints(new FinishedTurnDto(null, null, null));
+
+        assertEquals(0, gameBoard.getPlayerWithPoints().get(1L));
+        assertEquals(0, gameBoard.getPlayerWithPoints().get(2L));
+    }
+
 }
