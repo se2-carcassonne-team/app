@@ -41,7 +41,7 @@ public class GameSessionApi {
         try {
             webSocketClient.sendMessage("/app/update-points-meeples", objectMapper.writeValueAsString(finishedTurnDto));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error sending points for completed road message", e);
         }
     }
 
@@ -58,7 +58,7 @@ public class GameSessionApi {
             String message = playerId + "|" + objectMapper.writeValueAsString(finishedTurnDto);
             webSocketClient.sendMessage("/app/cheat/add-points", message);
         } catch (Exception e) {
-            Log.e("GameSessionApi", "Error sending cheat request", e);
+            Log.e(TAG, "Error sending cheat request", e);
         }
     }
 
@@ -66,7 +66,17 @@ public class GameSessionApi {
         try {
             webSocketClient.sendMessage("/app/cheat/can-i-cheat", objectMapper.writeValueAsString(playerId));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error sending can i cheat message", e);
         }
     }
+
+    public void sendAccuseRequest(Long myPlayerId, Long accusedPlayerId, FinishedTurnDto finishedTurnDto) {
+        try {
+            webSocketClient.sendMessage("/app/cheat/accuse", myPlayerId+"|"+accusedPlayerId+"|"+objectMapper.writeValueAsString(finishedTurnDto));
+        } catch (JsonProcessingException e) {
+            Log.e(TAG, "Error sending accuse request", e);
+        }
+    }
+
+    //
 }

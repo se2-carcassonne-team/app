@@ -33,6 +33,7 @@ public class GameSessionRepository {
     private final MutableLiveData<FinishedTurnDto> finishedTurnLiveData = new MutableLiveData<>();
     private Integer cheatPoints = 0;
     private final ObjectMapper objectMapper;
+    private final MutableLiveData<Boolean> cheaterFound = new MutableLiveData<>(false);
 
     private final MutableLiveData<Boolean> iCanCheat = new MutableLiveData<>();
 
@@ -205,5 +206,23 @@ public class GameSessionRepository {
 
     public MutableLiveData<Boolean> getICanCheat() {
         return iCanCheat;
+    }
+
+    public void sendAccuseRequest(Long myPlayerId, Long accusedPlayerId, FinishedTurnDto finishedTurnDto) {
+        gameSessionApi.sendAccuseRequest(myPlayerId, accusedPlayerId, finishedTurnDto);
+    }
+
+    // endpoint on the server:
+    //             this.template.convertAndSend("/topic/game-session-" + finishedTurnDto.getGameSessionId() + "/cheat-detected", objectMapper.writeValueAsString(true));
+    public void subscribeToCheaterFound(Long gameSessionId) {
+        webSocketClient.subscribeToTopic(TOPIC_GAMESESSION + gameSessionId + "/cheat-detected", this::cheaterFoundReceived);
+    }
+
+    private void cheaterFoundReceived(String s) {
+        cheaterFound.postValue(true);
+    }
+
+    public MutableLiveData<Boolean> getCheaterFound() {
+        return cheaterFound;
     }
 }

@@ -80,4 +80,12 @@ public class GameSessionViewModel extends ViewModel {
     public MutableLiveData<Boolean> getICanCheat() {
         return gameSessionRepository.getICanCheat();
     }
+
+    public void sendAccuseRequest(Long myPlayerId, Long accusedPlayerId, FinishedTurnDto finishedTurnDto){
+        gameSessionRepository.sendAccuseRequest(myPlayerId, accusedPlayerId, finishedTurnDto);
+    }
+
+    public MutableLiveData<Boolean> getCheaterFound(){
+        return gameSessionRepository.getCheaterFound();
+    }
 }
