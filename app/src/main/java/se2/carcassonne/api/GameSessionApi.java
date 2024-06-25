@@ -1,6 +1,5 @@
 package se2.carcassonne.api;
 
-import android.nfc.Tag;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
