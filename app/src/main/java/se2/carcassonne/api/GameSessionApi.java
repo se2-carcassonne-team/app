@@ -9,6 +9,7 @@ import se2.carcassonne.helper.network.WebSocketClient;
 import se2.carcassonne.model.FinishedTurnDto;
 import se2.carcassonne.model.PlacedTileDto;
 import se2.carcassonne.model.Scoreboard;
+import se2.carcassonne.model.Player;
 
 public class GameSessionApi {
     private final ObjectMapper objectMapper;
@@ -28,8 +29,15 @@ public class GameSessionApi {
             Log.e(TAG, "Error sending next turn message", e);
         }
     }
-
-    public void sendPlacedTile(PlacedTileDto placedTileDto) {
+    public void leaveGame(Player player) {
+        try {
+            String message = objectMapper.writeValueAsString(player);
+            webSocketClient.sendMessage("/app/player-leave-gamesession", message);
+        } catch (Exception e) {
+            Log.e(TAG, "Error leave game message", e);
+        }
+    }
+    public void sendPlacedTile(PlacedTileDto placedTileDto){
         try {
             webSocketClient.sendMessage("/app/place-tile", objectMapper.writeValueAsString(placedTileDto));
         } catch (Exception e) {
