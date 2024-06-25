@@ -171,7 +171,11 @@ public class GameBoardActivity extends AppCompatActivity {
                 Map<Long, Integer> newPoints = finishedTurnDto.getPoints();
                 for (Player player : playerList) {
                     if (newPoints.containsKey(player.getId())) {
-                        playerPoints.put(player.getUsername(), newPoints.get(player.getId()) + playerPoints.get(player.getUsername()));
+                        if(newPoints.get(player.getId()) + playerPoints.get(player.getUsername()) > 0) {
+                            playerPoints.put(player.getUsername(), newPoints.get(player.getId()) + playerPoints.get(player.getUsername()));
+                        } else {
+                            playerPoints.put(player.getUsername(), 0);
+                        }
                     }
                 }
 
