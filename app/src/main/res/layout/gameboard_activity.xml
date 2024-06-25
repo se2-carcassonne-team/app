@@ -200,12 +200,11 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="40dp"
 
         android:background="@drawable/road_occupied"
-        app:layout_constraintBottom_toTopOf="@+id/left_scrl_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/up_scrl_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/settingsBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/muteBtn" />
 
     <Button
         android:id="@+id/settingsBtn"
@@ -223,11 +222,10 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="15dp"
-        android:layout_marginBottom="10dp"
         android:background="@drawable/mute_button"
-        app:layout_constraintBottom_toTopOf="@+id/left_scrl_btn"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineJoystick"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/leavegamebtn" />
+        app:layout_constraintTop_toBottomOf="@+id/settingsBtn" />
 
 
     <androidx.constraintlayout.widget.Guideline

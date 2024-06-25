@@ -452,7 +452,7 @@ public class GameBoardActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 // Display a toast instead of calling super.handleOnBackPressed()
-                Toast.makeText(GameBoardActivity.this, "leave the game via red X button instead", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(GameBoardActivity.this, "leave the game via red X button instead", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -772,7 +772,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 settingsVisible = false;
             } else {
                 // Wenn die Buttons nicht sichtbar sind, dann zeige sie an
-                leaveGameButton.setVisibility(View.VISIBLE);
+                leaveGameButton.setVisibility(View.GONE);
                 muteButton.setVisibility(View.VISIBLE);
                 settingsVisible = true;
             }
