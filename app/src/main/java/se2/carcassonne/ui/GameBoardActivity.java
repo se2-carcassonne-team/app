@@ -2,6 +2,7 @@ package se2.carcassonne.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,6 +37,7 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.mapper.MapperHelper;
+import se2.carcassonne.helper.music.MusicPlayer;
 import se2.carcassonne.helper.resize.FullscreenHelper;
 import se2.carcassonne.model.Coordinates;
 import se2.carcassonne.model.FinishedTurnDto;
@@ -70,6 +72,10 @@ public class GameBoardActivity extends AppCompatActivity {
     private GameSessionViewModel gameSessionViewModel;
     private Button zoomInBtn;
     private Button zoomOutBtn;
+    private Button settingsButton;
+    private Button muteButton;
+    private Button leaveGameButton;
+    private boolean settingsVisible = false;
     private PointCalculator roadCalculator;
     Animation scaleAnimation = null;
     private static final String DRAWABLE = "drawable";
@@ -362,6 +368,21 @@ public class GameBoardActivity extends AppCompatActivity {
 
         binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
 
+        // Settings Button und die neuen Buttons initialisieren
+        settingsButton = findViewById(R.id.settingsBtn);
+        // Button Musik muten
+        muteButton = findViewById(R.id.muteBtn);
+        // Button zum Verlassen des Spiels
+        leaveGameButton = findViewById(R.id.leavegamebtn);
+
+        leaveGameButton.setVisibility(View.GONE);
+        muteButton.setVisibility(View.GONE);
+        setupPopUp();
+        // Set up leave game button
+        setupLeaveGameButton();
+        // Mute the music
+        // Setze den Klick-Listener für den Mute-Button
+        muteButton.setOnClickListener(v -> MusicPlayer.toggleMute());
 
         // Show the current scoreboard in a dialog
         Button showScoreboardButton = findViewById(R.id.button_show_scoreboard);
@@ -431,7 +452,7 @@ public class GameBoardActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 // Display a toast instead of calling super.handleOnBackPressed()
-                Toast.makeText(GameBoardActivity.this, "leave the game via red X button instead", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(GameBoardActivity.this, "leave the game via red X button instead", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -732,4 +753,31 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void setupLeaveGameButton() {
+        leaveGameButton.setOnClickListener(v -> {
+            gameSessionViewModel.leavegamesession(currentPlayer);
+            Intent intent = new Intent(GameBoardActivity.this, GameLobbyActivity.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    private void setupPopUp() {
+        settingsButton.setOnClickListener(v -> {
+            if (settingsVisible) {
+                // Wenn die Buttons sichtbar sind, dann verstecke sie
+                leaveGameButton.setVisibility(View.GONE);
+                muteButton.setVisibility(View.GONE);
+                settingsVisible = false;
+            } else {
+                // Wenn die Buttons nicht sichtbar sind, dann zeige sie an
+                leaveGameButton.setVisibility(View.GONE);
+                muteButton.setVisibility(View.VISIBLE);
+                settingsVisible = true;
+            }
+        });
+    }
+
+
 }
