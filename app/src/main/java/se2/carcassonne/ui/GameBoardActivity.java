@@ -75,7 +75,9 @@ public class GameBoardActivity extends AppCompatActivity {
     private static final String DRAWABLE = "drawable";
 
     private final Map<String, Integer> playerPoints = new HashMap<>();
-    private ScoreboardAdapter adapter;
+
+    private FinishedTurnDto finishedTurnDto;
+    private boolean hasCheated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,7 @@ public class GameBoardActivity extends AppCompatActivity {
         //Bind all UI elements
         bindGameBoardUiElements();
 
+        finishedTurnDto = new FinishedTurnDto();
 
         objectMapper = new ObjectMapper();
         MapperHelper mapperHelper = new MapperHelper();
@@ -124,8 +127,16 @@ public class GameBoardActivity extends AppCompatActivity {
         for (Player player : playerList) {
             playerPoints.put(player.getUsername(), 0);
         }
-        adapter = new ScoreboardAdapter(playerPoints, playerList);
+        ScoreboardAdapter scoreboardAdapter = new ScoreboardAdapter(playerPoints, playerList);
 
+        // make a network call to the endpoint /app/can-i-cheat with the playerId as the request body to check if this player can cheat
+        // set the value of iCanCheat to the response of the network call
+        gameSessionViewModel.sendCanICheat(currentPlayer.getId());
+        gameSessionViewModel.getICanCheat().observe(this, iCanCheat -> {
+            if (iCanCheat != null) {
+                scoreboardAdapter.notifyDataSetChanged();
+            }
+        });
 
         gameboardAdapter = new GameboardAdapter(this, gameBoard, tileToPlace);
         gridView.setAdapter(gameboardAdapter);
@@ -159,28 +170,32 @@ public class GameBoardActivity extends AppCompatActivity {
                 Map<Long, Integer> newPoints = finishedTurnDto.getPoints();
                 for (Player player : playerList) {
                     if (newPoints.containsKey(player.getId())) {
-                        playerPoints.put(player.getUsername(), newPoints.get(player.getId()));
+                        playerPoints.put(player.getUsername(), newPoints.get(player.getId()) + playerPoints.get(player.getUsername()));
                     }
                 }
 
                 // Update the ScoreboardAdapter with the new player points
-                adapter.updatePlayerPoints(playerPoints);
+                scoreboardAdapter.updatePlayerPoints(playerPoints);
 
                 gameBoard.updatePoints(finishedTurnDto);
                 updatePlayerPoints();
 
                 // Remove meeples and get the count of removed meeples
-                Map<Long, Integer> removedMeeplesMap = gameBoard.finishedTurnRemoveMeeplesOnRoad(finishedTurnDto.getPlayersWithMeeples());
+                if(finishedTurnDto.getPlayersWithMeeples() != null){
+                    Map<Long, Integer> removedMeeplesMap = gameBoard.finishedTurnRemoveMeeplesOnRoad(finishedTurnDto.getPlayersWithMeeples());
 
-                // Update the meeple count only if the current player's meeples were removed
-                if (removedMeeplesMap.containsKey(currentPlayer.getId())) {
-                    Integer meeplesRemovedForCurrentPlayer = removedMeeplesMap.get(currentPlayer.getId());
-                    if (meeplesRemovedForCurrentPlayer != null) {
-                        // Subtract the removed meeples from the total count
-                        gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount() + meeplesRemovedForCurrentPlayer);
-                        binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
+                    // Update the meeple count only if the current player's meeples were removed
+                    if (removedMeeplesMap.containsKey(currentPlayer.getId())) {
+                        Integer meeplesRemovedForCurrentPlayer = removedMeeplesMap.get(currentPlayer.getId());
+                        if (meeplesRemovedForCurrentPlayer != null) {
+                            // Subtract the removed meeples from the total count
+                            gameboardAdapter.setMeepleCount(gameboardAdapter.getMeepleCount() + meeplesRemovedForCurrentPlayer);
+                            binding.tvMeepleCount.setText(gameboardAdapter.getMeepleCount() + "x");
+                        }
                     }
                 }
+
+
 
                 gameboardAdapter.notifyDataSetChanged();
             }
@@ -356,11 +371,36 @@ public class GameBoardActivity extends AppCompatActivity {
             RecyclerView scoreboardList = view.findViewById(R.id.scoreboard_list);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             scoreboardList.setLayoutManager(layoutManager); // Set the layout manager
-            scoreboardList.setAdapter(adapter);
+            scoreboardList.setAdapter(scoreboardAdapter);
 
 
             // Create the AlertDialog instance
             AlertDialog dialog = builder.create();
+
+            // Hide cheat button if player cannot cheat
+            Button cheatButton = view.findViewById(R.id.button_cheat);
+            if(Boolean.TRUE.equals(GameSessionRepository.getInstance().getICanCheat().getValue()) && !hasCheated) {
+                cheatButton.setVisibility(View.VISIBLE);
+                PlayerRepository.getInstance().getCurrentPlayer().setCanCheat(true);
+            } else {
+                cheatButton.setVisibility(View.GONE);
+            }
+
+
+
+            cheatButton.setOnClickListener(v2 -> {
+
+                Map<Long, Integer> idsPoints = new HashMap<>();
+                for (Long id: gameBoard.getPlayerWithPoints().keySet()) {
+                    idsPoints.put(id, 0);
+                }
+                finishedTurnDto = new FinishedTurnDto(currentPlayer.getGameSessionId(), idsPoints, null);
+
+                gameSessionViewModel.sendCheatRequest(PlayerRepository.getInstance().getCurrentPlayer().getId(), finishedTurnDto);
+                cheatButton.setVisibility(View.GONE);
+                PlayerRepository.getInstance().getCurrentPlayer().setCanCheat(false);
+                hasCheated = true;
+            });
 
             // Button in dialog to close it
             Button closeButton = view.findViewById(R.id.button_close_scoreboard);
@@ -422,6 +462,7 @@ public class GameBoardActivity extends AppCompatActivity {
         gameSessionViewModel.getNextTurnMessageLiveData().postValue(null);
         gameSessionViewModel.getPlacedTileLiveData().postValue(null);
         gameSessionViewModel.finishedTurnLiveData().postValue(null);
+        gameSessionViewModel.getICanCheat().postValue(null);
     }
 
     private void moveButtonsRight() {
@@ -563,9 +604,12 @@ public class GameBoardActivity extends AppCompatActivity {
         // Calculate the potential changes resulting from placing this tile
         RoadResult roadResult = roadCalculator.getAllTilesThatArePartOfRoad(tileToPlace);
 
+
+
         if (roadResult.isRoadCompleted()) {
+
             // Create the FinishedTurnDto with the results of the point calculation
-            FinishedTurnDto finishedTurnDto = new FinishedTurnDto(
+            finishedTurnDto = new FinishedTurnDto(
                     currentPlayer.getGameSessionId(),
                     roadResult.getPoints(),
                     roadResult.getPlayersWithMeeplesOnRoad()

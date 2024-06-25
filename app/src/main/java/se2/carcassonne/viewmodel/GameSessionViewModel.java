@@ -1,5 +1,6 @@
 package se2.carcassonne.viewmodel;
 
+import androidx.compose.runtime.snapshots.Snapshot;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -21,6 +22,10 @@ public class GameSessionViewModel extends ViewModel {
 
     public void getNextTurn(Long gameSessionId) {
         gameSessionRepository.getNextTurn(gameSessionId);
+    }
+
+    public Integer getCheatPoints() {
+        return gameSessionRepository.getCheatPoints();
     }
 
     public MutableLiveData<NextTurn> getNextTurnMessageLiveData() {
@@ -51,6 +56,10 @@ public class GameSessionViewModel extends ViewModel {
         gameSessionRepository.forwardScoreboard(scoreboard);
     }
 
+    public void sendCheatRequest(Long playerId, FinishedTurnDto finishedTurnDto) {
+        gameSessionRepository.sendCheatRequest(playerId, finishedTurnDto);
+    }
+
     public MutableLiveData<Scoreboard> scoreboardLiveData(){
         return gameSessionRepository.getScoreboardLiveData();
     }
@@ -63,4 +72,12 @@ public class GameSessionViewModel extends ViewModel {
         gameSessionRepository.sendPointsForCompletedRoad(finishedTurnDto);
     }
 
+    public void sendCanICheat(Long playerId) {
+        gameSessionRepository.sendCanICheat(playerId);
+    }
+
+
+    public MutableLiveData<Boolean> getICanCheat() {
+        return gameSessionRepository.getICanCheat();
+    }
 }

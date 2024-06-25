@@ -1,5 +1,7 @@
 package se2.carcassonne.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,7 +31,10 @@ public class GameSessionRepository {
     private final MutableLiveData<Boolean> gameEndedLiveData = new MutableLiveData<>();
     private final MutableLiveData<Scoreboard> scoreboardLiveData = new MutableLiveData<>();
     private final MutableLiveData<FinishedTurnDto> finishedTurnLiveData = new MutableLiveData<>();
+    private Integer cheatPoints = 0;
     private final ObjectMapper objectMapper;
+
+    private final MutableLiveData<Boolean> iCanCheat = new MutableLiveData<>();
 
     private static final String TOPIC_GAMESESSION = "/topic/game-session-";
 
@@ -144,6 +149,18 @@ public class GameSessionRepository {
         }
     }
 
+    public void cheatPointsReceived(String message) {
+        try {
+            cheatPoints = objectMapper.readValue(message, Integer.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to parse JSON message for cheat points", e);
+        }
+    }
+
+    public void sendCheatRequest(Long playerId, FinishedTurnDto finishedTurnDto) {
+        gameSessionApi.sendCheatRequest(playerId, finishedTurnDto);
+    }
+
     /**
      * Returns the next turn live data object
      *
@@ -159,5 +176,34 @@ public class GameSessionRepository {
     }
 
 
+    /* This is the endpoint on the server:
+        @MessageMapping("/cheat/can-i-cheat")
+    @SendToUser("/queue/cheat-can-i-cheat")
+    public String handleCanICheat(String playerIdString) {
+        Long playerId = Long.parseLong(playerIdString);
+        Boolean canCheat = cheatService.checkIsPlayerCheater(playerId);
+        return canCheat.toString();
+    }
+     */
 
+    // subscribe to the topic /queue/cheat-can-i-cheat to get the cheat points
+    public void subscribeToCanICheat() {
+        webSocketClient.subscribeToQueue("/user/queue/cheat-can-i-cheat", this::canICheatReceived);
+    }
+
+    private void canICheatReceived(String message) {
+        try {
+            iCanCheat.postValue(objectMapper.readValue(message, Boolean.class));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to parse JSON message for cheat points", e);
+        }
+    }
+
+    public void sendCanICheat(Long playerId) {
+        gameSessionApi.sendCanICheat(playerId);
+    }
+
+    public MutableLiveData<Boolean> getICanCheat() {
+        return iCanCheat;
+    }
 }

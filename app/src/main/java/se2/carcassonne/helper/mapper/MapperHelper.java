@@ -22,6 +22,16 @@ public class MapperHelper {
     // constants for logging:
     private static final String MAPPING_EXCEPTION = "Mapping Exception";
     private static final String JSON_ERROR_GETIDFROMLOBBYSTRING ="Error processing JSON in getIdFromLobbyString: ";
+
+    public Integer getSessionId(String sessionIdString) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(sessionIdString, Integer.class);
+        } catch (JsonProcessingException e) {
+            Log.e(MAPPING_EXCEPTION, "Error processing JSON: " + e.getMessage());
+            return null;
+        }
+    }
     public Player getPlayer(String playerStringAsJson) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode player = null;

@@ -114,7 +114,6 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    // Add a method to be called from JavaScript
     @JavascriptInterface
     public void closeWebView() {
         runOnUiThread(() -> {

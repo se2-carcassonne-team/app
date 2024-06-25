@@ -107,6 +107,7 @@ public class InLobbyActivity extends AppCompatActivity {
                 gameSessionRepository.subscribeToPlacedTile(gameSessionIdLong);
                 gameSessionRepository.subscribeToGameFinished(gameSessionIdLong);
                 gameSessionRepository.subscribeToPointsForCompletedRoad(gameSessionIdLong);
+                gameSessionRepository.subscribeToCanICheat();
 
                 /*
                  * All Players In Lobby Observable

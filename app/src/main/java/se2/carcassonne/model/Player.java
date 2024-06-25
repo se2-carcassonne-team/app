@@ -20,6 +20,8 @@ public class Player implements Serializable {
    private List<Meeple> meepleList;
    private PlayerColour playerColour;
     private int points;
+    private Boolean canCheat;
+    private int cheatPoints;
 
     public Player(Long id, String username, String sessionId, Long gameLobbyId, Long gameSessionId, PlayerColour playerColour) {
       this.id = id;
@@ -30,6 +32,8 @@ public class Player implements Serializable {
       this.meepleList = new ArrayList<>(7);
       this.playerColour = playerColour;
       this.points = 0;
+      this.canCheat = false;
+      this.cheatPoints = 0;
    }
 
     public void addPoints(int points) {

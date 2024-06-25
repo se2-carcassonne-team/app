@@ -52,4 +52,21 @@ public class GameSessionApi {
             Log.e(TAG, "Error sending scoreboard message", e);
         }
     }
+
+    public void sendCheatRequest(Long playerId, FinishedTurnDto finishedTurnDto) {
+        try {
+            String message = playerId + "|" + objectMapper.writeValueAsString(finishedTurnDto);
+            webSocketClient.sendMessage("/app/cheat/add-points", message);
+        } catch (Exception e) {
+            Log.e("GameSessionApi", "Error sending cheat request", e);
+        }
+    }
+
+    public void sendCanICheat(Long playerId) {
+        try {
+            webSocketClient.sendMessage("/app/cheat/can-i-cheat", objectMapper.writeValueAsString(playerId));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
 }
