@@ -44,6 +44,9 @@ public class GameBoard {
     }
 
     public void placeTile(Tile tile, Coordinates coordinates) {
+        if (!validPlacementForTileWithCurrentRotation(tile, coordinates)) {
+            throw new IllegalArgumentException("Invalid tile placement");
+        }
         int x = coordinates.getXPosition();
         int y = coordinates.getYPosition();
 
@@ -138,9 +141,48 @@ public class GameBoard {
         return false;
     }
 
+    private boolean isMonasteryAdjacent(Coordinates coordinates) {
+        int x = coordinates.getXPosition();
+        int y = coordinates.getYPosition();
+
+        // Check all eight surrounding positions for a monastery
+        if (y - 1 >= 0 && gameBoardMatrix[x][y - 1] != null && gameBoardMatrix[x][y - 1].getFeatures()[4] == 5) {
+            return true; // North
+        }
+        if (x + 1 < 25 && gameBoardMatrix[x + 1][y] != null && gameBoardMatrix[x + 1][y].getFeatures()[4] == 5) {
+            return true; // East
+        }
+        if (y + 1 < 25 && gameBoardMatrix[x][y + 1] != null && gameBoardMatrix[x][y + 1].getFeatures()[4] == 5) {
+            return true; // South
+        }
+        if (x - 1 >= 0 && gameBoardMatrix[x - 1][y] != null && gameBoardMatrix[x - 1][y].getFeatures()[4] == 5) {
+            return true; // West
+        }
+        if (x - 1 >= 0 && y - 1 >= 0 && gameBoardMatrix[x - 1][y - 1] != null && gameBoardMatrix[x - 1][y - 1].getFeatures()[4] == 5) {
+            return true; // Northwest
+        }
+        if (x + 1 < 25 && y - 1 >= 0 && gameBoardMatrix[x + 1][y - 1] != null && gameBoardMatrix[x + 1][y - 1].getFeatures()[4] == 5) {
+            return true; // Northeast
+        }
+        if (x - 1 >= 0 && y + 1 < 25 && gameBoardMatrix[x - 1][y + 1] != null && gameBoardMatrix[x - 1][y + 1].getFeatures()[4] == 5) {
+            return true; // Southwest
+        }
+        if (x + 1 < 25 && y + 1 < 25 && gameBoardMatrix[x + 1][y + 1] != null && gameBoardMatrix[x + 1][y + 1].getFeatures()[4] == 5) {
+            return true; // Southeast
+        }
+
+        return false;
+    }
+
+
     private boolean validPlacementForTileWithCurrentRotation(Tile tileToPlace, Coordinates position) {
         int x = position.getXPosition();
         int y = position.getYPosition();
+
+        // Ensure no two monasteries are adjacent
+        if (tileToPlace.getFeatures()[4] == 5 && isMonasteryAdjacent(position)) {
+            return false;
+        }
 
         // Get the tiles edges based on it's current rotation
         int [] edges = tileToPlace.rotatedEdges(tileToPlace.getRotation());
@@ -261,4 +303,6 @@ public class GameBoard {
 
         return removedMeeplesCount;
     }
+
+
 }

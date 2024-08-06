@@ -75,6 +75,10 @@ public class GameSessionViewModel extends ViewModel {
         gameSessionRepository.sendPointsForCompletedRoad(finishedTurnDto);
     }
 
+    public void sendPointsForMonastery(FinishedTurnDto finishedTurnDto){
+        gameSessionRepository.sendPointsForMonastery(finishedTurnDto);
+    }
+
     public void sendCanICheat(Long playerId) {
         gameSessionRepository.sendCanICheat(playerId);
     }

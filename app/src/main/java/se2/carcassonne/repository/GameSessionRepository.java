@@ -142,6 +142,10 @@ public class GameSessionRepository {
         gameSessionApi.sendPointsForCompletedRoad(finishedTurnDto);
     }
 
+    public void sendPointsForMonastery(FinishedTurnDto finishedTurnDto){
+        gameSessionApi.sendPointsForMonastery(finishedTurnDto);
+    }
+
     public void subscribeToPointsForCompletedRoad(Long gameSessionId){
         webSocketClient.subscribeToTopic(TOPIC_GAMESESSION + gameSessionId + "/points-meeples", this::getPointsForCompletedRoad);
     }

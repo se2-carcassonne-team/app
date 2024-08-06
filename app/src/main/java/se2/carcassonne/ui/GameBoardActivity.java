@@ -35,6 +35,7 @@ import java.util.Objects;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 import se2.carcassonne.R;
+import se2.carcassonne.api.GameSessionApi;
 import se2.carcassonne.databinding.GameboardActivityBinding;
 import se2.carcassonne.helper.mapper.MapperHelper;
 import se2.carcassonne.helper.music.MusicPlayer;
@@ -77,14 +78,15 @@ public class GameBoardActivity extends AppCompatActivity {
     private Button leaveGameButton;
     private boolean settingsVisible = false;
     private PointCalculator roadCalculator;
+    private PointCalculator monasteryCalculator;
     Animation scaleAnimation = null;
     private static final String DRAWABLE = "drawable";
-
     private final Map<String, Integer> playerPoints = new HashMap<>();
 
     private FinishedTurnDto finishedTurnDto;
     private boolean hasCheated = false;
     private static final String TAG = "GameBoardActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +112,7 @@ public class GameBoardActivity extends AppCompatActivity {
 //        Create a new game board and place a random tile on it
         gameBoard = new GameBoard();
         roadCalculator = new PointCalculator(gameBoard);
+        monasteryCalculator = new PointCalculator(gameBoard);
 
 //        Set up the grid view
         gridView.setScaleX(3.0f);
@@ -311,15 +314,16 @@ public class GameBoardActivity extends AppCompatActivity {
             if (scoreboard != null) {
                 Intent gameEndIntent = new Intent(this, GameEndActivity.class);
 
-            List<String> topThree = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
+                List<String> topThree = gameBoard.sortTopThreePlayersAfterForwarding(scoreboard);
 
-            for (int i = 0; i < topThree.size(); i++) {
-                gameEndIntent.putExtra("PLAYER" + i, topThree.get(i));
-            }
+                for (int i = 0; i < topThree.size(); i++) {
+                    gameEndIntent.putExtra("PLAYER" + i, topThree.get(i));
+                }
 
                 startActivity(gameEndIntent);
             }
         });
+
 
 
         if (currentPlayer.getId().toString().equals(currentLobbyAdmin)) {
@@ -431,8 +435,8 @@ public class GameBoardActivity extends AppCompatActivity {
             // Button in dialog to close it
             Button closeButton = view.findViewById(R.id.button_close_scoreboard);
             closeButton.setOnClickListener(v1 ->
-                // Dismiss the dialog when the close button is clicked
-                dialog.dismiss()
+                    // Dismiss the dialog when the close button is clicked
+                    dialog.dismiss()
             );
 
             dialog.show();
@@ -650,8 +654,6 @@ public class GameBoardActivity extends AppCompatActivity {
         // Calculate the potential changes resulting from placing this tile
         RoadResult roadResult = roadCalculator.getAllTilesThatArePartOfRoad(tileToPlace);
 
-
-
         if (roadResult.isRoadCompleted()) {
 
             // Create the FinishedTurnDto with the results of the point calculation
@@ -664,6 +666,50 @@ public class GameBoardActivity extends AppCompatActivity {
             // Send the FinishedTurnDto through the WebSocket to handle the results server-side
             gameSessionViewModel.sendPointsForCompletedRoad(finishedTurnDto);
         }
+
+        PointCalculator pointCalculator = new PointCalculator(gameBoard);
+
+        if (pointCalculator.isMonastery(tileToPlace) && pointCalculator.hasMeepleOnMonastery(tileToPlace)) {
+            Long currentPlayerId = currentPlayer.getId();
+            int monasteryPoints = pointCalculator.calculatePointsForMonasteryPlacement(tileToPlace, currentPlayerId);
+
+            Map<Long, Integer> points = new HashMap<>();
+            if (monasteryPoints > 0) {
+                points.put(currentPlayerId, monasteryPoints);
+            }
+
+            FinishedTurnDto finishedTurnDto = new FinishedTurnDto(
+                    currentPlayer.getGameSessionId(),
+                    points,
+                    null
+            );
+
+            gameSessionViewModel.sendPointsForMonastery(finishedTurnDto);
+        }
+
+        if (pointCalculator.isAdjacentToMonastery(tileToPlace)) {
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dy = -1; dy <= 1; dy++) {
+                    if ((dx != 0 || dy != 0) && pointCalculator.isMonasteryTile(tileToPlace.getCoordinates().getXPosition() + dx, tileToPlace.getCoordinates().getYPosition() + dy)) {
+                        Tile monasteryTile = gameBoard.getGameBoardMatrix()[tileToPlace.getCoordinates().getXPosition() + dx][tileToPlace.getCoordinates().getYPosition() + dy];
+                        Long monasteryOwner = pointCalculator.getMonasteryOwner(monasteryTile);
+                        if (monasteryOwner != null) {
+                            Map<Long, Integer> points = new HashMap<>();
+                            points.put(monasteryOwner, 1);
+
+                            FinishedTurnDto finishedTurnDto = new FinishedTurnDto(
+                                    currentPlayer.getGameSessionId(),
+                                    points,
+                                    null
+                            );
+
+                            gameSessionViewModel.sendPointsForMonastery(finishedTurnDto);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     private void hideMeepleGrid() {
@@ -767,6 +813,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private void setupLeaveGameButton() {
         leaveGameButton.setOnClickListener(v -> {
             gameSessionViewModel.leavegamesession(currentPlayer);
+            gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId()); //Hinzugefügt, damit gewechselt wird.
+            gameSessionViewModel.gameEndedLiveData();
             Intent intent = new Intent(GameBoardActivity.this, GameLobbyActivity.class);
             startActivity(intent);
             finish();
@@ -782,7 +830,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 settingsVisible = false;
             } else {
                 // Wenn die Buttons nicht sichtbar sind, dann zeige sie an
-                leaveGameButton.setVisibility(View.GONE);
+                leaveGameButton.setVisibility(View.VISIBLE);
                 muteButton.setVisibility(View.VISIBLE);
                 settingsVisible = true;
             }

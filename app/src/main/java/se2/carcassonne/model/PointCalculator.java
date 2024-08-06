@@ -1,6 +1,8 @@
 package se2.carcassonne.model;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
 
 import lombok.Data;
 import lombok.Getter;
@@ -21,16 +24,20 @@ import lombok.Setter;
 @Setter
 public class PointCalculator {
     private GameBoard gameBoard;
+    private Scoreboard scoreboard;
     private List<Set<Tile>> completedRoads = new ArrayList<>();
+
 
     // Points per tile type
     private static final int POINTS_CITY = 2;
     private static final int POINTS_ROAD = 1;
     private static final int POINTS_MONASTERY = 1;
     private static final int POINTS_FIELD = 3;
+    private static final int POINTS_ADDITIONAL_MONASTERY = 1;
 
     public PointCalculator(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
+
     }
 
     public RoadResult getAllTilesThatArePartOfRoad(Tile tile) {
@@ -169,10 +176,6 @@ public class PointCalculator {
     }
 
 
-
-
-
-
     private boolean dfsCheckRoadCompleted(Tile tile, List<Tile> roadTiles, Set<Tile> visited, Set<Tile> junctionsVisited,
                                           int[] completedRoadsCount, int fromX, int fromY) {
         int x = tile.getCoordinates().getXPosition();
@@ -259,7 +262,7 @@ public class PointCalculator {
 
         // Distribute points to each player based on their meeples on the road
         playersWithMeeples.forEach((playerId, meeples) ->
-            playerPoints.put(playerId, totalPoints)
+                playerPoints.put(playerId, totalPoints)
         );
 
         return playerPoints;
@@ -274,7 +277,7 @@ public class PointCalculator {
                 int positionIndex = getPositionIndexFromCoordinates(meeple.getCoordinates());
 
                 // Check if the position index is valid and if the meeple is placed on a road feature
-                if (positionIndex >= 0 &&  tile.rotatedFeatures(tile.getRotation())[positionIndex] == 2) {
+                if (positionIndex >= 0 && tile.rotatedFeatures(tile.getRotation())[positionIndex] == 2) {
                     Long playerId = meeple.getPlayerId();
                     playersWithMeeples.putIfAbsent(playerId, new ArrayList<>());
                     Objects.requireNonNull(playersWithMeeples.get(playerId)).add(meeple);
@@ -283,6 +286,7 @@ public class PointCalculator {
         }
         return playersWithMeeples;
     }
+
     private int getPositionIndexFromCoordinates(Coordinates coordinates) {
         // Assuming coordinates are structured in a 3x3 grid, from (0,0) to (2,2)
         if (coordinates != null && coordinates.getXPosition() >= 0 && coordinates.getXPosition() < 3
@@ -292,4 +296,128 @@ public class PointCalculator {
         return -1; // Returns -1 if coordinates are invalid
     }
 
+    public boolean isMonastery(Tile tile){
+        Log.d("Monastery", "isMonastery: " + tile.getImageName().contains("monastery"));
+        return tile.getImageName().contains("monastery");
+    }
+
+    public boolean hasMeepleOnMonastery(Tile monasteryTile) {
+        Meeple potentialMeepleOnMonastery = monasteryTile.getPlacedMeeple();
+        if (potentialMeepleOnMonastery != null) {
+            // Check if the meeple is in the center of the monastery tile
+            Coordinates meepleCoordinates = potentialMeepleOnMonastery.getCoordinates();
+            int meeplePosition = meepleCoordinates.getXPosition() * 3 + meepleCoordinates.getYPosition();
+            Log.d("Monastery", "hasMeepleOnMonastery: " + meeplePosition);
+            return meeplePosition == 4;
+        }
+        return false;
+    }
+
+    public int calculatePointsForMonasteryPlacement(Tile tile, Long playerId) {
+        int totalPoints = 0;
+
+        if (isMonastery(tile) && hasMeepleOnMonastery(tile)) {
+            totalPoints += POINTS_MONASTERY; // Points for the monastery if a meeple is on it
+        }
+
+        // Count adjacent tiles
+        int adjacentTileCount = countAdjacentTiles(tile);
+
+        // Add points for each adjacent tile
+        totalPoints += adjacentTileCount * POINTS_ADDITIONAL_MONASTERY;
+
+        return totalPoints;
+    }
+
+    private int countAdjacentTiles(Tile tile) {
+        int count = 0;
+        int x = tile.getCoordinates().getXPosition();
+        int y = tile.getCoordinates().getYPosition();
+
+        // Check all 8 surrounding tiles
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx != 0 || dy != 0) { // Skip the center tile
+                    int newX = x + dx;
+                    int newY = y + dy;
+                    if (isValidPosition(newX, newY) && gameBoard.getGameBoardMatrix()[newX][newY] != null) {
+                        count++;
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public boolean isMonasteryTile(int x, int y) {
+        Tile tile = gameBoard.getGameBoardMatrix()[x][y];
+        return tile != null && isMonastery(tile);
+    }
+
+    public boolean isAdjacentToMonastery(Tile newTile) {
+        int x = newTile.getCoordinates().getXPosition();
+        int y = newTile.getCoordinates().getYPosition();
+
+        // Check right, left, above, and below
+        if (x + 1 < 25 && isMonasteryTile(x + 1, y)) {
+            return true;
+        }
+        if (x - 1 >= 0 && isMonasteryTile(x - 1, y)) {
+            return true;
+        }
+        if (y + 1 < 25 && isMonasteryTile(x, y + 1)) {
+            return true;
+        }
+        if (y - 1 >= 0 && isMonasteryTile(x, y - 1)) {
+            return true;
+        }
+
+        // Check top-left, top-right, bottom-left, and bottom-right
+        if (x - 1 >= 0 && y - 1 >= 0 && isMonasteryTile(x - 1, y - 1)) {
+            return true;
+        }
+        if (x - 1 >= 0 && y + 1 < 25 && isMonasteryTile(x - 1, y + 1)) {
+            return true;
+        }
+        if (x + 1 < 25 && y - 1 >= 0 && isMonasteryTile(x + 1, y - 1)) {
+            return true;
+        }
+        if (x + 1 < 25 && y + 1 < 25 && isMonasteryTile(x + 1, y + 1)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Finds the owner of the monastery if it has a meeple on it.
+     *
+     * @param tile The monastery tile to check.
+     * @return The player ID of the owner if a meeple is on the monastery, otherwise null.
+     */
+    public Long getMonasteryOwner(Tile tile) {
+        if (isMonastery(tile) && hasMeepleOnMonastery(tile)) {
+            Meeple meeple = tile.getPlacedMeeple();
+            if (meeple != null) {
+                return meeple.getPlayerId();
+            }
+        }
+        return null;
+    }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -53,6 +53,14 @@ public class GameSessionApi {
         }
     }
 
+
+    public void sendPointsForMonastery(FinishedTurnDto finishedTurnDto) {
+        try {
+            webSocketClient.sendMessage("/app/update-points-meeples", objectMapper.writeValueAsString(finishedTurnDto));
+        } catch (JsonProcessingException e) {
+            Log.e(TAG, "Error sending points for Monastery message", e);
+        }
+    }
     public void forwardScoreboard(Scoreboard scoreboard) {
         try {
             webSocketClient.sendMessage("/app/scoreboard", objectMapper.writeValueAsString(scoreboard));
