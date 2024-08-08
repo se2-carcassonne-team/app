@@ -35,10 +35,9 @@ public class GameSessionRepository {
     private Integer cheatPoints = 0;
     private final ObjectMapper objectMapper;
     private final MutableLiveData<Boolean> cheaterFound = new MutableLiveData<>(false);
-
     private final MutableLiveData<Boolean> iCanCheat = new MutableLiveData<>();
-
     private static final String TOPIC_GAMESESSION = "/topic/game-session-";
+    private static final String TAG = "Players in Gamesession";
 
     private GameSessionRepository() {
         this.gameSessionApi = new GameSessionApi();
@@ -51,10 +50,7 @@ public class GameSessionRepository {
         }
         return instance;
     }
-    public void leavegamesession(Player player){
-        gameSessionApi.leaveGame(player);
 
-    }
 
     /**
      * Calls the repository to get the current next turn
@@ -233,5 +229,20 @@ public class GameSessionRepository {
 
     public MutableLiveData<Boolean> getCheaterFound() {
         return cheaterFound;
+    }
+
+    public void subscribeToGetPlayersInGameSession(Long gameSessionId){
+        webSocketClient.subscribeToTopic("/topic/playerrequest-" + gameSessionId, this::getPlayersinGameSession);
+    }
+
+    private void getPlayersinGameSession(String message){
+        if(Integer.parseInt(message) <=2){
+            Log.i(TAG,"In der if zum beenden: " + Integer.parseInt(message));
+            gameEndedLiveData.postValue(true);
+        }
+    }
+    public void leavegamesession(Player player){
+        gameSessionApi.leaveGame(player);
+        gameSessionApi.sendGameSessionPlayerRequest(player.getGameSessionId());
     }
 }

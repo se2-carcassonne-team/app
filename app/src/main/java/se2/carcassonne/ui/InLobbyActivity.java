@@ -109,6 +109,7 @@ public class InLobbyActivity extends AppCompatActivity {
                 gameSessionRepository.subscribeToPointsForCompletedRoad(gameSessionIdLong);
                 gameSessionRepository.subscribeToCanICheat();
                 gameSessionRepository.subscribeToCheaterFound(gameSessionIdLong);
+                gameSessionRepository.subscribeToGetPlayersInGameSession(gameSessionIdLong);
 
                 /*
                  * All Players In Lobby Observable

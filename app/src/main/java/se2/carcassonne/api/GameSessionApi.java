@@ -94,5 +94,11 @@ public class GameSessionApi {
         }
     }
 
-    //
+    public void sendGameSessionPlayerRequest(Long gameSessionId){
+        try {
+            webSocketClient.sendMessage("/app/playerrequest", objectMapper.writeValueAsString(gameSessionId));
+        }catch (Exception e){
+            Log.e(TAG,"Error sending status",e);
+        }
+    }
 }

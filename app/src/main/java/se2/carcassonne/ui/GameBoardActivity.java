@@ -814,7 +814,6 @@ public class GameBoardActivity extends AppCompatActivity {
         leaveGameButton.setOnClickListener(v -> {
             gameSessionViewModel.leavegamesession(currentPlayer);
             gameSessionViewModel.getNextTurn(currentPlayer.getGameSessionId()); //Hinzugefügt, damit gewechselt wird.
-            gameSessionViewModel.gameEndedLiveData();
             Intent intent = new Intent(GameBoardActivity.this, GameLobbyActivity.class);
             startActivity(intent);
             finish();
